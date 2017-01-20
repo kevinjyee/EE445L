@@ -1,8 +1,8 @@
 // filename ******** fixed.h ************** 
-// possible header file for Lab 1 Spring 2017
+// Lab 1 Spring 2017
 // feel free to change the specific syntax of your system
-// put your name here
-// put the date here
+// Kevin Yee
+// 01/19/2017
 
 
 /****************ST7735_sDecOut3***************
