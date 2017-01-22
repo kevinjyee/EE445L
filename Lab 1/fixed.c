@@ -8,12 +8,33 @@
 #include "fixed.h"
 #include "ST7735.h"
 
+#define TRUE 1
+#define FALSE 0
+
+
+
+/****************numDigits***************
+ changes a string to an appropriate LCD ST7735 format
+ dependant on maximum digits and decimal positions
+ */ 
+ 
+ int numDigits(int32_t n)
+ {
+	 int numDigit =0;
+	 while(n!=0)
+	 {
+		 n=n/10;
+		 numDigit++;
+	 }
+	 return numDigit;
+ }
+ 
 /****************change_To_Output***************
  changes a string to an appropriate LCD ST7735 format
  dependant on maximum digits and decimal positions
  */ 
  
- char* change_To_Output(int n, int MAX_DIGITS, int DECIMAL_POSITION, char* buffer)
+ char* change_To_Output(int32_t n, int MAX_DIGITS, int DECIMAL_POSITION, char buffer[], int numDigits, int signedInt)
  {
 	 int i =0;
 	 //create buffer translating integer to string
@@ -21,15 +42,24 @@
 		{
 			if(i != DECIMAL_POSITION)
 			{
-			buffer[i] = n%10;
+			buffer[i] = n%10 + '0'; //inserts values
 			n = n/10;
+				numDigits --;
 			}
 			else
 			{
-				buffer[i] = '.';
+				buffer[i] = '.'; //places decimal point
 			}
+			if(i > numDigits && i < DECIMAL_POSITION -1  && buffer[i] == '0')
+			{
+				buffer[i] = ' '; //removes leading zeroes
+			}				
 		}
-	 
+	 if(!signedInt && n != 0)
+	 {
+		 buffer[0] = n%10 + '0';
+	 }
+		 
 	 return buffer;
  }
 
@@ -55,7 +85,9 @@ void ST7735_sDecOut3(int32_t n)
 		float RESOLUTION = 0.001;
 		int MAX_DIGITS = 6;
 		int DECIMAL_POSITION = 2;
-		char buffer [6] = {0};
+		char buffer [6] = {' '};
+		int numDigit;
+		
 		
 		//check if within bounds
 		if(n > max || n < min)
@@ -74,7 +106,8 @@ void ST7735_sDecOut3(int32_t n)
 			buffer[0] = ' ';
 		}
 		
-		change_To_Output(n, MAX_DIGITS, DECIMAL_POSITION, buffer);
+		numDigit = numDigits(n);
+		change_To_Output(n, MAX_DIGITS, DECIMAL_POSITION, buffer, numDigit,TRUE);
 		
 		ST7735_OutString(buffer);
 		
@@ -106,11 +139,15 @@ void ST7735_uBinOut8(uint32_t n){
 	
 	int max = 255999;
 	int min = 0;
-	int RESOLUTION = 2 << 8;
-	
+	double RESOLUTION = 256;
+	double num = (double) n;
 	int MAX_DIGITS = 6;
 	int DECIMAL_POSITION = 3;
-	char buffer [6] = {0};
+	char buffer [6] = {' '};
+	double roundedResult;
+	int scaledResult =0;
+	int numDigit;
+	
 	
 	if( n > max || n < min)
 	{
@@ -118,6 +155,13 @@ void ST7735_uBinOut8(uint32_t n){
 		return;
 	}
 	
+	roundedResult = ((double)((double) num / RESOLUTION*100)/100);
+	
+	scaledResult = roundedResult * 100;
+	numDigit = numDigits(n);
+	change_To_Output( scaledResult, MAX_DIGITS, DECIMAL_POSITION,  buffer,numDigit,FALSE);
+	
+	ST7735_OutString(buffer);
 
 		
 	
@@ -139,9 +183,12 @@ void ST7735_uBinOut8(uint32_t n){
  Outputs: none
  assumes minX < maxX, and miny < maxY
 */
+static int32_t MinX, MaxX, MinY, MaxY;
 void ST7735_XYplotInit(char *title, int32_t minX, int32_t maxX, int32_t minY, int32_t maxY){
-	
-	
+	MinX = minX; MaxX = maxX;
+  MinY = minY; MaxY = maxY;
+	ST7735_FillScreen(0);
+  ST7735_OutString(title);
 }
 
 /**************ST7735_XYplot***************
