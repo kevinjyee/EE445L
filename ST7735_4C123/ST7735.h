@@ -55,7 +55,7 @@
 // VCC (pin 2) connected to +3.3 V
 // Gnd (pin 1) connected to ground
 
-// **********wide.hk ST7735R*******************
+// **********wide.hk ST7735R with ADXL345 accelerometer *******************
 // Silkscreen Label (SDC side up; LCD side down) - Connection
 // VCC  - +3.3 V
 // GND  - Ground
@@ -71,7 +71,7 @@
 // SDO  – (NC) I2C alternate address for ADXL345 accelerometer
 // Backlight + - Light, backlight connected to +3.3 V
 
-// **********ADXL335 3-axis ST7735R*******************
+// **********wide.hk ST7735R with ADXL335 accelerometer *******************
 // Silkscreen Label (SDC side up; LCD side down) - Connection
 // VCC  - +3.3 V
 // GND  - Ground

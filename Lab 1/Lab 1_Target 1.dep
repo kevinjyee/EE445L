@@ -1,23 +1,0 @@
-Dependencies for Project 'Lab 1', Target 'Target 1': (DO NOT MODIFY !)
-F (.\Lab1.c)(0x58812196)(-c --cpu Cortex-M4.fp -D__EVAL -g -O0 --apcs=interwork -I E:\Keil\ARM\RV31\INC-I E:\Keil\ARM\CMSIS\Include-I E:\Keil\ARM\Inc\TI\TM4C123-DTM4C1233H6PM-o .\lab1.o --omf_browse .\lab1.crf --depend .\lab1.d)
-I (E:\Keil\ARM\ARMCC\include\stdio.h)(0x51C88A34)
-I (E:\Keil\ARM\ARMCC\include\stdint.h)(0x51C88A34)
-I (E:\Keil\ARM\ARMCC\include\string.h)(0x51C88A34)
-I (ST7735.h)(0x551970CE)
-I (PLL.h)(0x54FDED90)
-I (fixed.h)(0x5881717C)
-I (inc/tm4c123gh6pm.h)(0x5388B4CA)
-F (.\fixed.c)(0x5881741E)(-c --cpu Cortex-M4.fp -D__EVAL -g -O0 --apcs=interwork -I E:\Keil\ARM\RV31\INC-I E:\Keil\ARM\CMSIS\Include-I E:\Keil\ARM\Inc\TI\TM4C123-DTM4C1233H6PM-o .\fixed.o --omf_browse .\fixed.crf --depend .\fixed.d)
-I (E:\Keil\ARM\ARMCC\include\stdlib.h)(0x51C88A34)
-I (E:\Keil\ARM\ARMCC\include\stdint.h)(0x51C88A34)
-I (fixed.h)(0x5881717C)
-F (.\startup.s)(0x5471A0DC)(--cpu Cortex-M4.fp --pd "__EVAL SETA 1" -g --apcs=interwork -I E:\Keil\ARM\RV31\INC-I E:\Keil\ARM\CMSIS\Include-I E:\Keil\ARM\Inc\TI\TM4C123--list .\startup.lst --xref -o .\startup.o --depend .\startup.d)
-F (.\PLL.c)(0x53E928D6)(-c --cpu Cortex-M4.fp -D__EVAL -g -O0 --apcs=interwork -I E:\Keil\ARM\RV31\INC-I E:\Keil\ARM\CMSIS\Include-I E:\Keil\ARM\Inc\TI\TM4C123-DTM4C1233H6PM-o .\pll.o --omf_browse .\pll.crf --depend .\pll.d)
-I (PLL.h)(0x54FDED90)
-I (E:\Keil\ARM\ARMCC\include\stdint.h)(0x51C88A34)
-I (inc/tm4c123gh6pm.h)(0x5388B4CA)
-F (.\ST7735.c)(0x55197066)(-c --cpu Cortex-M4.fp -D__EVAL -g -O0 --apcs=interwork -I E:\Keil\ARM\RV31\INC-I E:\Keil\ARM\CMSIS\Include-I E:\Keil\ARM\Inc\TI\TM4C123-DTM4C1233H6PM-o .\st7735.o --omf_browse .\st7735.crf --depend .\st7735.d)
-I (E:\Keil\ARM\ARMCC\include\stdio.h)(0x51C88A34)
-I (E:\Keil\ARM\ARMCC\include\stdint.h)(0x51C88A34)
-I (ST7735.h)(0x551970CE)
-I (inc/tm4c123gh6pm.h)(0x5388B4CA)
