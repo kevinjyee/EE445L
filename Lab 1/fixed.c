@@ -82,7 +82,6 @@ void ST7735_sDecOut3(int32_t n)
 	{
 		int max = 9999;
 		int min = -9999;
-		float RESOLUTION = 0.001;
 		int MAX_DIGITS = 6;
 		int DECIMAL_POSITION = 2;
 		char buffer [6] = {' '};
@@ -201,5 +200,27 @@ void ST7735_XYplotInit(char *title, int32_t minX, int32_t maxX, int32_t minY, in
  neglect any points outside the minX maxY minY maxY bounds
 */
 void ST7735_XYplot(uint32_t num, int32_t bufX[], int32_t bufY[]){
+
+	/*
+	In this code, the plotting area is a square on the bottom (0,32) to (127,159)
+   i goes from 0 to 127
+   x=MaxX maps to i=0
+   x=MaxX maps to i=127
+  i = (127*(x-MinX))/(MaxX-MinX);  
+   y=MaxY maps to j=32
+   y=MinY maps to j=159
+  j = 32+(127*(MaxY-y))/(MaxY-MinY);
+*/
 	
+
+for (uint32_t i=0 ; i < num; ++i) {
+      int32_t x = (127*(bufX[i] - MinX)) / (MaxX - MinX);
+      int32_t y = 32 + (127*((MaxY - bufY[i]))  / (MaxY - MinY));
+
+      ST7735_DrawPixel(x,   y,   ST7735_CYAN);
+      ST7735_DrawPixel(x+1, y,   ST7735_CYAN);
+      ST7735_DrawPixel(x,   y+1, ST7735_CYAN);
+      ST7735_DrawPixel(x+1, y+1, ST7735_CYAN);
+    
+  }
 }
