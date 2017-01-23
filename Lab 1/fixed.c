@@ -102,7 +102,7 @@ void ST7735_sDecOut3(int32_t n)
 	
 		int MAX_DIGITS = 6; //Maximum digit of fixed point number 
 		int DECIMAL_POSITION = 2; //Position of Decimal Point to be placed
-		char buffer [6] = {' '};
+		char buffer [6] = {' '}; //Initialize array to empty string 
 		int numDigit;
 		
 		
@@ -123,7 +123,7 @@ void ST7735_sDecOut3(int32_t n)
 			buffer[0] = ' ';
 		}
 		
-		numDigit = num_Digits(n);
+		numDigit = num_Digits(n); //count number of digits
 		change_To_Output(n, MAX_DIGITS, DECIMAL_POSITION, buffer, numDigit,TRUE);
 		
 		ST7735_OutString(buffer);
@@ -154,8 +154,9 @@ Parameter LCD display
 */
 void ST7735_uBinOut8(uint32_t n){
 	
-	int max = 255999;
-	int min = 0;
+	int MAX = 255999;
+	int MIN = 0;
+	
 	double RESOLUTION = 256;
 	double num = (double) n;
 	int MAX_DIGITS = 6;
@@ -165,17 +166,18 @@ void ST7735_uBinOut8(uint32_t n){
 	int scaledResult =0;
 	int numDigit;
 	
-	
-	if( n > max || n < min)
+	//check if value is within bounds 
+	if( n > MAX || n < MIN)
 	{
 		ST7735_OutString("***.**");
 		return;
 	}
-	
+	//calculate value based on Resolution: I * RESOLUTION
 	roundedResult = ((double)((double) num / RESOLUTION*100)/100);
 	
+	
 	scaledResult = roundedResult * 100;
-	numDigit = num_Digits(n);
+	numDigit = num_Digits(n); //count number of digits 
 	change_To_Output( scaledResult, MAX_DIGITS, DECIMAL_POSITION,  buffer,numDigit,FALSE);
 	
 	ST7735_OutString(buffer);
