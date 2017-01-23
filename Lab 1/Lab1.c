@@ -14,8 +14,9 @@
 #include "PLL.h"
 #include "fixed.h"
 #include "inc/tm4c123gh6pm.h"
-void DelayWait10ms(uint32_t n);
-void PortF_Init(void);
+
+void DelayWait10ms(uint32_t n);// Wait for 10 seconds before response happens
+void PortF_Init(void); //Port F will used as the button to swap between load screen
 // const will place these structures in ROM
 
 struct outTestCase1{    // used to test routines

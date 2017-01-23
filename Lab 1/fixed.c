@@ -32,8 +32,7 @@
 
 
 /****************numDigits***************
- changes a string to an appropriate LCD ST7735 format
- dependant on maximum digits and decimal positions
+ counts the number of digits in an integer 
  */ 
  
  int num_Digits(int32_t n)
@@ -98,16 +97,17 @@ Parameter LCD display
  */ 
 void ST7735_sDecOut3(int32_t n)
 	{
-		int max = 9999;
-		int min = -9999;
-		int MAX_DIGITS = 6;
-		int DECIMAL_POSITION = 2;
+		int MAX = 9999; //max upper bound
+		int MIN = -9999; //min upper bound
+	
+		int MAX_DIGITS = 6; //Maximum digit of fixed point number 
+		int DECIMAL_POSITION = 2; //Position of Decimal Point to be placed
 		char buffer [6] = {' '};
 		int numDigit;
 		
 		
 		//check if within bounds
-		if(n > max || n < min)
+		if(n > MAX || n < MIN)
 		{
 			 ST7735_OutString("*.***");
 			 return;
