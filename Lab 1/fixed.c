@@ -1,7 +1,25 @@
-// fixed.c
-// Lab 1 Spring 2017
-// Kevin Yee
-// 01/19/2017
+/* File Name:    fixed.c
+ * Authors:      Kevin Yee (kjy252), Stefan Bordovsky ()
+ * Created:      01/19/2017
+ * Description:  Changes integers to strings that can be outputs in an LCD
+ *               Contains function to plot points to draw shapes
+ * 
+ * Lab Number: 
+ * TA: 
+ *
+ * Hardware Configurations:
+ * ST7735R LCD:
+ *     Backlight    (pin 10) connected to +3.3 V
+ *     MISO         (pin 9) unconnected
+ *     SCK          (pin 8) connected to PA2 (SSI0Clk)
+ *     MOSI         (pin 7) connected to PA5 (SSI0Tx)
+ *     TFT_CS       (pin 6) connected to PA3 (SSI0Fss)
+ *     CARD_CS      (pin 5) unconnected
+ *     Data/Command (pin 4) connected to PA6 (GPIO)
+ *     RESET        (pin 3) connected to PA7 (GPIO)
+ *     VCC          (pin 2) connected to +3.3 V
+ *     Gnd          (pin 1) connected to ground
+ */
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -13,12 +31,12 @@
 
 
 
-/****************numDigits***************
+/****************num_Digits***************
  changes a string to an appropriate LCD ST7735 format
  dependant on maximum digits and decimal positions
  */ 
  
- int numDigits(int32_t n)
+ int num_Digits(int32_t n)
  {
 	 int numDigit =0;
 	 while(n!=0)
@@ -105,7 +123,7 @@ void ST7735_sDecOut3(int32_t n)
 			buffer[0] = ' ';
 		}
 		
-		numDigit = numDigits(n);
+		numDigit = num_Digits(n);
 		change_To_Output(n, MAX_DIGITS, DECIMAL_POSITION, buffer, numDigit,TRUE);
 		
 		ST7735_OutString(buffer);
@@ -157,7 +175,7 @@ void ST7735_uBinOut8(uint32_t n){
 	roundedResult = ((double)((double) num / RESOLUTION*100)/100);
 	
 	scaledResult = roundedResult * 100;
-	numDigit = numDigits(n);
+	numDigit = num_Digits(n);
 	change_To_Output( scaledResult, MAX_DIGITS, DECIMAL_POSITION,  buffer,numDigit,FALSE);
 	
 	ST7735_OutString(buffer);
