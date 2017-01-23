@@ -4,8 +4,8 @@
  * Description:  Changes integers to strings that can be outputs in an LCD
  *               Contains function to plot points to draw shapes
  * 
- * Lab Number: 
- * TA: 
+ * Lab Number: 1
+ * TA: Dylan Zika
  *
  * Hardware Configurations:
  * ST7735R LCD:
@@ -31,7 +31,7 @@
 
 
 
-/****************num_Digits***************
+/****************numDigits***************
  changes a string to an appropriate LCD ST7735 format
  dependant on maximum digits and decimal positions
  */ 
