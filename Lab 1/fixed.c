@@ -4,8 +4,8 @@
  * Description:  Changes integers to strings that can be outputs in an LCD
  *               Contains function to plot points to draw shapes
  * 
- * Lab Number: 1
- * TA: Dylan Zika
+ * Lab Number: MW 330-500
+ * TA: Mahesh
  *
  * Hardware Configurations:
  * ST7735R LCD:
@@ -157,13 +157,13 @@ void ST7735_uBinOut8(uint32_t n){
 	int MAX = 255999;
 	int MIN = 0;
 	
-	double RESOLUTION = 256;
-	double num = (double) n;
+	int RESOLUTION = 256;
+
 	int MAX_DIGITS = 6;
 	int DECIMAL_POSITION = 3;
 	char buffer [6] = {' '};
-	double roundedResult;
-	int scaledResult =0;
+	int roundedResult;
+
 	int numDigit;
 	
 	//check if value is within bounds 
@@ -172,13 +172,24 @@ void ST7735_uBinOut8(uint32_t n){
 		ST7735_OutString("***.**");
 		return;
 	}
-	//calculate value based on Resolution: I * RESOLUTION
-	roundedResult = ((double)((double) num / RESOLUTION*100)/100);
+	
+	if( n ==0)
+	{
+		ST7735_OutString("  0.00");
+	}
+	roundedResult = (n*1000)/RESOLUTION;
+	
+	if(roundedResult < 5)
+	{
+		roundedResult += 10;
+	}
+
+
 	
 	
-	scaledResult = roundedResult * 100;
+	roundedResult /= 10;
 	numDigit = num_Digits(n); //count number of digits 
-	change_To_Output( scaledResult, MAX_DIGITS, DECIMAL_POSITION,  buffer,numDigit,FALSE);
+	change_To_Output( roundedResult, MAX_DIGITS, DECIMAL_POSITION,  buffer,numDigit,FALSE);
 	
 	ST7735_OutString(buffer);
 
@@ -204,8 +215,11 @@ void ST7735_uBinOut8(uint32_t n){
 */
 static int32_t MinX, MaxX, MinY, MaxY;
 void ST7735_XYplotInit(char *title, int32_t minX, int32_t maxX, int32_t minY, int32_t maxY){
+	//sets static variable
 	MinX = minX; MaxX = maxX;
   MinY = minY; MaxY = maxY;
+	
+	//clear screen and output title
 	ST7735_FillScreen(0);
   ST7735_OutString(title);
 }

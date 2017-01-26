@@ -68,10 +68,10 @@ outTestCaseType2 outTests2[14]={
 #define PF4   (*((volatile uint32_t *)0x40025040))
 
 void Pause(void){
-  while(PF4==0x00){ 
+  while(PF4==0x00){ //SW not pressed
     DelayWait10ms(10);
   }
-  while(PF4==0x10){
+  while(PF4==0x10){ //SW1 pressed
     DelayWait10ms(10);
   }
 }
@@ -109,7 +109,7 @@ int main(void){uint32_t i;
     }
     Pause();
     
-    ST7735_XYplotInit("Circle",-2500, 2500, -2500, 2500);
+    ST7735_XYplotInit("Circle",-2500, 2500, -2500, 2500); //convert maxxX and maxxY to thousands based on resoltuion
     ST7735_XYplot(180,(int32_t *)CircleXbuf,(int32_t *)CircleYbuf);
     Pause();
     
@@ -162,3 +162,26 @@ void DelayWait10ms(uint32_t n){uint32_t volatile time;
     n--;
   }
 }
+
+//Subroutine to test for speed
+
+// version 1: C floating point
+// run with compiler options selected for floating-point hardware
+volatile float T;    // temperature in C
+volatile uint32_t N; // 12-bit ADC value
+void Test1(void){
+  for(N=0; N<4096; N++){
+    T = 10.0+ 0.009768*N; 	
+  }
+}
+
+// version 2: C fixed-point
+
+void Test2(void){
+volatile uint32_t T;    // temperature in 0.01 C
+volatile uint32_t N;    // 12-bit ADC value
+  for(N=0; N<4096; N++){
+    T = 1000 + (125*N+64)>>7; 	
+  }
+}
+
