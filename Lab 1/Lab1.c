@@ -14,10 +14,13 @@
 #include "PLL.h"
 #include "fixed.h"
 #include "inc/tm4c123gh6pm.h"
+#include "SysTick.h"
 
 void DelayWait10ms(uint32_t n);// Wait for 10 seconds before response happens
 void PortF_Init(void); //Port F will used as the button to swap between load screen
 // const will place these structures in ROM
+void Test3(void);
+void Test4(void);
 
 struct outTestCase1{    // used to test routines
   int32_t InNumber;     // test input number
@@ -86,9 +89,33 @@ const int32_t StarXbuf[50] = {0, -6, -12, -18, -24, -30, -35, -41, -47, -53, 59,
 const int32_t StarYbuf[50] = {190, 172, 154, 136, 118, 100, 81, 63, 45, 27, 9, 27, 45, 63, 81, 100, 118, 136, 154, 172, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 9, 20, 31, 43, 54, 65, 76, 87, 99, 110, 121, 110, 99, 87, 76, 65, 54, 43, 31, 20
 };
 
+
+//Subroutine to test for speed
+
+// version 1: C floating point
+// run with compiler options selected for floating-point hardware
+volatile float T;    // temperature in C
+volatile uint32_t N; // 12-bit ADC value
+void Test1(void){
+  for(N=0; N<4096; N++){
+    T = 10.0+ 0.009768*N; 	
+  }
+}
+
+// version 2: C fixed-point
+
+void Test2(void){
+volatile uint32_t T;    // temperature in 0.01 C
+volatile uint32_t N;    // 12-bit ADC value
+  for(N=0; N<4096; N++){
+    T = 1000 + (125*N+64)>>7; 	
+  }
+}
+
 int main(void){uint32_t i;
   PLL_Init(Bus80MHz);
   PortF_Init();
+	SysTick_Init();
   ST7735_InitR(INITR_REDTAB);
   while(1){
     ST7735_FillScreen(ST7735_BLACK); 
@@ -116,6 +143,38 @@ int main(void){uint32_t i;
     ST7735_XYplotInit("Star- upper right",-450, 150, -400, 200);
     ST7735_XYplot(50,(int32_t *)StarXbuf,(int32_t *)StarYbuf);
     Pause(); 
+		
+		ST7735_FillScreen(0);  // set screen to black
+    ST7735_SetCursor(0,0);
+    printf("TestFloating Point.c\n");
+		long start1 = NVIC_ST_CURRENT_R;
+		Test1();
+		long end1 = NVIC_ST_CURRENT_R;
+		long difference1 = start1 -end1;
+		ST7735_OutString("Elapsed Time ");
+		ST7735_OutUDec(difference1);
+		
+		printf("\n");
+    printf("TestFixed Point.c\n");
+		long start2 = NVIC_ST_CURRENT_R;
+		//Test3();
+		long end2 = NVIC_ST_CURRENT_R;
+		long difference2 = start2 -end2;
+		ST7735_OutString("Elapsed Time ");
+		ST7735_OutUDec(difference2);
+		
+		
+		printf("\n");
+    printf("TestFloat Point.asm\n");
+		long start4 = NVIC_ST_CURRENT_R;
+		//Test4();
+		long end4 = NVIC_ST_CURRENT_R;
+		long difference4 = start4 -end4;
+		ST7735_OutString("Elapsed Time ");
+		ST7735_OutUDec(difference4);
+		
+		
+		Pause();
   } 
 } 
 
@@ -163,25 +222,5 @@ void DelayWait10ms(uint32_t n){uint32_t volatile time;
   }
 }
 
-//Subroutine to test for speed
 
-// version 1: C floating point
-// run with compiler options selected for floating-point hardware
-volatile float T;    // temperature in C
-volatile uint32_t N; // 12-bit ADC value
-void Test1(void){
-  for(N=0; N<4096; N++){
-    T = 10.0+ 0.009768*N; 	
-  }
-}
-
-// version 2: C fixed-point
-
-void Test2(void){
-volatile uint32_t T;    // temperature in 0.01 C
-volatile uint32_t N;    // 12-bit ADC value
-  for(N=0; N<4096; N++){
-    T = 1000 + (125*N+64)>>7; 	
-  }
-}
 
