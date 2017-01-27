@@ -176,6 +176,7 @@ void ST7735_uBinOut8(uint32_t n){
 	if( n ==0)
 	{
 		ST7735_OutString("  0.00");
+		return;
 	}
 	roundedResult = (n*1000)/RESOLUTION;
 	
