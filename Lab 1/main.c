@@ -1,10 +1,25 @@
-// Lab1.c
-// Runs on TM4C123
-// Uses ST7735.c LCD.
-// Jonathan Valvano
-// January 17, 2017
-// Possible main program to test the lab
-// Feel free to edit this to match your specifications
+/* File Name:    main.c
+ * Authors:      Kevin Yee (kjy252), Stefan Bordovsky ()
+ * Created:      01/19/2017
+ * Description:  Main functions to test for plotting floating pts, fixed pts and images
+ *               
+ * 
+ * Lab Number: MW 330-500
+ * TA: Mahesh
+ * Last Revised: 1/30/2017	
+ * Hardware Configurations:
+ * ST7735R LCD:
+ *     Backlight    (pin 10) connected to +3.3 V
+ *     MISO         (pin 9) unconnected
+ *     SCK          (pin 8) connected to PA2 (SSI0Clk)
+ *     MOSI         (pin 7) connected to PA5 (SSI0Tx)
+ *     TFT_CS       (pin 6) connected to PA3 (SSI0Fss)
+ *     CARD_CS      (pin 5) unconnected
+ *     Data/Command (pin 4) connected to PA6 (GPIO)
+ *     RESET        (pin 3) connected to PA7 (GPIO)
+ *     VCC          (pin 2) connected to +3.3 V
+ *     Gnd          (pin 1) connected to ground
+ */
 
 
 #include <stdio.h>

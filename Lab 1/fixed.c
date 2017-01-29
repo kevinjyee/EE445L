@@ -6,7 +6,7 @@
  * 
  * Lab Number: MW 330-500
  * TA: Mahesh
- *
+ * Last Revised: 1/30/2017	
  * Hardware Configurations:
  * ST7735R LCD:
  *     Backlight    (pin 10) connected to +3.3 V
@@ -33,6 +33,8 @@
 
 /****************numDigits***************
  counts the number of digits in an integer 
+ Inputs:  signed 32-bit integer part of fixed-point number
+ Outputs: digits in the number
  */ 
  
  int num_Digits(int32_t n)
@@ -49,6 +51,10 @@
 /****************change_To_Output***************
  changes a string to an appropriate LCD ST7735 format
  dependant on maximum digits and decimal positions
+ Inputs:  signed 32-bit integer, number of digits to print, decimal position,
+					char array to hold string, number of digits of the integer, boolean value determing 
+					unsigned or signed integers
+ Outputs: String in a char array
  */ 
  
  char* change_To_Output(int32_t n, int MAX_DIGITS, int DECIMAL_POSITION, char buffer[], int numDigits, int signedInt)
@@ -174,24 +180,13 @@ void ST7735_uBinOut8(uint32_t n){
 	}
 	
 
-	roundedResult = (n*1000)/RESOLUTION;
-	
-	
-
-
-	
-	
-	roundedResult /= 10;
+	roundedResult = (n*1000)/RESOLUTION; //scale up to move decimal point
+	roundedResult /= 10; //Divide by 10 to normalize back to correct precision
 	numDigit = num_Digits(n); //count number of digits 
 	change_To_Output( roundedResult, MAX_DIGITS, DECIMAL_POSITION,  buffer,numDigit,FALSE);
 	
 	ST7735_OutString(buffer);
 
-		
-	
-		
-	
-		
 		
 	
 }
