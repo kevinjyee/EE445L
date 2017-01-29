@@ -242,6 +242,10 @@ void ST7735_XYplot(uint32_t num, int32_t bufX[], int32_t bufY[]){
 	
 
 for (uint32_t i=0 ; i < num; ++i) {
+	if (bufX[i] < MinX   ||   bufX[i] > MaxX   ||   
+      bufY[i] < MinY   ||   bufY[i] > MaxY) { continue; } 
+	else
+		{
       int32_t x = (127*(bufX[i] - MinX)) / (MaxX - MinX);
       int32_t y = 32 + (127*((MaxY - bufY[i]))  / (MaxY - MinY));
 
@@ -249,6 +253,7 @@ for (uint32_t i=0 ; i < num; ++i) {
       ST7735_DrawPixel(x+1, y,   ST7735_CYAN);
       ST7735_DrawPixel(x,   y+1, ST7735_CYAN);
       ST7735_DrawPixel(x+1, y+1, ST7735_CYAN);
+		}
     
   }
 }
