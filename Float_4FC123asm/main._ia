@@ -1,0 +1,6 @@
+--cpu Cortex-M4.fp --pd "__EVAL SETA 1" -g --apcs=interwork 
+-I E:\Keil\ARM\RV31\INC
+-I E:\Keil\ARM\CMSIS\Include
+-I E:\Keil\ARM\Inc\Luminary
+
+--list .\main.lst --xref -o .\main.o --depend .\main.d "main.s"

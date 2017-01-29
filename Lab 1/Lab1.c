@@ -140,6 +140,8 @@ int main(void){uint32_t i;
     ST7735_XYplot(180,(int32_t *)CircleXbuf,(int32_t *)CircleYbuf);
     Pause();
     
+		ST7735_FillScreen(0);  // set screen to black
+    ST7735_SetCursor(0,0);
     ST7735_XYplotInit("Star- upper right",-450, 150, -400, 200);
     ST7735_XYplot(50,(int32_t *)StarXbuf,(int32_t *)StarYbuf);
     Pause(); 
@@ -157,21 +159,21 @@ int main(void){uint32_t i;
 		printf("\n");
     printf("TestFixed Point.c\n");
 		long start2 = NVIC_ST_CURRENT_R;
-		//Test3();
+		Test2();
 		long end2 = NVIC_ST_CURRENT_R;
 		long difference2 = start2 -end2;
 		ST7735_OutString("Elapsed Time ");
 		ST7735_OutUDec(difference2);
 		
 		
-		printf("\n");
-    printf("TestFloat Point.asm\n");
-		long start4 = NVIC_ST_CURRENT_R;
+		//printf("\n");
+    //printf("TestFloat Point.asm\n");
+		//long start4 = NVIC_ST_CURRENT_R;
 		//Test4();
-		long end4 = NVIC_ST_CURRENT_R;
-		long difference4 = start4 -end4;
-		ST7735_OutString("Elapsed Time ");
-		ST7735_OutUDec(difference4);
+		//long end4 = NVIC_ST_CURRENT_R;
+		//long difference4 = start4 -end4;
+		//ST7735_OutString("Elapsed Time ");
+		//ST7735_OutUDec(difference4);
 		
 		
 		Pause();

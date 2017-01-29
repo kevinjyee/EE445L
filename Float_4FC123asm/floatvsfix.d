@@ -1,0 +1,1 @@
+.\floatvsfix.o: floatvsfix.s
