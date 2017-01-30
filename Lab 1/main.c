@@ -34,8 +34,8 @@
 void DelayWait10ms(uint32_t n);// Wait for 10 seconds before response happens
 void PortF_Init(void); //Port F will used as the button to swap between load screen
 // const will place these structures in ROM
-void Test3(void);
-void Test4(void);
+extern void Test3(void);
+extern void Test4(void);
 
 struct outTestCase1{    // used to test routines
   int32_t InNumber;     // test input number
@@ -179,6 +179,24 @@ int main(void){uint32_t i;
 		long difference2 = start2 -end2;
 		ST7735_OutString("Elapsed Time ");
 		ST7735_OutUDec(difference2);
+		
+		printf("\n");
+		printf("TestFloatingPoint.asm\n");
+		long start3 = NVIC_ST_CURRENT_R;
+		Test3();
+		long end3 = NVIC_ST_CURRENT_R;
+		long difference3 = start3 - end3;
+		ST7735_OutString("Elapsed Time ");
+		ST7735_OutUDec(difference3);
+		
+		printf("\n");
+		printf("TestFixedPoint.asm\n");
+		long start4 = NVIC_ST_CURRENT_R;
+		Test4();
+		long end4 = NVIC_ST_CURRENT_R;
+		long difference4 = start4 - end4;
+		ST7735_OutString("Elapsed Time ");
+		ST7735_OutUDec(difference4);
 		
 		
 		//printf("\n");
