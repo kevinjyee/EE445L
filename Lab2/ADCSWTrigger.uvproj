@@ -141,10 +141,10 @@
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>0</RestoreTracepoints>
             <RestoreSysVw>1</RestoreSysVw>
-            <UsePdscDebugDescription>1</UsePdscDebugDescription>
+            <UsePdscDebugDescription>0</UsePdscDebugDescription>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>3</TargetSelection>
+          <TargetSelection>2</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -416,14 +416,24 @@
               <FilePath>.\ADCSWTrigger.c</FilePath>
             </File>
             <File>
-              <FileName>ADCTestMain.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\ADCTestMain.c</FilePath>
-            </File>
-            <File>
               <FileName>PLL.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\PLL.c</FilePath>
+            </File>
+            <File>
+              <FileName>fixed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\fixed.c</FilePath>
+            </File>
+            <File>
+              <FileName>ST7735.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\ST7735.c</FilePath>
+            </File>
+            <File>
+              <FileName>Lab2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Lab2.c</FilePath>
             </File>
           </Files>
         </Group>

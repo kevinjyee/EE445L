@@ -34,8 +34,6 @@
 void DelayWait10ms(uint32_t n);// Wait for 10 seconds before response happens
 void PortF_Init(void); //Port F will used as the button to swap between load screen
 // const will place these structures in ROM
-void Test1(void);
-void Test2(void);
 extern void Test3(void);
 extern void Test4(void);
 
@@ -135,6 +133,15 @@ int main(void){uint32_t i;
 	SysTick_Init();
   ST7735_InitR(INITR_REDTAB);
   while(1){
+		ST7735_FillScreen(ST7735_BLACK); 
+    ST7735_SetCursor(0,0);
+    printf("Lab 1\n");
+		printf("Kevin Yee\n");
+		printf("Stefan Bordovsky\n");
+		printf("kjy252\n");
+		printf("sb39782\n");
+		
+		Pause();
     ST7735_FillScreen(ST7735_BLACK); 
     ST7735_SetCursor(0,0);
     printf("Lab 1\rST7735_sDecOut3\r");
@@ -176,21 +183,31 @@ int main(void){uint32_t i;
 		printf("\n");
     printf("TestFixed Point.c\n");
 		long start2 = NVIC_ST_CURRENT_R;
-		Test3();
+		Test2();
 		long end2 = NVIC_ST_CURRENT_R;
 		long difference2 = start2 -end2;
 		ST7735_OutString("Elapsed Time ");
 		ST7735_OutUDec(difference2);
 		
+		printf("\n");
+		printf("TestFloatingPoint.asm\n");
+		long start3 = NVIC_ST_CURRENT_R;
+		Test3();
+		long end3 = NVIC_ST_CURRENT_R;
+		long difference3 = start3 - end3;
+		ST7735_OutString("Elapsed Time ");
+		ST7735_OutUDec(difference3);
 		
 		printf("\n");
-    printf("TestFloat Point.asm\n");
+		printf("TestFixedPoint.asm\n");
 		long start4 = NVIC_ST_CURRENT_R;
 		Test4();
 		long end4 = NVIC_ST_CURRENT_R;
-		long difference4 = start4 -end4;
+		long difference4 = start4 - end4;
 		ST7735_OutString("Elapsed Time ");
 		ST7735_OutUDec(difference4);
+		
+	
 		
 		
 		Pause();
