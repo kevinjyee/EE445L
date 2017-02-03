@@ -40,6 +40,7 @@
 #define UINT_MAX  4294967295
 #define UINT_MIN 0
 
+
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 long StartCritical (void);    // previous I bit, disable interrupts
@@ -49,6 +50,7 @@ void WaitForInterrupt(void);  // low power mode
 volatile uint32_t ADCvalueBuffer[NUM_SAMPLES];//Debugging Dump Number 1
 volatile uint32_t BufferIndex =0;
 volatile uint32_t pmfOccurences[MAX_ADC];
+volatile uint32_t Switch1 =0;
 // This debug function initializes Timer0A to request interrupts
 // at a 100 Hz frequency.  It is similar to FreqMeasure.c.
 void Timer0A_Init100HzInt(void){
@@ -131,6 +133,23 @@ void reset_Processing(){
 	}
 	
 }
+
+void init_PMF(){
+	int maxADCValue = 0;
+		int minADCValue = MAX_ADC;
+		int maxCountValue = 0;
+		int minCountValue = NUM_SAMPLES;
+		for(int i =0; i < NUM_SAMPLES; i++)
+		{
+			if(ADCvalueBuffer[i] > maxADCValue){maxADCValue = ADCvalueBuffer[i];}
+			if(ADCvalueBuffer[i] < minADCValue){minADCValue = ADCvalueBuffer[i];}
+			
+		}
+	
+		
+			ST7735_XYplotInit("PMF",minADCValue,maxADCValue,0,1000);
+	
+}
 int main(void){
   PLL_Init(Bus80MHz);                   // 80 MHz
   SYSCTL_RCGCGPIO_R |= 0x20;            // activate port F
@@ -146,23 +165,20 @@ int main(void){
   PF2 = 0;                      // turn off LED
   EnableInterrupts();
 	Timer1_Init();
-
+	reset_Processing();
   while(1){
+		//ADC0_SAC_R = 0;
+		//ADC0_SAC_R = ADC_SAC_AVG_4X;
+	  //ADC0_SAC_R = ADC_SAC_AVG_16X;
+		ADC0_SAC_R = ADC_SAC_AVG_64X;
 		while(BufferIndex < NUM_SAMPLES){
     PF1 ^= 0x02;  // toggles when running in main
 			//GPIO_PORTF_DATA_R ^= 0x02;  
 		}
 		
-		int maxADCValue = 0;
-		int minADCValue = MAX_ADC;
-		for(int i =0; i < NUM_SAMPLES; i++)
-		{
-			if(ADCvalueBuffer[i] > maxADCValue){maxADCValue = ADCvalueBuffer[i];}
-			if(ADCvalueBuffer[i] < minADCValue){minADCValue = ADCvalueBuffer[i];}
-			
-		}
 		
-			ST7735_XYplotInit("PMF",minADCValue,maxADCValue,0,1000);
+		init_PMF();
+		
 		if(BufferIndex >= NUM_SAMPLES)
 		{
 		//	ST7735_Line(1,1,3200,12800,ST7735_MAGENTA);
