@@ -73,11 +73,15 @@ void Timer0A_Init100HzInt(void){
 }
 void Timer0A_Handler(void){
   TIMER0_ICR_R = TIMER_ICR_TATOCINT;    // acknowledge timer0A timeout
+	PF2 ^= 0x04;                   // profile
   PF2 ^= 0x04;                   // profile
-  PF2 ^= 0x04;                   // profile
+	if(BufferIndex < NUM_SAMPLES){
+	
   ADCvalueBuffer[BufferIndex] = ADC0_InSeq3();
 	BufferIndex++;
-  PF2 ^= 0x04;                   // profile
+  
+	}
+	PF2 ^= 0x04;                   // profile
 }
 void Timer1_Init(void){
   SYSCTL_RCGCTIMER_R |= 0x02;   // 0) activate TIMER1
@@ -105,8 +109,6 @@ void process_Data(){
 			
 		}
 	}
-
-
 	ST7735_SetCursor(1, 2);
   ST7735_OutUDec(0);
   ST7735_SetCursor(9, 2);
@@ -117,8 +119,16 @@ void process_Data(){
 	{
 		ST7735_PlotBarXY(i,pmfOccurences[i]);
 	}
+		
+}
+
+void reset_Processing(){
 	
-	
+	BufferIndex = 0;
+	for(int i =0; i < MAX_ADC; i++)
+	{
+		pmfOccurences[i] = 0;
+	}
 	
 }
 int main(void){
@@ -136,14 +146,29 @@ int main(void){
   PF2 = 0;                      // turn off LED
   EnableInterrupts();
 	Timer1_Init();
-	ST7735_XYplotInit("PMF",0,4096,0,1000);
+
   while(1){
+		while(BufferIndex < NUM_SAMPLES){
     PF1 ^= 0x02;  // toggles when running in main
+			//GPIO_PORTF_DATA_R ^= 0x02;  
+		}
+		
+		int maxADCValue = 0;
+		int minADCValue = MAX_ADC;
+		for(int i =0; i < NUM_SAMPLES; i++)
+		{
+			if(ADCvalueBuffer[i] > maxADCValue){maxADCValue = ADCvalueBuffer[i];}
+			if(ADCvalueBuffer[i] < minADCValue){minADCValue = ADCvalueBuffer[i];}
+			
+		}
+		
+			ST7735_XYplotInit("PMF",minADCValue,maxADCValue,0,1000);
 		if(BufferIndex >= NUM_SAMPLES)
 		{
 		//	ST7735_Line(1,1,3200,12800,ST7735_MAGENTA);
-			process_Data();
 			
+			process_Data();
+			reset_Processing();
 		}
   }
 }
