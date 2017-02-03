@@ -212,7 +212,9 @@ void ST7735_XYplotInit(char *title, int32_t minX, int32_t maxX, int32_t minY, in
   MinY = minY; MaxY = maxY;
 	
 	//clear screen and output title
+	
 	ST7735_FillScreen(0);
+	ST7735_SetCursor(0,0);
   ST7735_OutString(title);
 }
 
@@ -255,3 +257,78 @@ for (uint32_t i=0 ; i < num; ++i) {
     
   }
 }
+
+
+void ST7735_PlotBarXY(int32_t x, int32_t y){
+	int32_t i, j;
+  if (x < MinX || MaxX < x || y < MinY || MaxY < y) {
+			
+			return;
+		}
+  // X goes from 0 to 127
+  // j goes from 159 to 32
+  // y=Ymax maps to j=32
+  // y=Ymin maps to j=159
+	i = (127 * (x - MinX)) / (MaxX - MinX); 
+  j = 32 + (127 * (MaxY - y)) / (MaxY - MinY);
+  ST7735_DrawFastVLine(i, j, 159-j, ST7735_CYAN);
+
+}
+
+
+int find_GCD(uint16_t num1, uint16_t num2)
+{
+	if(num2 != 0)
+	{
+		return find_GCD(num2,num1%num2);
+	}
+	else
+	{
+		return num1;
+	}
+}
+
+//************* ST7735_Line********************************************
+//  Draws one line on the ST7735 color LCD
+//  Inputs: (x1,y1) is the start point
+//          (x2,y2) is the end point
+// x1,x2 are horizontal positions, columns from the left edge
+//               must be less than 128
+//               0 is on the left, 126 is near the right
+// y1,y2 are vertical positions, rows from the top edge
+//               must be less than 160
+//               159 is near the wires, 0 is the side opposite the wires
+//        color 16-bit color, which can be produced by ST7735_Color565() 
+// Output: none
+void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
+	{
+		int xSlope, ySlope;
+		xSlope = x2-x1;
+		ySlope = y2-y1;
+		int gcd = find_GCD(xSlope,ySlope);
+		xSlope /= gcd;
+		ySlope /= gcd;
+		if(xSlope ==0)
+		{
+			if(ySlope < 0){ySlope *= -1;}
+			ST7735_DrawFastVLine(x1,y1,ySlope,color);
+		}
+		else if(ySlope == 0)
+		{
+			if(xSlope < 0){xSlope *= -1;}
+			ST7735_DrawFastHLine(x1,y1,xSlope,color);
+		}
+		else{
+		while(x1 != x2 && y1 != y2)
+		{
+			ST7735_DrawPixel(x1,   y1,   color);
+      ST7735_DrawPixel(x1+1, y1,   color);
+      ST7735_DrawPixel(x1,   y1+1, color);
+      ST7735_DrawPixel(x1+1, y1+1, color);
+			x1 += gcd;
+			y1 += gcd;
+		}
+	}							 														 
+		}
+
+		

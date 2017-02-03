@@ -29,35 +29,28 @@
 #include "ADCSWTrigger.h"
 #include "../inc/tm4c123gh6pm.h"
 #include "PLL.h"
-#include "fixed.h"
 #include "ST7735.h"
+#include "fixed.h"
 
-/* Maximum value an `unsigned int' can hold.  (Minimum is 0.)  */
-#define UINT_MAX  4294967295U
-#define UINT_MIN 0
+
 #define PF2             (*((volatile uint32_t *)0x40025010))
 #define PF1             (*((volatile uint32_t *)0x40025008))
 #define NUM_SAMPLES 1000
 #define MAX_ADC 4096	
+#define UINT_MAX  4294967295
+#define UINT_MIN 0
+
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
-void DelayWait10s(uint32_t n);
 
-
+volatile uint32_t ADCvalueBuffer[NUM_SAMPLES];//Debugging Dump Number 1
+volatile uint32_t BufferIndex =0;
+volatile uint32_t pmfOccurences[MAX_ADC];
 // This debug function initializes Timer0A to request interrupts
 // at a 100 Hz frequency.  It is similar to FreqMeasure.c.
-
-static uint32_t ADCvalueBuffer[NUM_SAMPLES];//Debugging Dump Number 1
-static uint32_t TimevalueBuffer[NUM_SAMPLES]; //Debugging Dump Number 2 
-
-static int32_t pmfOccurences[MAX_ADC];
-static int32_t ADCDefaultValues[MAX_ADC];
-
-volatile uint32_t BufferIndex =0;
-
 void Timer0A_Init100HzInt(void){
   volatile uint32_t delay;
   DisableInterrupts();
@@ -80,27 +73,12 @@ void Timer0A_Init100HzInt(void){
 }
 void Timer0A_Handler(void){
   TIMER0_ICR_R = TIMER_ICR_TATOCINT;    // acknowledge timer0A timeout
-	
-  
-	if(BufferIndex < 1000)
-	{
-		PF2 ^= 0x04;                   // profile
-		PF2 ^= 0x04;                   // profile
-		ADCvalueBuffer[BufferIndex] = ADC0_InSeq3();
-		TimevalueBuffer[BufferIndex] = TIMER1_TAR_R; //12.5 ns units
-		BufferIndex ++;
-		  PF2 ^= 0x04;                   // profile
-	}
-
+  PF2 ^= 0x04;                   // profile
+  PF2 ^= 0x04;                   // profile
+  ADCvalueBuffer[BufferIndex] = ADC0_InSeq3();
+	BufferIndex++;
+  PF2 ^= 0x04;                   // profile
 }
-
-/*
-initializes one of the 32-bit timers to count every 12.5ns continuously
-TIMER1_TAILR_R to 0xFFFFFFFF, and remove the interrupt enable and interrupt arm statements
-reading the Timer 1 TIMER1_TAR_R will return the current time in 12.5ns units
-measure elapsed time we read TIMER1_TAR_R twice and subtract the second measurement from the first.
-12.5ns*232 is 53 seconds. So this approach will be valid for measuring elapsed times less than 53 seconds. The time measurement resolution is 12.5 ns.
-*/
 void Timer1_Init(void){
   SYSCTL_RCGCTIMER_R |= 0x02;   // 0) activate TIMER1
   //PeriodicTask = task;          // user function
@@ -127,40 +105,19 @@ void process_Data(){
 			
 		}
 	}
-	
-}
 
-void plot_pmf(){
-	
-		uint32_t maxValue = UINT_MIN;
-		uint32_t minValue = UINT_MAX;
-	  for(int i =0; i < NUM_SAMPLES; i++)
-	{
-		if(ADCvalueBuffer[i] > maxValue){maxValue = ADCvalueBuffer[i];}
-		if(ADCvalueBuffer[i] < minValue ){minValue = ADCvalueBuffer[i];}
-	}
-		ST7735_XYplotInit("PMF",minValue,maxValue,0,4096);
-		ST7735_XYplot(1000,ADCDefaultValues,pmfOccurences);
-	
-	
-}
 
-int calculate_Jitter(){
-	
-	uint32_t maxValue = UINT_MIN;
-	uint32_t minValue = UINT_MAX;
-	uint32_t TimeDifferenceBuffer[NUM_SAMPLES];
-	
-	
-	  for(int i =1; i < NUM_SAMPLES; i++)
+	ST7735_SetCursor(1, 2);
+  ST7735_OutUDec(0);
+  ST7735_SetCursor(9, 2);
+  ST7735_OutUDec(4096);
+  ST7735_SetCursor(17,2);
+  ST7735_OutUDec(1000);
+	for(int i =0; i < 4096; i++)
 	{
-		uint32_t difference = TimevalueBuffer[i] - TimevalueBuffer[i-1];
-		TimeDifferenceBuffer[i] = difference;
-		if(TimeDifferenceBuffer[i] > maxValue){maxValue = TimeDifferenceBuffer[i];}
-		if(TimeDifferenceBuffer[i] < minValue ){minValue = TimeDifferenceBuffer[i];}
+		ST7735_PlotBarXY(i,pmfOccurences[i]);
 	}
 	
-	return maxValue - minValue;
 	
 	
 }
@@ -169,51 +126,25 @@ int main(void){
   SYSCTL_RCGCGPIO_R |= 0x20;            // activate port F
   ADC0_InitSWTriggerSeq3_Ch9();         // allow time to finish activating
   Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
-	Timer1_Init();
   GPIO_PORTF_DIR_R |= 0x06;             // make PF2, PF1 out (built-in LED)
   GPIO_PORTF_AFSEL_R &= ~0x06;          // disable alt funct on PF2, PF1
   GPIO_PORTF_DEN_R |= 0x06;             // enable digital I/O on PF2, PF1
                                         // configure PF2 as GPIO
   GPIO_PORTF_PCTL_R = (GPIO_PORTF_PCTL_R&0xFFFFF00F)+0x00000000;
   GPIO_PORTF_AMSEL_R = 0;               // disable analog functionality on PF
+	ST7735_InitR(INITR_REDTAB);
   PF2 = 0;                      // turn off LED
-	
-	
   EnableInterrupts();
-	
+	Timer1_Init();
+	ST7735_XYplotInit("PMF",0,4096,0,1000);
   while(1){
     PF1 ^= 0x02;  // toggles when running in main
-		
-		while(BufferIndex < NUM_SAMPLES)
+		if(BufferIndex >= NUM_SAMPLES)
 		{
-			//busy wait
+		//	ST7735_Line(1,1,3200,12800,ST7735_MAGENTA);
+			process_Data();
+			
 		}
-		
-		
-	
-		int jitter = calculate_Jitter();
-		
-		for(int i =0; i < 4096; i++)
-		{
-			pmfOccurences[i] = 0;
-			ADCDefaultValues[i] = i;
-		}
-		
-		process_Data();
-		
-		plot_pmf();
-		
-  }
-}
-
-void DelayWait10s(uint32_t n){uint32_t volatile time;
-  while(n){
-    time = 727240*2/91;  // 10msec
-		
-    while(time){
-	  	time--;
-    }
-    n--;
   }
 }
 

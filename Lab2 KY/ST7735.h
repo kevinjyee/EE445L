@@ -162,6 +162,22 @@ void ST7735_DrawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
 // Output: none
 void ST7735_DrawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
 
+//************* ST7735_Line********************************************
+//  Draws one line on the ST7735 color LCD
+//  Inputs: (x1,y1) is the start point
+//          (x2,y2) is the end point
+// x1,x2 are horizontal positions, columns from the left edge
+//               must be less than 128
+//               0 is on the left, 126 is near the right
+// y1,y2 are vertical positions, rows from the top edge
+//               must be less than 160
+//               159 is near the wires, 0 is the side opposite the wires
+//        color 16-bit color, which can be produced by ST7735_Color565() 
+// Output: none
+void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, 
+                 uint16_t color);
+
+
 
 //------------ST7735_FillScreen------------
 // Fill the screen with the given color.
@@ -340,6 +356,13 @@ void ST7735_PlotPoints(int32_t y1,int32_t y2);
 // Inputs: y is the y coordinate of the bar plotted
 // Outputs: none
 void ST7735_PlotBar(int32_t y);
+
+// *************** ST7735_PlotBarXY ********************
+// Used in the voltage versus time bar, plot one bar at y
+// It does not output to display until RIT128x96x4ShowPlot called
+// Inputs: y is the y coordinate of the bar plotted
+// Outputs: none
+void ST7735_PlotBarXY(int32_t x, int32_t y);
 
 // *************** ST7735_PlotdBfs ********************
 // Used in the amplitude versus frequency plot, plot bar point at y
