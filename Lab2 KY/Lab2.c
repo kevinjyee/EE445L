@@ -102,27 +102,6 @@ void Timer1_Init(void){
   TIMER1_CTL_R = 0x00000001;    // 10) enable TIMER1A
 }
 
-void process_Data(){
-	for(int i =0; i < NUM_SAMPLES; i++)
-	{
-		if(ADCvalueBuffer[i] < 4096)
-		{
-			pmfOccurences[ADCvalueBuffer[i]] += 1;
-			
-		}
-	}
-	ST7735_SetCursor(1, 2);
-  ST7735_OutUDec(0);
-  ST7735_SetCursor(9, 2);
-  ST7735_OutUDec(4096);
-  ST7735_SetCursor(17,2);
-  ST7735_OutUDec(1000);
-	for(int i =0; i < 4096; i++)
-	{
-		ST7735_PlotBarXY(i,pmfOccurences[i]);
-	}
-		
-}
 
 void reset_Processing(){
 	
@@ -135,23 +114,33 @@ void reset_Processing(){
 }
 
 void init_PMF(){
-	int maxADCValue = 0;
+		int maxADCValue = 0;
 		int minADCValue = MAX_ADC;
 		int maxCountValue = 0;
-		int minCountValue = NUM_SAMPLES;
+		
+	
 		for(int i =0; i < NUM_SAMPLES; i++)
 		{
 			if(ADCvalueBuffer[i] > maxADCValue){maxADCValue = ADCvalueBuffer[i];}
 			if(ADCvalueBuffer[i] < minADCValue){minADCValue = ADCvalueBuffer[i];}
 			
 		}
-	
 		
-			ST7735_XYplotInit("PMF",minADCValue,maxADCValue,0,1000);
+			for(int i =0; i < NUM_SAMPLES; i++)
+			{
+				if(ADCvalueBuffer[i] < 4096)
+				{
+					pmfOccurences[ADCvalueBuffer[i]] += 1;			
+					if(pmfOccurences[ADCvalueBuffer[i]] > maxCountValue){maxCountValue = pmfOccurences[ADCvalueBuffer[i]];}
+				}
+				
+			}
+			ST7735_XYplotInit("PMF",minADCValue,maxADCValue,0,maxCountValue);
 	
 }
-int main(void){
-  PLL_Init(Bus80MHz);                   // 80 MHz
+
+void init_All(){
+	PLL_Init(Bus80MHz);                   // 80 MHz
   SYSCTL_RCGCGPIO_R |= 0x20;            // activate port F
   ADC0_InitSWTriggerSeq3_Ch9();         // allow time to finish activating
   Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
@@ -163,30 +152,37 @@ int main(void){
   GPIO_PORTF_AMSEL_R = 0;               // disable analog functionality on PF
 	ST7735_InitR(INITR_REDTAB);
   PF2 = 0;                      // turn off LED
-  EnableInterrupts();
+  
 	Timer1_Init();
+	
+	
+}
+int main(void){
+  init_All();
+	EnableInterrupts();
 	reset_Processing();
   while(1){
 		//ADC0_SAC_R = 0;
 		//ADC0_SAC_R = ADC_SAC_AVG_4X;
 	  //ADC0_SAC_R = ADC_SAC_AVG_16X;
 		ADC0_SAC_R = ADC_SAC_AVG_64X;
+		
 		while(BufferIndex < NUM_SAMPLES){
     PF1 ^= 0x02;  // toggles when running in main
-			//GPIO_PORTF_DATA_R ^= 0x02;  
-		}
-		
-		
-		init_PMF();
+		}	
 		
 		if(BufferIndex >= NUM_SAMPLES)
 		{
-		//	ST7735_Line(1,1,3200,12800,ST7735_MAGENTA);
+			init_PMF();
+			for(int i =0; i < 4096; i++)
+			{
+				ST7735_PlotBarXY(i,pmfOccurences[i]);
+			}
 			
-			process_Data();
-			reset_Processing();
 		}
+		reset_Processing();
   }
 }
+
 
 
