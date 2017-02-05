@@ -51,6 +51,17 @@ volatile uint32_t ADCvalueBuffer[NUM_SAMPLES];//Debugging Dump Number 1
 volatile uint32_t BufferIndex =0;
 volatile uint32_t pmfOccurences[MAX_ADC];
 volatile uint32_t Switch1 =0;
+
+void DelayWait2s(uint32_t n){uint32_t volatile time;
+  while(n){
+    time = 2*72724000*2/91;  // 10msec
+    while(time){
+	  	time--;
+    }
+    n--;
+  }
+}
+
 // This debug function initializes Timer0A to request interrupts
 // at a 100 Hz frequency.  It is similar to FreqMeasure.c.
 void Timer0A_Init100HzInt(void){
@@ -159,14 +170,23 @@ void init_All(){
 }
 int main(void){
   init_All();
+	/*
+	  ST7735_Line(0,0,12000,12000,ST7735_MAGENTA); //Right Diagonal
+		ST7735_Line(0,12000,12000,0,ST7735_CYAN); //Left Diagonal
+		ST7735_Line(50,0,50,12500,ST7735_YELLOW);//Vertical
+		ST7735_Line(0,50,12500,50,ST7735_GREEN);//Horizontal
+		DelayWait2s(1);
+	*/
 	EnableInterrupts();
 	reset_Processing();
+		
   while(1){
 		//ADC0_SAC_R = 0;
 		//ADC0_SAC_R = ADC_SAC_AVG_4X;
 	  //ADC0_SAC_R = ADC_SAC_AVG_16X;
 		ADC0_SAC_R = ADC_SAC_AVG_64X;
 		
+	
 		while(BufferIndex < NUM_SAMPLES){
     PF1 ^= 0x02;  // toggles when running in main
 		}	

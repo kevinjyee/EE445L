@@ -302,31 +302,35 @@ int find_GCD(uint16_t num1, uint16_t num2)
 // Output: none
 void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
 	{
-		int xSlope, ySlope;
-		xSlope = x2-x1;
-		ySlope = y2-y1;
+		int xSlope, ySlope,xDif, yDif;
+		xDif = x2-x1;
+		yDif = y2-y1;
 		int gcd = find_GCD(xSlope,ySlope);
-		xSlope /= gcd;
-		ySlope /= gcd;
-		if(xSlope ==0)
+		xSlope = xDif/gcd;
+		ySlope = yDif/gcd;
+		
+		if(xDif ==0)
 		{
-			if(ySlope < 0){ySlope *= -1;}
-			ST7735_DrawFastVLine(x1,y1,ySlope,color);
+			if(yDif < 0){yDif *= -1;}
+			ST7735_DrawFastVLine(x1,y1,yDif,color);
 		}
-		else if(ySlope == 0)
+		else if(yDif == 0)
 		{
-			if(xSlope < 0){xSlope *= -1;}
-			ST7735_DrawFastHLine(x1,y1,xSlope,color);
+			if(xDif < 0){xDif *= -1;}
+			ST7735_DrawFastHLine(x1,y1,xDif,color);
 		}
 		else{
+			
+			
 		while(x1 != x2 && y1 != y2)
 		{
 			ST7735_DrawPixel(x1,   y1,   color);
       ST7735_DrawPixel(x1+1, y1,   color);
       ST7735_DrawPixel(x1,   y1+1, color);
       ST7735_DrawPixel(x1+1, y1+1, color);
-			x1 += gcd;
-			y1 += gcd;
+			
+			x1+=xSlope;
+			y1+=ySlope;
 		}
 	}							 														 
 		}
