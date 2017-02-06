@@ -289,7 +289,7 @@ int find_GCD(uint16_t num1, uint16_t num2)
 }
 
 //************* ST7735_Line********************************************
-//  Draws one line on the ST7735 color LCD
+//  Draws one line on the ST7735 color LCD using Bresenham's Line Algorithm.
 //  Inputs: (x1,y1) is the start point
 //          (x2,y2) is the end point
 // x1,x2 are horizontal positions, columns from the left edge
@@ -302,37 +302,51 @@ int find_GCD(uint16_t num1, uint16_t num2)
 // Output: none
 void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
 	{
-		int xSlope, ySlope,xDif, yDif;
-		xDif = x2-x1;
-		yDif = y2-y1;
-		int gcd = find_GCD(xSlope,ySlope);
-		xSlope = xDif/gcd;
-		ySlope = yDif/gcd;
-		
-		if(xDif ==0)
-		{
-			if(yDif < 0){yDif *= -1;}
-			ST7735_DrawFastVLine(x1,y1,yDif,color);
+		int deltaX, deltaY, deltaError, error, x, y, temp;
+		if(x1 > x2){ // Swap the coordinate values if x1 > x2 to allow for loop to handle all calculations.
+			int temp = x1;
+			x1 = x2;
+			x2 = temp;
+			temp = y1;
+			y1 = y2;
+			y2 = temp;
 		}
-		else if(yDif == 0)
+		deltaX = x2 - x1;
+		deltaY = y2 - y1;
+		if(deltaX == 0) // For straight vertical lines, use DrawFastVLine
 		{
-			if(xDif < 0){xDif *= -1;}
-			ST7735_DrawFastHLine(x1,y1,xDif,color);
+			if(deltaY < 0){deltaY *= -1;}
+			ST7735_DrawFastVLine(x1,y1,deltaY,color);
 		}
-		else{
-			
-			
-		while(x1 != x2 && y1 != y2)
+		else if(deltaY == 0) // For straight horizontal lines, use DrawFastVLine
 		{
-			ST7735_DrawPixel(x1,   y1,   color);
-      ST7735_DrawPixel(x1+1, y1,   color);
-      ST7735_DrawPixel(x1,   y1+1, color);
-      ST7735_DrawPixel(x1+1, y1+1, color);
-			
-			x1+=xSlope;
-			y1+=ySlope;
+			if(deltaX < 0){deltaX *= -1;}
+			ST7735_DrawFastHLine(x1,y1,deltaX,color);
+		}
+		else{ // The code below uses Bresenham's algorithm to draw a diagonal line.
+			deltaError = (deltaY * 10000) / deltaX;
+			if(deltaError < 0){ // Need the absolute value of deltaErr.
+				deltaError = deltaError * -1;
+			}
+			error = deltaError - 5000;
+			y = y1;
+			for(x = x1; x <= x2; x++){
+				ST7735_DrawPixel(x,   y,   color);
+				/* Uncomment for fatter lines
+				ST7735_DrawPixel(x+1, y,   color);
+				ST7735_DrawPixel(x,   y+1, color);
+				ST7735_DrawPixel(x+1, y+1, color);
+				*/
+				error = error + deltaError;
+				if(error >= 5000){
+					if(y1 > y2){
+						y = y - 1;
+					} else{
+						y = y + 1;
+					}
+					error = error - 10000;
+				}
+			}
 		}
 	}							 														 
-		}
-
 		

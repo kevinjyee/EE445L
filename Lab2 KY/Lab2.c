@@ -25,12 +25,16 @@
 // center of X-ohm potentiometer connected to PE3/AIN0
 // bottom of X-ohm potentiometer connected to ground
 // top of X-ohm potentiometer connected to +3.3V 
+#include <stdio.h>
 #include <stdint.h>
 #include "ADCSWTrigger.h"
 #include "../inc/tm4c123gh6pm.h"
 #include "PLL.h"
 #include "ST7735.h"
 #include "fixed.h"
+#include "Timer1.h"
+#include "Timer2.h"
+#include "Timer3.h"
 
 
 #define PF2             (*((volatile uint32_t *)0x40025010))
@@ -50,7 +54,11 @@ void WaitForInterrupt(void);  // low power mode
 volatile uint32_t ADCvalueBuffer[NUM_SAMPLES];//Debugging Dump Number 1
 volatile uint32_t BufferIndex =0;
 volatile uint32_t pmfOccurences[MAX_ADC];
-volatile uint32_t Switch1 =0;
+volatile uint32_t ADCsampleTimeBuffer[NUM_SAMPLES];
+volatile uint32_t ADCtimeDifferenceBuffer[NUM_SAMPLES - 1];
+volatile uint32_t maxTimeDifference = UINT_MIN;
+volatile uint32_t minTimeDifference = UINT_MAX;
+volatile uint32_t Switch1 = 0;
 
 void DelayWait2s(uint32_t n){uint32_t volatile time;
   while(n){
@@ -89,118 +97,127 @@ void Timer0A_Handler(void){
 	PF2 ^= 0x04;                   // profile
   PF2 ^= 0x04;                   // profile
 	if(BufferIndex < NUM_SAMPLES){
-	
-  ADCvalueBuffer[BufferIndex] = ADC0_InSeq3();
-	BufferIndex++;
-  
+            ADCvalueBuffer[BufferIndex] = ADC0_InSeq3();
+            ADCsampleTimeBuffer[BufferIndex] = TIMER1_TAR_R;
+						if(BufferIndex > 0){
+							if((ADCsampleTimeBuffer[BufferIndex - 1] - ADCsampleTimeBuffer[BufferIndex]) > maxTimeDifference){
+								// Keep track of maxTimeDifference for jitter calculation.
+                maxTimeDifference = ADCsampleTimeBuffer[BufferIndex - 1] - ADCsampleTimeBuffer[BufferIndex];
+							}
+							if((ADCsampleTimeBuffer[BufferIndex - 1] - ADCsampleTimeBuffer[BufferIndex]) < minTimeDifference){
+								// Keep track of minTimeDifference for jitter calculation
+								minTimeDifference = ADCsampleTimeBuffer[BufferIndex - 1] - ADCsampleTimeBuffer[BufferIndex];
+							}
+						}
+            BufferIndex++;
 	}
 	PF2 ^= 0x04;                   // profile
 }
-void Timer1_Init(void){
-  SYSCTL_RCGCTIMER_R |= 0x02;   // 0) activate TIMER1
-  //PeriodicTask = task;          // user function
-  TIMER1_CTL_R = 0x00000000;    // 1) disable TIMER1A during setup
-  TIMER1_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
-  TIMER1_TAMR_R = 0x00000002;   // 3) configure for periodic mode, default down-count settings
-  TIMER1_TAILR_R = 0xFFFFFFFF;    // 4) reload value
-  TIMER1_TAPR_R = 0;            // 5) bus clock resolution
-  TIMER1_ICR_R = 0x00000001;    // 6) clear TIMER1A timeout flag
- // TIMER1_IMR_R = 0x00000001;    // 7) arm timeout interrupt
-  NVIC_PRI5_R = (NVIC_PRI5_R&0xFFFF00FF)|0x00008000; // 8) priority 4
-// interrupts enabled in the main program after all devices initialized
-// vector number 37, interrupt number 21
-  //NVIC_EN0_R = 1<<21;           // 9) enable IRQ 21 in NVIC
-  TIMER1_CTL_R = 0x00000001;    // 10) enable TIMER1A
-}
-
 
 void reset_Processing(){
 	
-	BufferIndex = 0;
-	for(int i =0; i < MAX_ADC; i++)
-	{
-		pmfOccurences[i] = 0;
-	}
+    BufferIndex = 0;
+    for(int i =0; i < MAX_ADC; i++)
+    {
+        pmfOccurences[i] = 0;
+    }
+		minTimeDifference = UINT_MAX;
+		maxTimeDifference = UINT_MIN;
 	
 }
 
 void init_PMF(){
-		int maxADCValue = 0;
-		int minADCValue = MAX_ADC;
-		int maxCountValue = 0;
-		
+    int maxADCValue = 0;
+    int minADCValue = MAX_ADC;
+    int maxCountValue = 0;
+
+
+    for(int i =0; i < NUM_SAMPLES; i++)
+    {
+        if(ADCvalueBuffer[i] > maxADCValue){maxADCValue = ADCvalueBuffer[i];}
+        if(ADCvalueBuffer[i] < minADCValue){minADCValue = ADCvalueBuffer[i];}
+
+    }
+
+    for(int i =0; i < NUM_SAMPLES; i++)
+    {
+        if(ADCvalueBuffer[i] < 4096)
+        {
+            pmfOccurences[ADCvalueBuffer[i]] += 1;			
+            if(pmfOccurences[ADCvalueBuffer[i]] > maxCountValue){maxCountValue = pmfOccurences[ADCvalueBuffer[i]];}
+        }
+
+    }
+    ST7735_XYplotInit("PMF",minADCValue,maxADCValue,0,maxCountValue);
 	
-		for(int i =0; i < NUM_SAMPLES; i++)
-		{
-			if(ADCvalueBuffer[i] > maxADCValue){maxADCValue = ADCvalueBuffer[i];}
-			if(ADCvalueBuffer[i] < minADCValue){minADCValue = ADCvalueBuffer[i];}
-			
-		}
-		
-			for(int i =0; i < NUM_SAMPLES; i++)
-			{
-				if(ADCvalueBuffer[i] < 4096)
-				{
-					pmfOccurences[ADCvalueBuffer[i]] += 1;			
-					if(pmfOccurences[ADCvalueBuffer[i]] > maxCountValue){maxCountValue = pmfOccurences[ADCvalueBuffer[i]];}
-				}
-				
-			}
-			ST7735_XYplotInit("PMF",minADCValue,maxADCValue,0,maxCountValue);
+}
+
+void process_Jitter()
+{
+		// max/minTimeDifference in units of 12.5 nanoseconds. Jitter in units of ns.
+		int32_t jitter = (int32_t) ((maxTimeDifference - minTimeDifference) * 125) / 10;
+		ST7735_SetCursor(0,0);
+		ST7735_OutString("\nJitter: "); 
+		ST7735_sDecOut3(jitter);
+		ST7735_OutString("us");
 	
 }
 
 void init_All(){
-	PLL_Init(Bus80MHz);                   // 80 MHz
-  SYSCTL_RCGCGPIO_R |= 0x20;            // activate port F
-  ADC0_InitSWTriggerSeq3_Ch9();         // allow time to finish activating
-  Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
-  GPIO_PORTF_DIR_R |= 0x06;             // make PF2, PF1 out (built-in LED)
-  GPIO_PORTF_AFSEL_R &= ~0x06;          // disable alt funct on PF2, PF1
-  GPIO_PORTF_DEN_R |= 0x06;             // enable digital I/O on PF2, PF1
+    PLL_Init(Bus80MHz);                   // 80 MHz
+    SYSCTL_RCGCGPIO_R |= 0x20;            // activate port F
+    ADC0_InitSWTriggerSeq3_Ch9();         // allow time to finish activating
+    Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
+    GPIO_PORTF_DIR_R |= 0x06;             // make PF2, PF1 out (built-in LED)
+    GPIO_PORTF_AFSEL_R &= ~0x06;          // disable alt funct on PF2, PF1
+    GPIO_PORTF_DEN_R |= 0x06;             // enable digital I/O on PF2, PF1
                                         // configure PF2 as GPIO
-  GPIO_PORTF_PCTL_R = (GPIO_PORTF_PCTL_R&0xFFFFF00F)+0x00000000;
-  GPIO_PORTF_AMSEL_R = 0;               // disable analog functionality on PF
-	ST7735_InitR(INITR_REDTAB);
-  PF2 = 0;                      // turn off LED
-  
-	Timer1_Init();
+    GPIO_PORTF_PCTL_R = (GPIO_PORTF_PCTL_R&0xFFFFF00F)+0x00000000;
+    GPIO_PORTF_AMSEL_R = 0;               // disable analog functionality on PF
+    ST7735_InitR(INITR_REDTAB);
+    PF2 = 0;                      // turn off LED
+
+    Timer1_Init();
+    //Timer2_Init(7920); // 7920 / 80MHz = 99us
+		//Timer3_Init(7900); // 	^
 	
 	
 }
 int main(void){
-  init_All();
-	/*
-	  ST7735_Line(0,0,12000,12000,ST7735_MAGENTA); //Right Diagonal
-		ST7735_Line(0,12000,12000,0,ST7735_CYAN); //Left Diagonal
-		ST7735_Line(50,0,50,12500,ST7735_YELLOW);//Vertical
-		ST7735_Line(0,50,12500,50,ST7735_GREEN);//Horizontal
-		DelayWait2s(1);
-	*/
-	EnableInterrupts();
-	reset_Processing();
+    init_All();
+    
+    ST7735_Line(0,0,127,159,ST7735_MAGENTA); //Right Diagonal
+    ST7735_Line(0,159,127,0,ST7735_CYAN); //Left Diagonal
+    ST7735_Line(50,0,50,159,ST7735_YELLOW);//Vertical
+    ST7735_Line(0,50,159,50,ST7735_GREEN);//Horizontal
+    DelayWait2s(1);
+    
+    EnableInterrupts();
+    reset_Processing();
 		
-  while(1){
-		//ADC0_SAC_R = 0;
-		//ADC0_SAC_R = ADC_SAC_AVG_4X;
-	  //ADC0_SAC_R = ADC_SAC_AVG_16X;
-		ADC0_SAC_R = ADC_SAC_AVG_64X;
+    while(1){
+        //ADC0_SAC_R = 0;
+        //ADC0_SAC_R = ADC_SAC_AVG_4X;
+        //ADC0_SAC_R = ADC_SAC_AVG_16X;
+        ADC0_SAC_R = ADC_SAC_AVG_64X;
 		
 	
-		while(BufferIndex < NUM_SAMPLES){
-    PF1 ^= 0x02;  // toggles when running in main
-		}	
+        while(BufferIndex < NUM_SAMPLES){
+            //PF1 ^= 0x02;  // toggles when running in main
+						PF1 = (PF1*12345678)/1234567+0x02;
+					
+        }	
 		
-		if(BufferIndex >= NUM_SAMPLES)
-		{
-			init_PMF();
-			for(int i =0; i < 4096; i++)
-			{
-				ST7735_PlotBarXY(i,pmfOccurences[i]);
-			}
-			
-		}
-		reset_Processing();
+        if(BufferIndex >= NUM_SAMPLES)
+        {
+                init_PMF();
+                for(int i =0; i < 4096; i++)
+                {
+                        ST7735_PlotBarXY(i,pmfOccurences[i]);
+                }
+                process_Jitter();
+        }
+        reset_Processing();
   }
 }
 
