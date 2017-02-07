@@ -33,11 +33,13 @@
 #include "SysTick.h"
 #include "PLL.h"
 
+#define SYSTICK_RELOAD	0x24C4B40 // Reload value for an interrupt frequency of .1Hz.
 
-int main(void){
+
+int SysTick_Test_Main(void){
   SYSCTL_RCGCGPIO_R |= 0x20;  // activate port F
-  PLL_Init(Bus80MHz);         // set system clock to 50 MHz
-  SysTick_Init();             // initialize SysTick timer
+  PLL_Init(Bus50MHz);         // set system clock to 50 MHz
+  SysTick_Init(SYSTICK_RELOAD);             // initialize SysTick timer
   GPIO_PORTF_DIR_R |= 0x04;   // make PF2 out (built-in blue LED)
   GPIO_PORTF_AFSEL_R &= ~0x04;// disable alt funct on PF2
   GPIO_PORTF_DEN_R |= 0x04;   // enable digital I/O on PF2
@@ -49,6 +51,6 @@ int main(void){
 //    SysTick_Wait(1);        // approximately 720 ns
 //    SysTick_Wait(2);        // approximately 720 ns
 //    SysTick_Wait(10000);    // approximately 0.2 ms
-    SysTick_Wait10ms(1);      // approximately 10 ms
+    //SysTick_Wait10ms(1);      // approximately 10 ms
   }
 }

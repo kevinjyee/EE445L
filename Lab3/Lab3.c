@@ -36,6 +36,9 @@
 #define PF2             (*((volatile uint32_t *)0x40025010)) // Select switch
 #define PF1             (*((volatile uint32_t *)0x40025008)) // Up switch
 #define PF0							(*((volatile uint32_t *)0x40025004)) // Down switch
+#define AM							0
+#define PM							1
+#define SYSTICK_RELOAD	0x4C4B40 // Reload value for an interrupt frequency of 1Hz.
 
 
 void DisableInterrupts(void); // Disable interrupts
@@ -45,6 +48,7 @@ void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
 
 volatile uint32_t Switch1 = 0;
+volatile uint32_t Time = 0; // (Meridian)hh0mm0ss
 
 const unsigned short ClockFace[] = {
  0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
@@ -1331,6 +1335,19 @@ const unsigned short ClockFace[] = {
 
 };
 
+// Retrieves seconds, minutes, and hour from Time global variable in thread-safe fashion.
+// Consider switching to bit operations to avoid overhead of division.
+void getTime(uint8_t* meridian, uint8_t* hours, uint8_t* minutes, uint8_t* seconds){
+	uint32_t time = Time;
+	*seconds = time % 100;
+	time = time / 1000;
+	*minutes = time % 100;
+	time = time / 1000;
+	*hours = (time / 1000000) % 100;
+	time = time / 100;
+	*meridian = time % 10;
+	
+}
 
 void DelayWait2s(uint32_t n){uint32_t volatile time;
   while(n){
@@ -1390,7 +1407,7 @@ void Timer1_Init(void){
 
 
 void init_All(){
-	PLL_Init(Bus80MHz);                   // 80 MHz
+	PLL_Init(Bus50MHz);                   // 80 MHz
   SYSCTL_RCGCGPIO_R |= 0x20;            // activate port F
   Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
 	// TODO: Initialize PF0-4
@@ -1402,11 +1419,66 @@ void init_All(){
   GPIO_PORTF_AMSEL_R = 0;               // disable analog functionality on PF
 	ST7735_InitR(INITR_REDTAB);
   PF2 = 0;                      // turn off LED
-  
+  SysTick_Init(SYSTICK_RELOAD);
 	//Timer1_Init();
 	
 	
 }
+
+// Convert time variable to format (h0)(h1):(m0)(m1):(s0)(s1) (Mer0)(Mer1)
+void format_Time(char* timeStringBuffer){
+	int8_t seconds, minutes, hours, meridian, index;
+	uint32_t time = Time;
+	seconds = time % 100;
+	time = time / 1000;
+	minutes = time % 100;
+	time = time / 1000;
+	hours = time % 100;
+	meridian = (time / 100) % 10;
+	index = 0;
+	char h0 = (hours / 10) + '0';
+	timeStringBuffer[index] = h0;
+	index++;
+	char h1 = (hours % 10) + '0';
+	timeStringBuffer[index] = h1;
+	index++;
+	timeStringBuffer[index] = ':';
+	index++;
+	char m0 = (minutes / 10) + '0';
+	timeStringBuffer[index] = m0;
+	index++;
+	char m1 = (minutes % 10) + '0';
+	timeStringBuffer[index] = m1;
+	index++;
+	timeStringBuffer[index] = ':';
+	index++;
+	char s0 = (seconds / 10) + '0';
+	timeStringBuffer[index] = s0;
+	index++;
+	char s1 = (seconds % 10) + '0';
+	timeStringBuffer[index] = s1;
+	index++;
+	timeStringBuffer[index] = ' ';
+	index++;
+	char Mer1 = 'M';
+	char Mer0;
+	if(meridian){
+		Mer0 = 'P';
+	} else{
+		Mer0 = 'A';
+	}
+	timeStringBuffer[index] = Mer0;
+	index++;
+	timeStringBuffer[index] = Mer1;
+}
+
+void draw_Time(){
+	char timeStringBuffer[10] = {' '}; //Initialize array to empty string 
+	format_Time(timeStringBuffer);
+	ST7735_SetCursor(0,0);
+  ST7735_OutString(timeStringBuffer);
+}
+
 int main(void){
   init_All();
 	
@@ -1416,9 +1488,10 @@ int main(void){
 	int i = 0;
 		
   while(1){
-		i = (i % 10) + 1;
+		draw_Time();
   }
 }
+
 
 
 
