@@ -39,6 +39,15 @@
 // Initialize SysTick with busy wait running at bus clock.
 void SysTick_Init(uint32_t period);
 
+// Set current time on clock.
+void SysTick_Set_Time(uint8_t hours, uint8_t minutes, uint8_t seconds, uint8_t meridian);
+
+// Increment current time by one dSecond.
+void incrementTime(void);
+
+// Increment time every time handler is called.
+void SysTick_Handler(void);
+
 /*
 // Time delay using busy wait.
 // The delay parameter is in units of the core clock. (units of 20 nsec for 50 MHz clock)

@@ -38,7 +38,7 @@
 #define PF0							(*((volatile uint32_t *)0x40025004)) // Down switch
 #define AM							0
 #define PM							1
-#define SYSTICK_RELOAD	0x4C4B40 // Reload value for an interrupt frequency of 1Hz.
+#define SYSTICK_RELOAD	0x4C4B40 // Reload value for an interrupt frequency of 10Hz.
 
 
 void DisableInterrupts(void); // Disable interrupts
@@ -49,6 +49,10 @@ void WaitForInterrupt(void);  // low power mode
 
 volatile uint32_t Switch1 = 0;
 volatile uint32_t Time = 0; // (Meridian)hh0mm0ss
+volatile uint8_t SelectSeconds;
+volatile uint8_t SelectMinutes;
+volatile uint8_t SelectHours;
+volatile uint8_t SelectMeridian;
 
 const unsigned short ClockFace[] = {
  0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
@@ -1477,6 +1481,12 @@ void draw_Time(){
 	format_Time(timeStringBuffer);
 	ST7735_SetCursor(0,0);
   ST7735_OutString(timeStringBuffer);
+}
+
+void set_Time(){
+	DisableInterrupts();
+	SysTick_Set_Time(SelectHours, SelectMinutes, SelectSeconds, SelectMeridian);
+	EnableInterrupts();
 }
 
 int main(void){

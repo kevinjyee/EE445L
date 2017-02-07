@@ -42,6 +42,7 @@
 #define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
 #define NVIC_ST_CTRL_ENABLE     0x00000001  // Counter mode
 #define NVIC_ST_RELOAD_M        0x00FFFFFF  // Counter load value
+#define SYSTICK_RELOAD	0x4C4B40 // Reload value for an interrupt frequency of 10Hz.
 
 volatile uint8_t dSeconds; // deciSeconds (one tenth of a second)
 volatile uint8_t Seconds;
@@ -92,6 +93,16 @@ void incrementTime(){
 
 void SysTick_Handler(void){
 	incrementTime();
+}
+
+// Sets current time of alarm clock.
+void SysTick_Set_Time(uint8_t hours, uint8_t minutes, uint8_t seconds, uint8_t meridian){
+	dSeconds = 0;
+	Seconds = seconds;
+	Minutes = minutes;
+	Hours = hours;
+	Meridian = meridian;
+	NVIC_ST_RELOAD_R = SYSTICK_RELOAD - 1; // TODO: Is this dangerous to do?
 }
 
 /*
