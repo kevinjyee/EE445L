@@ -26,19 +26,16 @@
 // bottom of X-ohm potentiometer connected to ground
 // top of X-ohm potentiometer connected to +3.3V 
 #include <stdint.h>
-#include "ADCSWTrigger.h"
 #include "../inc/tm4c123gh6pm.h"
 #include "PLL.h"
 #include "ST7735.h"
 #include "fixed.h"
+#include "SysTick.h"
 
-
-#define PF2             (*((volatile uint32_t *)0x40025010))
-#define PF1             (*((volatile uint32_t *)0x40025008))
-#define NUM_SAMPLES 1000
-#define MAX_ADC 4096	
-#define UINT_MAX  4294967295
-#define UINT_MIN 0
+#define PF3							(*((volatile uint32_t *)0x40025020)) // Menu switch
+#define PF2             (*((volatile uint32_t *)0x40025010)) // Select switch
+#define PF1             (*((volatile uint32_t *)0x40025008)) // Up switch
+#define PF0							(*((volatile uint32_t *)0x40025004)) // Down switch
 
 
 void DisableInterrupts(void); // Disable interrupts
@@ -47,10 +44,7 @@ long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
 
-volatile uint32_t ADCvalueBuffer[NUM_SAMPLES];//Debugging Dump Number 1
-volatile uint32_t BufferIndex =0;
-volatile uint32_t pmfOccurences[MAX_ADC];
-volatile uint32_t Switch1 =0;
+volatile uint32_t Switch1 = 0;
 
 const unsigned short ClockFace[] = {
  0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
@@ -1374,12 +1368,7 @@ void Timer0A_Handler(void){
   TIMER0_ICR_R = TIMER_ICR_TATOCINT;    // acknowledge timer0A timeout
 	PF2 ^= 0x04;                   // profile
   PF2 ^= 0x04;                   // profile
-	if(BufferIndex < NUM_SAMPLES){
 	
-  ADCvalueBuffer[BufferIndex] = ADC0_InSeq3();
-	BufferIndex++;
-  
-	}
 	PF2 ^= 0x04;                   // profile
 }
 void Timer1_Init(void){
@@ -1400,47 +1389,11 @@ void Timer1_Init(void){
 }
 
 
-void reset_Processing(){
-	
-	BufferIndex = 0;
-	for(int i =0; i < MAX_ADC; i++)
-	{
-		pmfOccurences[i] = 0;
-	}
-	
-}
-
-void init_PMF(){
-		int maxADCValue = 0;
-		int minADCValue = MAX_ADC;
-		int maxCountValue = 0;
-		
-	
-		for(int i =0; i < NUM_SAMPLES; i++)
-		{
-			if(ADCvalueBuffer[i] > maxADCValue){maxADCValue = ADCvalueBuffer[i];}
-			if(ADCvalueBuffer[i] < minADCValue){minADCValue = ADCvalueBuffer[i];}
-			
-		}
-		
-			for(int i =0; i < NUM_SAMPLES; i++)
-			{
-				if(ADCvalueBuffer[i] < 4096)
-				{
-					pmfOccurences[ADCvalueBuffer[i]] += 1;			
-					if(pmfOccurences[ADCvalueBuffer[i]] > maxCountValue){maxCountValue = pmfOccurences[ADCvalueBuffer[i]];}
-				}
-				
-			}
-			ST7735_XYplotInit("PMF",minADCValue,maxADCValue,0,maxCountValue);
-	
-}
-
 void init_All(){
 	PLL_Init(Bus80MHz);                   // 80 MHz
   SYSCTL_RCGCGPIO_R |= 0x20;            // activate port F
-  ADC0_InitSWTriggerSeq3_Ch9();         // allow time to finish activating
   Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
+	// TODO: Initialize PF0-4
   GPIO_PORTF_DIR_R |= 0x06;             // make PF2, PF1 out (built-in LED)
   GPIO_PORTF_AFSEL_R &= ~0x06;          // disable alt funct on PF2, PF1
   GPIO_PORTF_DEN_R |= 0x06;             // enable digital I/O on PF2, PF1
@@ -1450,44 +1403,20 @@ void init_All(){
 	ST7735_InitR(INITR_REDTAB);
   PF2 = 0;                      // turn off LED
   
-	Timer1_Init();
+	//Timer1_Init();
 	
 	
 }
 int main(void){
   init_All();
 	
-	  ST7735_Line(0,0,12000,12000,ST7735_MAGENTA); //Right Diagonal
-		ST7735_Line(0,12000,12000,0,ST7735_CYAN); //Left Diagonal
-		ST7735_Line(50,0,50,12500,ST7735_YELLOW);//Vertical
-		ST7735_Line(0,50,12500,50,ST7735_GREEN);//Horizontal
-		DelayWait2s(1);
-	
 	ST7735_DrawBitmap(4,159,ClockFace,128,160);
 	EnableInterrupts();
-	reset_Processing();
+	
+	int i = 0;
 		
   while(1){
-		//ADC0_SAC_R = 0;
-		//ADC0_SAC_R = ADC_SAC_AVG_4X;
-	  //ADC0_SAC_R = ADC_SAC_AVG_16X;
-		ADC0_SAC_R = ADC_SAC_AVG_64X;
-		
-	
-		while(BufferIndex < NUM_SAMPLES){
-    PF1 ^= 0x02;  // toggles when running in main
-		}	
-		
-		if(BufferIndex >= NUM_SAMPLES)
-		{
-			init_PMF();
-			for(int i =0; i < 4096; i++)
-			{
-				ST7735_PlotBarXY(i,pmfOccurences[i]);
-			}
-			
-		}
-		reset_Processing();
+		i = (i % 10) + 1;
   }
 }
 
