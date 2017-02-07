@@ -258,6 +258,32 @@ for (uint32_t i=0 ; i < num; ++i) {
   }
 }
 
+/**************ST7735_Translate***************
+ Translate an array of (x,y) data from fixed-point to LCD-mapped values.
+ Inputs:  num    number of data points in the two arrays
+          bufX   array of 32-bit fixed-point data, resolution= 0.001
+          bufY   array of 32-bit fixed-point data, resolution= 0.001
+ Outputs: none
+ assumes ST7735_XYplotInit has been previously called
+ neglect any points outside the minX maxY minY maxY bounds
+*/
+void ST7735_Translate(uint32_t num, int32_t bufX[], int32_t bufY[]){	
+
+	for (uint32_t i=0 ; i < num; ++i) {
+		if (bufX[i] < MinX   ||   bufX[i] > MaxX   ||   
+      bufY[i] < MinY   ||   bufY[i] > MaxY) { 
+			bufX[i] = -1; // Indicate out-of-bounds point with -1.
+			bufY[i] = -1;
+		} 
+		else
+		{
+      bufX[i] = (127*(bufX[i] - MinX)) / (MaxX - MinX);
+      bufY[i] = 32+(127*((MaxY - bufY[i]))  / (MaxY - MinY));
+		}
+    
+  }
+}
+
 
 void ST7735_PlotBarXY(int32_t x, int32_t y){
 	int32_t i, j;
@@ -276,6 +302,8 @@ void ST7735_PlotBarXY(int32_t x, int32_t y){
 }
 
 
+
+/* Unused
 int find_GCD(uint16_t num1, uint16_t num2)
 {
 	if(num2 != 0)
@@ -287,6 +315,7 @@ int find_GCD(uint16_t num1, uint16_t num2)
 		return num1;
 	}
 }
+*/
 
 //************* ST7735_Line********************************************
 //  Draws one line on the ST7735 color LCD using Bresenham's Line Algorithm.
@@ -300,52 +329,35 @@ int find_GCD(uint16_t num1, uint16_t num2)
 //               159 is near the wires, 0 is the side opposite the wires
 //        color 16-bit color, which can be produced by ST7735_Color565() 
 // Output: none
+// Note: This is an implementation of Bresenham's algorithm inspired by an example
+//		from rosettacode.org
 void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
 	{
-		int deltaX, deltaY, deltaError, error, x, y, temp;
-		if(x1 > x2){ // Swap the coordinate values if x1 > x2 to allow for loop to handle all calculations.
-			int temp = x1;
-			x1 = x2;
-			x2 = temp;
-			temp = y1;
-			y1 = y2;
-			y2 = temp;
+		int xSlope, ySlope, xDif, yDif, signX, signY, error, delta_error;
+		xDif = x2 - x1;
+		xDif = xDif > 0 ? xDif : -xDif; // Take absolute value of xDif.
+		yDif = y2 - y1;
+		yDif = yDif > 0 ? yDif : -yDif; // Take absolute value of yDif.
+		signX = x2 > x1 ? 1 : -1;
+		signY = y2 > y1 ? 1 : -1;
+		if(xDif > yDif){
+			error = xDif / 2;
+		} else{
+			error = -yDif / 2;
 		}
-		deltaX = x2 - x1;
-		deltaY = y2 - y1;
-		if(deltaX == 0) // For straight vertical lines, use DrawFastVLine
-		{
-			if(deltaY < 0){deltaY *= -1;}
-			ST7735_DrawFastVLine(x1,y1,deltaY,color);
-		}
-		else if(deltaY == 0) // For straight horizontal lines, use DrawFastVLine
-		{
-			if(deltaX < 0){deltaX *= -1;}
-			ST7735_DrawFastHLine(x1,y1,deltaX,color);
-		}
-		else{ // The code below uses Bresenham's algorithm to draw a diagonal line.
-			deltaError = (deltaY * 10000) / deltaX;
-			if(deltaError < 0){ // Need the absolute value of deltaErr.
-				deltaError = deltaError * -1;
+		while((x1 != x2) || (y1 != y2)){
+			ST7735_DrawPixel(x1,   y1,   color);
+      ST7735_DrawPixel(x1+1, y1,   color);
+      ST7735_DrawPixel(x1,   y1+1, color);
+      ST7735_DrawPixel(x1+1, y1+1, color);
+			delta_error = error;
+			if(delta_error > -xDif){
+				error -= yDif;
+				x1 += signX;
 			}
-			error = deltaError - 5000;
-			y = y1;
-			for(x = x1; x <= x2; x++){
-				ST7735_DrawPixel(x,   y,   color);
-				/* Uncomment for fatter lines
-				ST7735_DrawPixel(x+1, y,   color);
-				ST7735_DrawPixel(x,   y+1, color);
-				ST7735_DrawPixel(x+1, y+1, color);
-				*/
-				error = error + deltaError;
-				if(error >= 5000){
-					if(y1 > y2){
-						y = y - 1;
-					} else{
-						y = y + 1;
-					}
-					error = error - 10000;
-				}
+			if(delta_error < yDif){
+				error += xDif;
+				y1 += signY;
 			}
 		}
 	}							 														 
