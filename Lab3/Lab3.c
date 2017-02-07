@@ -31,11 +31,12 @@
 #include "ST7735.h"
 #include "fixed.h"
 #include "SysTick.h"
+#include "PWMSine.h"
 
-#define PF3							(*((volatile uint32_t *)0x40025020)) // Menu switch
-#define PF2             (*((volatile uint32_t *)0x40025010)) // Select switch
-#define PF1             (*((volatile uint32_t *)0x40025008)) // Up switch
-#define PF0							(*((volatile uint32_t *)0x40025004)) // Down switch
+#define PA3							(*((volatile uint32_t *)0x40004020)) // Menu switch
+#define PA2             (*((volatile uint32_t *)0x40004010)) // Select switch
+#define PA1             (*((volatile uint32_t *)0x40004008)) // Up switch
+#define PA0							(*((volatile uint32_t *)0x40004004)) // Down switch
 #define AM							0
 #define PM							1
 #define SYSTICK_RELOAD	0x4C4B40 // Reload value for an interrupt frequency of 10Hz.
@@ -1363,6 +1364,7 @@ void DelayWait2s(uint32_t n){uint32_t volatile time;
   }
 }
 
+/*
 // This debug function initializes Timer0A to request interrupts
 // at a 100 Hz frequency.  It is similar to FreqMeasure.c.
 void Timer0A_Init100HzInt(void){
@@ -1392,6 +1394,7 @@ void Timer0A_Handler(void){
 	
 	PF2 ^= 0x04;                   // profile
 }
+*/
 void Timer1_Init(void){
   SYSCTL_RCGCTIMER_R |= 0x02;   // 0) activate TIMER1
   //PeriodicTask = task;          // user function
@@ -1411,18 +1414,17 @@ void Timer1_Init(void){
 
 
 void init_All(){
-	PLL_Init(Bus50MHz);                   // 80 MHz
-  SYSCTL_RCGCGPIO_R |= 0x20;            // activate port F
-  Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
-	// TODO: Initialize PF0-4
-  GPIO_PORTF_DIR_R |= 0x06;             // make PF2, PF1 out (built-in LED)
-  GPIO_PORTF_AFSEL_R &= ~0x06;          // disable alt funct on PF2, PF1
-  GPIO_PORTF_DEN_R |= 0x06;             // enable digital I/O on PF2, PF1
-                                        // configure PF2 as GPIO
-  GPIO_PORTF_PCTL_R = (GPIO_PORTF_PCTL_R&0xFFFFF00F)+0x00000000;
-  GPIO_PORTF_AMSEL_R = 0;               // disable analog functionality on PF
+	PLL_Init(Bus50MHz);                   // 50 MHz
+  SYSCTL_RCGCGPIO_R |= 0x01;            // activate port A
+  //Timer0A_Init100HzInt();               // set up Timer0A for 100 Hz interrupts
+	// TODO: Initialize PA0-4
+  GPIO_PORTA_DIR_R |= 0x00;             // make PA0-3 out (built-in LED)
+  GPIO_PORTA_AFSEL_R &= ~0x0F;          // disable alt funct on PA0-4
+  GPIO_PORTA_DEN_R |= 0x0F;             // enable digital I/O on PA0-4
+                                        // configure PA0-4 as regular GPIO
+  GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R&0xFFFFF000)+0x00000000;
+  GPIO_PORTA_AMSEL_R = 0;               // disable analog functionality on PF
 	ST7735_InitR(INITR_REDTAB);
-  PF2 = 0;                      // turn off LED
   SysTick_Init(SYSTICK_RELOAD);
 	//Timer1_Init();
 	
@@ -1494,11 +1496,12 @@ int main(void){
 	
 	ST7735_DrawBitmap(4,159,ClockFace,128,160);
 	EnableInterrupts();
+	PMWSine_Init(); // Initialize sound generation
 	
 	int i = 0;
 		
   while(1){
-		draw_Time();
+		draw_Time(); // Start updating time.
   }
 }
 

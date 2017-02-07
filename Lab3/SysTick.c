@@ -65,6 +65,7 @@ void SysTick_Init(uint32_t period){
 	Minutes = 0;
 	Hours = 12; // Initialize to 12:00AM
 	Meridian = 0;
+	Time = (1000000 * 12);
 }
 
 // Encodes time in an integer as (Meridian)hh0mm0ss.

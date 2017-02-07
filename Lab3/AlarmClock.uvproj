@@ -440,6 +440,21 @@
               <FileType>1</FileType>
               <FilePath>.\SysTickTestMain.c</FilePath>
             </File>
+            <File>
+              <FileName>PWM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\PWM.c</FilePath>
+            </File>
+            <File>
+              <FileName>PWMSine.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\PWMSine.c</FilePath>
+            </File>
+            <File>
+              <FileName>Timer0A.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Timer0A.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
