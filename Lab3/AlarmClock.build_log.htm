@@ -1,0 +1,45 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+E:\EE445L Labs\Lab3\AlarmClock.uvproj
+Project File Date:  02/07/2017
+
+<h2>Output:</h2>
+Build target 'ADCSWTrigger'
+linking...
+Program Size: Code=5632 RO-data=43100 RW-data=100 ZI-data=1156  
+".\AlarmClock.axf" - 0 Error(s), 0 Warning(s).
+56): warning:  #177-D: variable "x" was declared but never referenced
+        int x;
+FSM.c(126): warning:  #177-D: variable "hourBuffer" was declared but never referenced
+        char hourBuffer[2] = {' '}; //Initialize array to empty string 
+FSM.c(127): warning:  #177-D: variable "minuteBuffer" was declared but never referenced
+        char minuteBuffer[2] = {' '};
+FSM.c(128): warning:  #177-D: variable "secondsBuffer" was declared but never referenced
+        char secondsBuffer[2] = {' '};
+FSM.c: 5 warnings, 0 errors
+linking...
+Program Size: Code=5632 RO-data=43100 RW-data=100 ZI-data=1156  
+".\AlarmClock.axf" - 0 Error(s), 5 Warning(s).
+referenced
+        char hourBuffer[2] = {' '}; //Initialize array to empty string 
+FSM.c(127): warning:  #177-D: variable "minuteBuffer" was declared but never referenced
+        char minuteBuffer[2] = {' '};
+FSM.c(128): warning:  #177-D: variable "secondsBuffer" was declared but never referenced
+        char secondsBuffer[2] = {' '};
+FSM.c: 5 warnings, 0 errors
+linking...
+.\AlarmClock.axf: Error: L6200E: Symbol Time multiply defined (by fsm.o and lab3.o).
+Not enough information to list image symbols.
+Not enough information to list the image map.
+Finished: 2 information, 0 warning and 1 error messages.
+".\AlarmClock.axf" - 1 Error(s), 9 Warning(s).
+Target not created
+able "x" was declared but never referenced
+        int x;
+FSM.c: 2 warnings, 4 errors
+compiling FIFO.c...
+".\AlarmClock.axf" - 4 Error(s), 8 Warning(s).
+Target not created
