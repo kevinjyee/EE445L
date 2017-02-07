@@ -9,3 +9,4 @@
 .\lab3.o: Switch.h
 .\lab3.o: FIFO.h
 .\lab3.o: Display.h
+.\lab3.o: FSM.h

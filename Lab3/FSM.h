@@ -1,0 +1,1 @@
+uint32_t Next_State(uint32_t,int);

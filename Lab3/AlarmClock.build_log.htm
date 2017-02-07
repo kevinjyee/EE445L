@@ -8,32 +8,39 @@ Project File Date:  02/07/2017
 
 <h2>Output:</h2>
 Build target 'ADCSWTrigger'
-compiling Switch.c...
-Switch.c(85): warning:  #1-D: last line of file ends without a newline
-  }
-Switch.c: 1 warning, 0 errors
 linking...
-Program Size: Code=4688 RO-data=43088 RW-data=84 ZI-data=1156  
-".\AlarmClock.axf" - 0 Error(s), 1 Warning(s).
-as declared but never referenced
-                rxDataType * nextAction;
-Lab3.c(214): warning:  #177-D: variable "i" was declared but never referenced
-        int i = 0;
-Lab3.c: 4 warnings, 0 errors
-compiling FIFO.c...
-compiling Switch.c...
-Switch.c(84): error:  #20: identifier "LastA" is undefined
-        if(LastA)
-Switch.c(86): error:  #20: identifier "rxDataType" is undefined
-                rxDataType sig = { ORIGIN_KEYPAD, 65536, 1 };
-Switch.c(86): error:  #20: identifier "ORIGIN_KEYPAD" is undefined
-                rxDataType sig = { ORIGIN_KEYPAD, 65536, 1 };
-Switch.c(87): error:  #20: identifier "bool" is undefined
-                bool putResult = RxFifo_Put(sig);
-Switch.c(87): warning:  #223-D: function "RxFifo_Put" declared implicitly
-                bool putResult = RxFifo_Put(sig);
-Switch.c(91): warning:  #1-D: last line of file ends without a newline
+Program Size: Code=4904 RO-data=43088 RW-data=88 ZI-data=1152  
+".\AlarmClock.axf" - 0 Error(s), 0 Warning(s).
+Load "E:\\EE445L Labs\\Lab3\\AlarmClock.axf" 
+Connecting: Mode=JTAG, Speed=1000000Hz
+Erase Done.
+Programming Done.
+Verify OK.
+(4): warning:  #1-D: last line of file ends without a newline
+  void PMWSine_Init(void);
+FSM.c(15): warning:  #1-D: last line of file ends without a newline
   }
-Switch.c: 2 warnings, 4 errors
-".\AlarmClock.axf" - 4 Error(s), 6 Warning(s).
+FSM.c: 2 warnings, 0 errors
+".\AlarmClock.axf" - 1 Error(s), 2 Warning(s).
 Target not created
+a newline
+  void PMWSine_Init(void);
+FSM.c(17): warning:  #1-D: last line of file ends without a newline
+  }
+FSM.c: 2 warnings, 0 errors
+linking...
+Program Size: Code=4904 RO-data=43088 RW-data=88 ZI-data=1152  
+".\AlarmClock.axf" - 0 Error(s), 6 Warning(s).
+Load "E:\\EE445L Labs\\Lab3\\AlarmClock.axf" 
+Connecting: Mode=JTAG, Speed=1000000Hz
+Connection failed!, error code=&d
+Error: Flash Download failed  -  Target DLL has been cancelled
+Load "E:\\EE445L Labs\\Lab3\\AlarmClock.axf" 
+Connecting: Mode=JTAG, Speed=1000000Hz
+Connection failed!, error code=&d
+Error: Flash Download failed  -  Target DLL has been cancelled
+Load "E:\\EE445L Labs\\Lab3\\AlarmClock.axf" 
+Connecting: Mode=JTAG, Speed=1000000Hz
+Erase Done.
+Programming Done.
+Verify OK.

@@ -35,6 +35,7 @@
 #include "Switch.h"
 #include "FIFO.h"
 #include "Display.h"
+#include "FSM.h"
 
 #define PA3							(*((volatile uint32_t *)0x40004020)) // Menu switch
 #define PA2             (*((volatile uint32_t *)0x40004010)) // Select switch
@@ -212,10 +213,14 @@ int main(void){
 	PMWSine_Init(); // Initialize sound generation
 	
 	int i = 0;
-		
+	uint32_t current_state = 0x00;	
   while(1){
 		draw_Time(); // Start updating time.
-		//rxDataType * nextAction;
+		rxDataType *keyInputs;
+		if(RxFifo_Get(keyInputs))
+		{
+				current_state = Next_State(current_state, *keyInputs);
+		}
   }
 }
 
