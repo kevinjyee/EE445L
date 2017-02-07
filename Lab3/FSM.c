@@ -18,40 +18,58 @@
 #define TRUE 1 
 #define FALSE 0
 
-int curentMenuPos =0;
+
 int selectSwitchToggled = FALSE;
 
-uint32_t MainScreen(uint32_t);
+volatile int curentMenuPos =0;
+volatile int currentTimePos = 0;
 
-uint32_t Next_State(uint32_t current_state, int keyInputs)
+uint32_t MainScreen(uint32_t);
+uint32_t SetTime(uint32_t);
+
+
+
+
+uint32_t Next_State(uint32_t current_state, uint32_t keyInputs)
 {
 	switch(current_state){
 		case 0x00:
 			return MainScreen(keyInputs);
+		case 0x01:
+			return SetTime(keyInputs);
 		default:
 			return MainScreen(keyInputs);
 	}
 }
 
 
-void processMenuItem(int currentMenuPos)
+void clear_Menu(){
+			ST7735_DrawString(0,1,"Set Time",ST7735_BLACK);
+			ST7735_DrawString(0,2,"Set Alarm",ST7735_BLACK);
+			ST7735_DrawString(0,3,"Choose Song",ST7735_BLACK);
+	
+}
+
+
+uint32_t processMenuItem(int currentMenuPos)
 {
 	int x;
 		switch(currentMenuPos)
 		{
 			case 0: 
 				//Set Time 
+				return 0x01;
 			case 1: 
 				//Set Alarm
+				return 0x02;
 			case 2:
 				//Choose Song
-			default:
-				x+=1;
-			
+				return 0x03;
 		}
-	
-	
+		return 0x00;
 }
+
+
 
 uint32_t MainScreen(uint32_t input)
 {
@@ -70,11 +88,12 @@ uint32_t MainScreen(uint32_t input)
 			break;
 		case 3:
 			//Select Switch
-			processMenuItem(curentMenuPos);
-			break;
+			return processMenuItem(curentMenuPos);
+		case 4: 
+			//Menu Button
+			return 0x00;
 		
 	}
-
 	//Determine which Menu Position I'm in
 	switch(curentMenuPos)
 	{
@@ -98,4 +117,61 @@ uint32_t MainScreen(uint32_t input)
 }
 
 	
+uint32_t SetTime(uint32_t input)
+{
+	clear_Menu();
+	
+	uint32_t time = Time;
+	
+	char hourBuffer[2] = {' '}; //Initialize array to empty string 
+	char minuteBuffer[2] = {' '};
+	char secondsBuffer[2] = {' '};
+	
+	//Determine Input and Action on MainScreen
+	switch(input)
+	{
+		
+		case 1: 
+			//down switch
+			curentMenuPos = (curentMenuPos + input)%3;
+			break;
+		case 2:
+			//Up Switch
+			curentMenuPos = (curentMenuPos - input)%3;
+			break;
+		case 3:
+			//Select Switch
+			return processMenuItem(curentMenuPos);
+		case 4: 
+			//Menu Button
+			return 0x00;
+		
+	}
+	//Determine which Menu Position I'm in
+	switch(curentMenuPos)
+	{
+		case 0:
+			ST7735_DrawString(0,1,"Set Time",ST7735_CYAN);
+			ST7735_DrawString(0,2,"Set Alarm",ST7735_WHITE);
+			ST7735_DrawString(0,3,"Choose Song",ST7735_WHITE);
+			break;
+		case 1:
+			ST7735_DrawString(0,1,"Set Time",ST7735_WHITE);
+			ST7735_DrawString(0,2,"Set Alarm",ST7735_CYAN);
+			ST7735_DrawString(0,3,"Choose Song",ST7735_WHITE);
+			break;
+		case 2:
+			ST7735_DrawString(0,1,"Set Time",ST7735_WHITE);
+			ST7735_DrawString(0,2,"Set Alarm",ST7735_WHITE);
+			ST7735_DrawString(0,3,"Choose Song",ST7735_CYAN);
+			break;
+	}
+
+	
+	
+	
+	
+	return 0;
+	
+}
 

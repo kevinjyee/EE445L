@@ -36,6 +36,7 @@
  
  #include <stdint.h>
 
+extern volatile uint32_t Time;
 // Initialize SysTick with busy wait running at bus clock.
 void SysTick_Init(uint32_t period);
 
