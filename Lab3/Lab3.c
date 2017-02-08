@@ -160,7 +160,7 @@ void init_All(){
 	Switch_Init();
 	Timer2Arm();
 	ST7735_InitR(INITR_REDTAB);
-  SysTick_Init(SYSTICK_RELOAD / 256);
+  SysTick_Init(SYSTICK_RELOAD / 64);
 	//Timer1_Init();
 	
 	
