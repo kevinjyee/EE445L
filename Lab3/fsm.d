@@ -1,6 +1,6 @@
 .\fsm.o: FSM.c
-.\fsm.o: E:\Keil\ARM\ARMCC\bin\..\include\stdint.h
-.\fsm.o: E:\Keil\ARM\ARMCC\bin\..\include\stdbool.h
+.\fsm.o: E:\Keil1\ARM\ARMCC\bin\..\include\stdint.h
+.\fsm.o: E:\Keil1\ARM\ARMCC\bin\..\include\stdbool.h
 .\fsm.o: ../inc/tm4c123gh6pm.h
 .\fsm.o: PLL.h
 .\fsm.o: ST7735.h

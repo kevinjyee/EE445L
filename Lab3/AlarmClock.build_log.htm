@@ -7,3 +7,78 @@ E:\EE445L Labs\Lab3\AlarmClock.uvproj
 Project File Date:  02/07/2017
 
 <h2>Output:</h2>
+Build target 'ADCSWTrigger'
+compiling Lab3.c...
+PWMSine.h(4): warning:  #1-D: last line of file ends without a newline
+  void PMWSine_Init(void);
+Switch.h(26): warning:  #1-D: last line of file ends without a newline
+  void init_switchmain(void);
+FSM.h(1): warning:  #1-D: last line of file ends without a newline
+  uint32_t Next_State(uint32_t,uint32_t);
+Lab3.c(159): error:  #165: too few arguments in function call
+        format_Time(timeStringBuffer);
+Lab3.c(170): warning:  #223-D: function "draw_Clock" declared implicitly
+        draw_Clock();
+Lab3.c(178): warning:  #177-D: variable "i" was declared but never referenced
+        int i = 0;
+Lab3.c(181): warning:  #550-D: variable "lastinput" was set but never used
+    uint32_t input,lastinput =0x00;
+Lab3.c: 6 warnings, 1 error
+".\AlarmClock.axf" - 1 Error(s), 6 Warning(s).
+Target not created
+</pre>
+</body>
+</html>
+ced
+        int x;
+FSM.c(288): warning:  #111-D: statement is unreachable
+                        return 0x00;
+FSM.c(490): warning:  #111-D: statement is unreachable
+                        return 0x00;
+FSM.c: 6 warnings, 0 errors
+".\AlarmClock.axf" - 1 Error(s), 9 Warning(s).
+Target not created
+ude "LCD.h"
+Lab3.c: 3 warnings, 2 errors
+compiling SysTick.c...
+compiling SysTickTestMain.c...
+compiling PWM.c...
+compiling PWMSine.c...
+PWMSine.h(4): warning:  #1-D: last line of file ends without a newline
+  void PMWSine_Init(void);
+PWMSine.c: 1 warning, 0 errors
+compiling Timer0A.c...
+compiling Switch.c...
+compiling FSM.c...
+PWMSine.h(4): warning:  #1-D: last line of file ends without a newline
+  void PMWSine_Init(void);
+Switch.h(26): warning:  #1-D: last line of file ends without a newline
+  void init_switchmain(void);
+Clock.h(6): error:  #147-D: declaration is incompatible with "void format_Time(char *)" (declared at line 2)
+  void format_Time(char* timeStringBuffer, uint8_t* minute_hand, uint8_t* hour_hand);
+Lab3.h(1): warning:  #1-D: last line of file ends without a newline
+  void DelayWait2ms(uint32_t);
+FSM.c(82): warning:  #177-D: variable "x" was declared but never referenced
+        int x;
+FSM.c(288): warning:  #111-D: statement is unreachable
+                        return 0x00;
+FSM.c(490): warning:  #111-D: statement is unreachable
+                        return 0x00;
+FSM.c: 6 warnings, 1 error
+compiling FIFO.c...
+compiling Clock.c...
+PWMSine.h(4): warning:  #1-D: last line of file ends without a newline
+  void PMWSine_Init(void);
+Switch.h(26): warning:  #1-D: last line of file ends without a newline
+  void init_switchmain(void);
+FSM.h(1): warning:  #1-D: last line of file ends without a newline
+  uint32_t Next_State(uint32_t,uint32_t);
+Clock.c(118): warning:  #1-D: last line of file ends without a newline
+  }
+Clock.c: 4 warnings, 0 errors
+compiling FIFOqueue.c...
+FIFOqueue.c(67): warning:  #1-D: last line of file ends without a newline
+  }
+FIFOqueue.c: 1 warning, 0 errors
+".\AlarmClock.axf" - 3 Error(s), 18 Warning(s).
+Target not created

@@ -1,6 +1,6 @@
 .\lab3.o: Lab3.c
-.\lab3.o: E:\Keil\ARM\ARMCC\bin\..\include\stdint.h
-.\lab3.o: E:\Keil\ARM\ARMCC\bin\..\include\stdbool.h
+.\lab3.o: E:\Keil1\ARM\ARMCC\bin\..\include\stdint.h
+.\lab3.o: E:\Keil1\ARM\ARMCC\bin\..\include\stdbool.h
 .\lab3.o: ../inc/tm4c123gh6pm.h
 .\lab3.o: PLL.h
 .\lab3.o: ST7735.h
@@ -9,6 +9,6 @@
 .\lab3.o: PWMSine.h
 .\lab3.o: Switch.h
 .\lab3.o: FIFOqueue.h
-.\lab3.o: Display.h
 .\lab3.o: FSM.h
 .\lab3.o: Clock.h
+.\lab3.o: LCD.h
