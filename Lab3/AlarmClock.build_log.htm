@@ -4,95 +4,91 @@
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
 C:\Users\Stefan\OneDrive\Documents\Spring 2017\EE 445L\Code\Lab3\AlarmClock.uvproj
-Project File Date:  02/07/2017
+Project File Date:  02/08/2017
 
 <h2>Output:</h2>
-Build target 'ADCSWTrigger'
+Rebuild target 'ADCSWTrigger'
+assembling startup.s...
+compiling PLL.c...
+compiling fixed.c...
+fixed.c(336): warning:  #177-D: variable "xSlope" was declared but never referenced
+                int xSlope, ySlope, xDif, yDif, signX, signY, error, delta_error;
+fixed.c(336): warning:  #177-D: variable "ySlope" was declared but never referenced
+                int xSlope, ySlope, xDif, yDif, signX, signY, error, delta_error;
+fixed.c(364): warning:  #1-D: last line of file ends without a newline
+                
+fixed.c: 3 warnings, 0 errors
+compiling ST7735.c...
 compiling Lab3.c...
 PWMSine.h(4): warning:  #1-D: last line of file ends without a newline
   void PMWSine_Init(void);
+Switch.h(26): warning:  #1-D: last line of file ends without a newline
+  void init_switchmain(void);
 FSM.h(1): warning:  #1-D: last line of file ends without a newline
   uint32_t Next_State(uint32_t,uint32_t);
-Clock.h(1): warning:  #1-D: last line of file ends without a newline
-  void format_Time(char* timeStringBuffer, uint8_t* minute_hand, uint8_t* hour_hand);
-LCD.h(14): warning:  #1-D: last line of file ends without a newline
-  void draw_Clock(void);
-Lab3.c(183): warning:  #177-D: variable "i" was declared but never referenced
+LCD.h(71): warning:  #1-D: last line of file ends without a newline
+  void DelayWait1Millisecond(uint32_t n);
+Lab3.c(168): warning:  #177-D: variable "i" was declared but never referenced
         int i = 0;
-Lab3.c: 5 warnings, 0 errors
-linking...
-Program Size: Code=6124 RO-data=43040 RW-data=2988 ZI-data=1252  
-".\AlarmClock.axf" - 0 Error(s), 5 Warning(s).
-Load "C:\\Users\\Stefan\\OneDrive\\Documents\\Spring 2017\\EE 445L\\Code\\Lab3\\AlarmClock.axf" 
-Connecting: Mode=JTAG, Speed=1000000Hz
-Erase Done.
-Programming Done.
-Verify OK.
-larmClock.axf" 
-Connecting: Mode=JTAG, Speed=1000000Hz
-Erase Done.
-Programming Done.
-Verify OK.
-f" - 0 Error(s), 6 Warning(s).
-Load "C:\\Users\\Stefan\\OneDrive\\Documents\\Spring 2017\\EE 445L\\Code\\Lab3\\AlarmClock.axf" 
-Connecting: Mode=JTAG, Speed=1000000Hz
-Erase Done.
-Programming Done.
-Verify OK.
-lope, ySlope, xDif, yDif, signX, signY, error, delta_error;
-LCD.c: 5 warnings, 0 errors
-linking...
-Program Size: Code=6104 RO-data=43040 RW-data=2988 ZI-data=1252  
-".\AlarmClock.axf" - 0 Error(s), 10 Warning(s).
-Load "C:\\Users\\Stefan\\OneDrive\\Documents\\Spring 2017\\EE 445L\\Code\\Lab3\\AlarmClock.axf" 
-Connecting: Mode=JTAG, Speed=1000000Hz
-Erase Done.
-Programming Done.
-Verify OK.
-
+Lab3.c(171): warning:  #550-D: variable "lastinput" was set but never used
+    uint32_t input,lastinput =0x00;
+Lab3.c: 6 warnings, 0 errors
+compiling SysTick.c...
+compiling SysTickTestMain.c...
+compiling PWM.c...
+compiling PWMSine.c...
+PWMSine.h(4): warning:  #1-D: last line of file ends without a newline
+  void PMWSine_Init(void);
+PWMSine.c: 1 warning, 0 errors
+compiling Timer0A.c...
+compiling Switch.c...
+compiling FSM.c...
+PWMSine.h(4): warning:  #1-D: last line of file ends without a newline
+  void PMWSine_Init(void);
+Switch.h(26): warning:  #1-D: last line of file ends without a newline
+  void init_switchmain(void);
+Lab3.h(1): warning:  #1-D: last line of file ends without a newline
+  void DelayWait2ms(uint32_t);
+FSM.c(82): warning:  #177-D: variable "x" was declared but never referenced
         int x;
-FSM.c(123): warning:  #177-D: variable "hours" was declared but never referenced
-        uint32_t hours,minutes,seconds,meridian;
-FSM.c(123): warning:  #177-D: variable "minutes" was declared but never referenced
-        uint32_t hours,minutes,seconds,meridian;
-FSM.c(123): warning:  #177-D: variable "seconds" was declared but never referenced
-        uint32_t hours,minutes,seconds,meridian;
-FSM.c(123): warning:  #177-D: variable "meridian" was declared but never referenced
-        uint32_t hours,minutes,seconds,meridian;
-FSM.c(125): warning:  #177-D: variable "currentTimePos" was declared but never referenced
-        int currentTimePos = 0; //0 is hours, 1 is minutes, 2 is seconds, 3 is Meridian
-FSM.c: 7 warnings, 0 errors
+FSM.c(288): warning:  #111-D: statement is unreachable
+                        return 0x00;
+FSM.c(490): warning:  #111-D: statement is unreachable
+                        return 0x00;
+FSM.c: 6 warnings, 0 errors
 compiling FIFO.c...
 compiling Clock.c...
 PWMSine.h(4): warning:  #1-D: last line of file ends without a newline
   void PMWSine_Init(void);
+Switch.h(26): warning:  #1-D: last line of file ends without a newline
+  void init_switchmain(void);
 FSM.h(1): warning:  #1-D: last line of file ends without a newline
   uint32_t Next_State(uint32_t,uint32_t);
-Clock.c(118): warning:  #1-D: last line of file ends without a newline
+Clock.c(125): warning:  #1-D: last line of file ends without a newline
   }
-Clock.c: 3 warnings, 0 errors
+Clock.c: 4 warnings, 0 errors
 compiling FIFOqueue.c...
 FIFOqueue.c(67): warning:  #1-D: last line of file ends without a newline
   }
 FIFOqueue.c: 1 warning, 0 errors
 compiling LCD.c...
-LCD.h(14): warning:  #1-D: last line of file ends without a newline
-  void draw_Clock(void);
-Clock.h(1): warning:  #1-D: last line of file ends without a newline
-  void format_Time(char* timeStringBuffer, uint8_t* minute_hand, uint8_t* hour_hand);
+LCD.h(71): warning:  #1-D: last line of file ends without a newline
+  void DelayWait1Millisecond(uint32_t n);
 Display.h(1284): warning:  #1-D: last line of file ends without a newline
   };
-LCD.c(132): warning:  #177-D: variable "xSlope" was declared but never referenced
+LCD.c(134): warning:  #177-D: variable "xSlope" was declared but never referenced
                 int xSlope, ySlope, xDif, yDif, signX, signY, error, delta_error;
-LCD.c(132): warning:  #177-D: variable "ySlope" was declared but never referenced
+LCD.c(134): warning:  #177-D: variable "ySlope" was declared but never referenced
                 int xSlope, ySlope, xDif, yDif, signX, signY, error, delta_error;
-LCD.c: 5 warnings, 0 errors
+LCD.c: 4 warnings, 0 errors
 linking...
-Program Size: Code=5996 RO-data=43040 RW-data=2988 ZI-data=1252  
+Program Size: Code=9588 RO-data=43120 RW-data=3000 ZI-data=1248  
 ".\AlarmClock.axf" - 0 Error(s), 25 Warning(s).
 Load "C:\\Users\\Stefan\\OneDrive\\Documents\\Spring 2017\\EE 445L\\Code\\Lab3\\AlarmClock.axf" 
 Connecting: Mode=JTAG, Speed=1000000Hz
 Erase Done.
 Programming Done.
 Verify OK.
-et not created
+ormation, 0 warning and 1 error messages.
+".\AlarmClock.axf" - 1 Error(s), 26 Warning(s).
+Target not created

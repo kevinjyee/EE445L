@@ -198,7 +198,7 @@ void draw_Time(){
 	uint8_t minutes;
   uint8_t hours;
 	char timeStringBuffer[10] = {' '}; //Initialize array to empty string 
-	format_Time(timeStringBuffer, &minutes, &hours);
+	format_And_Output_Time(timeStringBuffer, &minutes, &hours);
 	draw_Hands(minutes, hours);
 	ST7735_SetCursor(0,0);
   ST7735_OutString(timeStringBuffer);
@@ -222,7 +222,7 @@ void animate_Clock(){
 	}
 }
 
-void draw_Clock(){
+void draw_Clock(void){
 	ST7735_DrawBitmap(0,159,ClockFace,128,160);
 	ST7735_XYplotInit1(-2500, 2500, -2500, 2500); //convert maxxX and maxxY to thousands based on resoltuion
 	ST7735_Translate1(180, (int32_t*) MinuteHandXbuf, (int32_t*) MinuteHandYbuf); // Translate circle to screen for line drawing.

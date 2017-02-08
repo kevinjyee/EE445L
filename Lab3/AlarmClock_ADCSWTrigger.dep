@@ -14,19 +14,21 @@ I (C:\Keil\ARM\ARMCC\include\stdio.h)(0x51C87C24)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C87C24)
 I (ST7735.h)(0x589905B0)
 I (..\inc/tm4c123gh6pm.h)(0x588F517F)
-F (.\Lab3.c)(0x589B4C03)(-c --cpu Cortex-M4 -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\.. --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\lab3.o --omf_browse .\lab3.crf --depend .\lab3.d)
+F (.\Lab3.c)(0x589B55CC)(-c --cpu Cortex-M4 -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\.. --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\lab3.o --omf_browse .\lab3.crf --depend .\lab3.d)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C87C24)
+I (C:\Keil\ARM\ARMCC\include\stdbool.h)(0x51C87C24)
 I (../inc/tm4c123gh6pm.h)(0x588F517F)
 I (PLL.h)(0x589905B0)
 I (ST7735.h)(0x589905B0)
 I (fixed.h)(0x589A2B25)
 I (SysTick.h)(0x589A998A)
 I (PWMSine.h)(0x5899707F)
-I (Switch.h)(0x589A998A)
+I (Switch.h)(0x589B5255)
 I (FIFOqueue.h)(0x589A998A)
 I (FSM.h)(0x589A998A)
-I (Clock.h)(0x589AD7B9)
-I (LCD.h)(0x589AA423)
+I (Clock.h)(0x589B5410)
+I (C:\Keil\ARM\ARMCC\include\stdio.h)(0x51C87C24)
+I (LCD.h)(0x589B5256)
 F (.\SysTick.c)(0x589ADA95)(-c --cpu Cortex-M4 -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\.. --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\systick.o --omf_browse .\systick.crf --depend .\systick.d)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C87C24)
 I (../inc/tm4c123gh6pm.h)(0x588F517F)
@@ -49,24 +51,28 @@ F (.\Timer0A.c)(0x58996F96)(-c --cpu Cortex-M4 -g -O0 --apcs=interwork --split_s
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C87C24)
 I (..//inc//tm4c123gh6pm.h)(0x588F517F)
 I (Timer0A.h)(0x54C023DE)
-F (.\Switch.c)(0x589A998A)(-c --cpu Cortex-M4 -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\.. --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\switch.o --omf_browse .\switch.crf --depend .\switch.d)
+F (.\Switch.c)(0x589B5255)(-c --cpu Cortex-M4 -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\.. --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\switch.o --omf_browse .\switch.crf --depend .\switch.d)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C87C24)
 I (..\inc//tm4c123gh6pm.h)(0x588F517F)
 I (FIFOqueue.h)(0x589A998A)
-F (.\FSM.c)(0x589A998A)(-c --cpu Cortex-M4 -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\.. --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\fsm.o --omf_browse .\fsm.crf --depend .\fsm.d)
+F (.\FSM.c)(0x589B5255)(-c --cpu Cortex-M4 -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\.. --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\fsm.o --omf_browse .\fsm.crf --depend .\fsm.d)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C87C24)
+I (C:\Keil\ARM\ARMCC\include\stdbool.h)(0x51C87C24)
 I (../inc/tm4c123gh6pm.h)(0x588F517F)
 I (PLL.h)(0x589905B0)
 I (ST7735.h)(0x589905B0)
 I (fixed.h)(0x589A2B25)
 I (SysTick.h)(0x589A998A)
 I (PWMSine.h)(0x5899707F)
-I (Switch.h)(0x589A998A)
+I (Switch.h)(0x589B5255)
 I (FIFO.h)(0x5899EA5F)
+I (Clock.h)(0x589B5410)
+I (C:\Keil\ARM\ARMCC\include\stdio.h)(0x51C87C24)
+I (Lab3.h)(0x589B4DED)
 F (.\FIFO.c)(0x5899EA5F)(-c --cpu Cortex-M4 -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\.. --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\fifo.o --omf_browse .\fifo.crf --depend .\fifo.d)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C87C24)
 I (FIFO.h)(0x5899EA5F)
-F (.\Clock.c)(0x589AD790)(-c --cpu Cortex-M4 -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\.. --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\clock.o --omf_browse .\clock.crf --depend .\clock.d)
+F (.\Clock.c)(0x589B547F)(-c --cpu Cortex-M4 -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\.. --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\clock.o --omf_browse .\clock.crf --depend .\clock.d)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C87C24)
 I (../inc/tm4c123gh6pm.h)(0x588F517F)
 I (PLL.h)(0x589905B0)
@@ -74,18 +80,19 @@ I (ST7735.h)(0x589905B0)
 I (fixed.h)(0x589A2B25)
 I (SysTick.h)(0x589A998A)
 I (PWMSine.h)(0x5899707F)
-I (Switch.h)(0x589A998A)
+I (Switch.h)(0x589B5255)
 I (FIFO.h)(0x5899EA5F)
 I (FSM.h)(0x589A998A)
 F (.\FIFOqueue.c)(0x589A998A)(-c --cpu Cortex-M4 -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\.. --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\fifoqueue.o --omf_browse .\fifoqueue.crf --depend .\fifoqueue.d)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C87C24)
 I (FIFOqueue.h)(0x589A998A)
 I (..\inc/tm4c123gh6pm.h)(0x588F517F)
-F (.\LCD.c)(0x589B4B90)(-c --cpu Cortex-M4 -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\.. --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\lcd.o --omf_browse .\lcd.crf --depend .\lcd.d)
+F (.\LCD.c)(0x589B55A8)(-c --cpu Cortex-M4 -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\.. --c99-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\lcd.o --omf_browse .\lcd.crf --depend .\lcd.d)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C87C24)
 I (PLL.h)(0x589905B0)
 I (../inc/tm4c123gh6pm.h)(0x588F517F)
 I (ST7735.h)(0x589905B0)
-I (LCD.h)(0x589AA423)
-I (Clock.h)(0x589AD7B9)
+I (LCD.h)(0x589B5256)
+I (Clock.h)(0x589B5410)
+I (C:\Keil\ARM\ARMCC\include\stdio.h)(0x51C87C24)
 I (Display.h)(0x589AA683)
