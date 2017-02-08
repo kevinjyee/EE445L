@@ -455,6 +455,21 @@
               <FileType>1</FileType>
               <FilePath>.\Timer0A.c</FilePath>
             </File>
+            <File>
+              <FileName>Switch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Switch.c</FilePath>
+            </File>
+            <File>
+              <FileName>FSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\FSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>FIFO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\FIFO.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

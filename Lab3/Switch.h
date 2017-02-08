@@ -20,3 +20,5 @@ void Switch_Init(void);
 // Output: 0 to 7 depending on keys
 // 0x01 is just Key0, 0x02 is just Key1, 0x04 is just Key2
 uint32_t Switch_In(void);
+
+void Timer2Arm(void);

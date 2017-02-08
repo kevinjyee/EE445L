@@ -7,6 +7,7 @@
 .\lab3.o: SysTick.h
 .\lab3.o: PWMSine.h
 .\lab3.o: Switch.h
-.\lab3.o: FIFO.h
+.\lab3.o: FIFOqueue.h
 .\lab3.o: Display.h
 .\lab3.o: FSM.h
+.\lab3.o: Clock.h

@@ -33,9 +33,10 @@
 #include "SysTick.h"
 #include "PWMSine.h"
 #include "Switch.h"
-#include "FIFO.h"
+#include "FIFOqueue.h"
 #include "Display.h"
 #include "FSM.h"
+#include "Clock.h"
 
 #define PA3							(*((volatile uint32_t *)0x40004020)) // Menu switch
 #define PA2             (*((volatile uint32_t *)0x40004010)) // Select switch
@@ -45,6 +46,11 @@
 #define PM							1
 #define SYSTICK_RELOAD	0x4C4B40 // Reload value for an interrupt frequency of 10Hz.
 
+#define HOUR 0
+#define MIN 1 
+#define SEC 2
+#define MER 3
+#define ALL 4
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -75,14 +81,29 @@ void getTime(uint8_t* meridian, uint8_t* hours, uint8_t* minutes, uint8_t* secon
 	
 }
 
-void DelayWait2s(uint32_t n){uint32_t volatile time;
+void DelayWait1ms(uint32_t n){uint32_t volatile time;
   while(n){
-    time = 2*72724000*2/91;  // 10msec
+    time = 7272400*2/91;  // 10msec
     while(time){
 	  	time--;
     }
     n--;
   }
+}
+// Initialize Port F so PF1, PF2 and PF3 are heartbeats
+void PortF_Init(void){
+	volatile unsigned long delay;
+	
+	SYSCTL_RCGCGPIO_R |= 0x00000020; // activate port F
+	int x=0;
+   x++;
+   x--;
+   x++;	//    allow time for clock to stabilize
+  GPIO_PORTF_DIR_R |= 0x0E;   // make PF123 output (PF1 built-in LED)
+  GPIO_PORTF_AFSEL_R &= ~0x0E;// disable alt funct on PF123
+  GPIO_PORTF_DEN_R |= 0x0E;   // enable digital I/O on PF123
+  GPIO_PORTF_PCTL_R = (GPIO_PORTF_PCTL_R&0xFFFFFF0F)+0x00000000;
+  GPIO_PORTF_AMSEL_R &= ~0x0E;     // disable analog functionality on PF123
 }
 
 /*
@@ -136,8 +157,10 @@ void Timer1_Init(void){
 
 void init_All(){
 	PLL_Init(Bus50MHz);                   // 50 MHz
-	RxFifo_Init();
+	PortF_Init();
+	Fifo_Init();
 	Switch_Init();
+	Timer2Arm();
 	ST7735_InitR(INITR_REDTAB);
   SysTick_Init(SYSTICK_RELOAD);
 	//Timer1_Init();
@@ -145,52 +168,7 @@ void init_All(){
 	
 }
 
-// Convert time variable to format (h0)(h1):(m0)(m1):(s0)(s1) (Mer0)(Mer1)
-void format_Time(char* timeStringBuffer){
-	int8_t seconds, minutes, hours, meridian, index;
-	uint32_t time = Time;
-	seconds = time % 100;
-	time = time / 1000;
-	minutes = time % 100;
-	time = time / 1000;
-	hours = time % 100;
-	meridian = (time / 100) % 10;
-	index = 0;
-	char h0 = (hours / 10) + '0';
-	timeStringBuffer[index] = h0;
-	index++;
-	char h1 = (hours % 10) + '0';
-	timeStringBuffer[index] = h1;
-	index++;
-	timeStringBuffer[index] = ':';
-	index++;
-	char m0 = (minutes / 10) + '0';
-	timeStringBuffer[index] = m0;
-	index++;
-	char m1 = (minutes % 10) + '0';
-	timeStringBuffer[index] = m1;
-	index++;
-	timeStringBuffer[index] = ':';
-	index++;
-	char s0 = (seconds / 10) + '0';
-	timeStringBuffer[index] = s0;
-	index++;
-	char s1 = (seconds % 10) + '0';
-	timeStringBuffer[index] = s1;
-	index++;
-	timeStringBuffer[index] = ' ';
-	index++;
-	char Mer1 = 'M';
-	char Mer0;
-	if(meridian){
-		Mer0 = 'P';
-	} else{
-		Mer0 = 'A';
-	}
-	timeStringBuffer[index] = Mer0;
-	index++;
-	timeStringBuffer[index] = Mer1;
-}
+
 
 void draw_Time(){
 	char timeStringBuffer[10] = {' '}; //Initialize array to empty string 
@@ -216,10 +194,18 @@ int main(void){
 	uint32_t current_state = 0x00;	
   while(1){
 		draw_Time(); // Start updating time.
-		rxDataType *keyInputs;
-		if(RxFifo_Get(keyInputs))
+		uint32_t lastinput =0x00;
+		uint32_t input = Switch_In();
+		DelayWait1ms(1);
+		if(input == lastinput)
 		{
-				current_state = Next_State(current_state, *keyInputs);
+			current_state = Next_State(current_state, lastinput);	
+			
+		}
+		else
+		{
+				current_state = Next_State(current_state, input);
+				lastinput = input;
 		}
   }
 }
