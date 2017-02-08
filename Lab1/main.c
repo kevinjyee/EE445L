@@ -1,5 +1,5 @@
 /* File Name:    main.c
- * Authors:      Kevin Yee (kjy252), Stefan Bordovsky (sb39782)
+ * Authors:      Kevin Yee (kjy252), Stefan Bordovsky ()
  * Created:      01/19/2017
  * Description:  Main functions to test for plotting floating pts, fixed pts and images
  *               
@@ -133,15 +133,6 @@ int main(void){uint32_t i;
 	SysTick_Init();
   ST7735_InitR(INITR_REDTAB);
   while(1){
-		ST7735_FillScreen(ST7735_BLACK); 
-    ST7735_SetCursor(0,0);
-    printf("Lab 1\n");
-		printf("Kevin Yee\n");
-		printf("Stefan Bordovsky\n");
-		printf("kjy252\n");
-		printf("sb39782\n");
-		
-		Pause();
     ST7735_FillScreen(ST7735_BLACK); 
     ST7735_SetCursor(0,0);
     printf("Lab 1\rST7735_sDecOut3\r");
@@ -207,7 +198,15 @@ int main(void){uint32_t i;
 		ST7735_OutString("Elapsed Time ");
 		ST7735_OutUDec(difference4);
 		
-	
+		
+		//printf("\n");
+    //printf("TestFloat Point.asm\n");
+		//long start4 = NVIC_ST_CURRENT_R;
+		//Test4();
+		//long end4 = NVIC_ST_CURRENT_R;
+		//long difference4 = start4 -end4;
+		//ST7735_OutString("Elapsed Time ");
+		//ST7735_OutUDec(difference4);
 		
 		
 		Pause();
