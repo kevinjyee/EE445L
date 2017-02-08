@@ -1,5 +1,6 @@
 .\lab3.o: Lab3.c
 .\lab3.o: E:\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\lab3.o: E:\Keil\ARM\ARMCC\bin\..\include\stdbool.h
 .\lab3.o: ../inc/tm4c123gh6pm.h
 .\lab3.o: PLL.h
 .\lab3.o: ST7735.h

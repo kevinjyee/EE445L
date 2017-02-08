@@ -475,6 +475,11 @@
               <FileType>1</FileType>
               <FilePath>.\Clock.c</FilePath>
             </File>
+            <File>
+              <FileName>FIFOqueue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\FIFOqueue.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

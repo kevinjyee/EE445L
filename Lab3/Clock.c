@@ -61,7 +61,7 @@ void format_Time(char* timeStringBuffer){
 	timeStringBuffer[index] = Mer1;
 }
 
-void format_SetTime(char* timeStringBuffer, int type){
+void format_setTime(char* timeStringBuffer, int type){
 	int8_t seconds, minutes, hours, meridian, index;
 	uint32_t time = Time;
 	seconds = time % 100;

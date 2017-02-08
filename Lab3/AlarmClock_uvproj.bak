@@ -470,6 +470,11 @@
               <FileType>1</FileType>
               <FilePath>.\FIFO.c</FilePath>
             </File>
+            <File>
+              <FileName>Clock.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Clock.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

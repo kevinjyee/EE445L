@@ -26,6 +26,7 @@
 // bottom of X-ohm potentiometer connected to ground
 // top of X-ohm potentiometer connected to +3.3V 
 #include <stdint.h>
+#include <stdbool.h>
 #include "../inc/tm4c123gh6pm.h"
 #include "PLL.h"
 #include "ST7735.h"
@@ -64,7 +65,7 @@ volatile uint8_t SelectSeconds;
 volatile uint8_t SelectMinutes;
 volatile uint8_t SelectHours;
 volatile uint8_t SelectMeridian;
-
+volatile unsigned long LastE = 0; 
 
 
 // Retrieves seconds, minutes, and hour from Time global variable in thread-safe fashion.
@@ -81,30 +82,16 @@ void getTime(uint8_t* meridian, uint8_t* hours, uint8_t* minutes, uint8_t* secon
 	
 }
 
-void DelayWait1ms(uint32_t n){uint32_t volatile time;
+void DelayWait2ms(uint32_t n){uint32_t volatile time;
   while(n){
-    time = 7272400*2/91;  // 10msec
+    time = 7272400*4/91;  // 10msec
     while(time){
 	  	time--;
     }
     n--;
   }
 }
-// Initialize Port F so PF1, PF2 and PF3 are heartbeats
-void PortF_Init(void){
-	volatile unsigned long delay;
-	
-	SYSCTL_RCGCGPIO_R |= 0x00000020; // activate port F
-	int x=0;
-   x++;
-   x--;
-   x++;	//    allow time for clock to stabilize
-  GPIO_PORTF_DIR_R |= 0x0E;   // make PF123 output (PF1 built-in LED)
-  GPIO_PORTF_AFSEL_R &= ~0x0E;// disable alt funct on PF123
-  GPIO_PORTF_DEN_R |= 0x0E;   // enable digital I/O on PF123
-  GPIO_PORTF_PCTL_R = (GPIO_PORTF_PCTL_R&0xFFFFFF0F)+0x00000000;
-  GPIO_PORTF_AMSEL_R &= ~0x0E;     // disable analog functionality on PF123
-}
+
 
 /*
 // This debug function initializes Timer0A to request interrupts
@@ -157,10 +144,8 @@ void Timer1_Init(void){
 
 void init_All(){
 	PLL_Init(Bus50MHz);                   // 50 MHz
-	PortF_Init();
-	Fifo_Init();
-	Switch_Init();
-	Timer2Arm();
+	init_switchmain();
+	
 	ST7735_InitR(INITR_REDTAB);
   SysTick_Init(SYSTICK_RELOAD);
 	//Timer1_Init();
@@ -177,11 +162,7 @@ void draw_Time(){
   ST7735_OutString(timeStringBuffer);
 }
 
-void set_Time(){
-	DisableInterrupts();
-	SysTick_Set_Time(SelectHours, SelectMinutes, SelectSeconds, SelectMeridian);
-	EnableInterrupts();
-}
+
 
 int main(void){
   init_All();
@@ -189,23 +170,26 @@ int main(void){
 	ST7735_DrawBitmap(4,159,ClockFace,128,160);
 	EnableInterrupts();
 	PMWSine_Init(); // Initialize sound generation
-	
-	int i = 0;
+	bool readyforinput = false;
 	uint32_t current_state = 0x00;	
-  while(1){
+  uint32_t input,lastinput =0x00;
+	while(1){
 		draw_Time(); // Start updating time.
-		uint32_t lastinput =0x00;
-		uint32_t input = Switch_In();
-		DelayWait1ms(1);
-		if(input == lastinput)
-		{
-			current_state = Next_State(current_state, lastinput);	
+		
+		
+		
 			
+		if(Fifo_Get(&input))
+		{
+			current_state = Next_State(current_state, input);			
+			lastinput = input;
+		 
 		}
 		else
 		{
-				current_state = Next_State(current_state, input);
-				lastinput = input;
+				current_state = Next_State(current_state,0x00);
+			
+				
 		}
   }
 }

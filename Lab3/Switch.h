@@ -22,3 +22,5 @@ void Switch_Init(void);
 uint32_t Switch_In(void);
 
 void Timer2Arm(void);
+
+void init_switchmain(void);
