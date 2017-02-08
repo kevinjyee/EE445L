@@ -1,0 +1,20 @@
+# Logs and databases #
+######################
+*.log
+
+# Compiled source #
+###################
+*.bak
+*.Stefan
+*.axf
+*.htm
+*.lnp
+*.map
+*.Kevin
+*.uvopt
+*.dep
+*.crf
+*.o
+*.d
+*.lst
+*.uvproj

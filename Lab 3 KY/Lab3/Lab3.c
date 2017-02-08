@@ -35,14 +35,16 @@
 #include "PWMSine.h"
 #include "Switch.h"
 #include "FIFOqueue.h"
+#include "Display.h"
 #include "FSM.h"
 #include "Clock.h"
-#include "LCD.h"
 
 #define PA3							(*((volatile uint32_t *)0x40004020)) // Menu switch
 #define PA2             (*((volatile uint32_t *)0x40004010)) // Select switch
 #define PA1             (*((volatile uint32_t *)0x40004008)) // Up switch
 #define PA0							(*((volatile uint32_t *)0x40004004)) // Down switch
+#define AM							0
+#define PM							1
 #define SYSTICK_RELOAD	0x4C4B40 // Reload value for an interrupt frequency of 10Hz.
 
 #define HOUR 0
@@ -145,12 +147,11 @@ void init_All(){
 	init_switchmain();
 	
 	ST7735_InitR(INITR_REDTAB);
-  SysTick_Init(SYSTICK_RELOAD / 256);
+  SysTick_Init(SYSTICK_RELOAD);
 	//Timer1_Init();
 	
 	
 }
-
 
 
 
@@ -163,25 +164,20 @@ void draw_Time(){
 
 
 
-
 int main(void){
   init_All();
 	
-	draw_Clock();
-	//draw_Hands();
+	ST7735_DrawBitmap(4,159,ClockFace,128,160);
 	EnableInterrupts();
-
 	PMWSine_Init(); // Initialize sound generation
-
-	//PMWSine_Init(); // Initialize sound generation
-	
-	int i = 0;
-
+	bool readyforinput = false;
 	uint32_t current_state = 0x00;	
   uint32_t input,lastinput =0x00;
 	while(1){
 		draw_Time(); // Start updating time.
-
+		
+		
+		
 			
 		if(Fifo_Get(&input))
 		{
