@@ -213,9 +213,9 @@ void ST7735_XYplotInit(char *title, int32_t minX, int32_t maxX, int32_t minY, in
 	
 	//clear screen and output title
 	
-	ST7735_FillScreen(0);
-	ST7735_SetCursor(0,0);
-  ST7735_OutString(title);
+	//ST7735_FillScreen(0);
+	//ST7735_SetCursor(0,0);
+  //ST7735_OutString(title);
 }
 
 /**************ST7735_XYplot***************
@@ -241,21 +241,21 @@ void ST7735_XYplot(uint32_t num, int32_t bufX[], int32_t bufY[]){
 */
 	
 
-for (uint32_t i=0 ; i < num; ++i) {
-	if (bufX[i] < MinX   ||   bufX[i] > MaxX   ||   
-      bufY[i] < MinY   ||   bufY[i] > MaxY) { continue; } 
-	else
-		{
-      int32_t x = (127*(bufX[i] - MinX)) / (MaxX - MinX);
-      int32_t y = 32+(127*((MaxY - bufY[i]))  / (MaxY - MinY));
+	for (uint32_t i=0 ; i < num; ++i) {
+		if (bufX[i] < MinX   ||   bufX[i] > MaxX   ||   
+				bufY[i] < MinY   ||   bufY[i] > MaxY) { continue; } 
+		else
+			{
+				int32_t x = (127*(bufX[i] - MinX)) / (MaxX - MinX);
+				int32_t y = 32+(127*((MaxY - bufY[i]))  / (MaxY - MinY));
 
-      ST7735_DrawPixel(x,   y,   ST7735_CYAN);
-      ST7735_DrawPixel(x+1, y,   ST7735_CYAN);
-      ST7735_DrawPixel(x,   y+1, ST7735_CYAN);
-      ST7735_DrawPixel(x+1, y+1, ST7735_CYAN);
-		}
+				ST7735_DrawPixel(x,   y,   ST7735_CYAN);
+				ST7735_DrawPixel(x+1, y,   ST7735_CYAN);
+				ST7735_DrawPixel(x,   y+1, ST7735_CYAN);
+				ST7735_DrawPixel(x+1, y+1, ST7735_CYAN);
+			}
     
-  }
+	}
 }
 
 /**************ST7735_Translate***************

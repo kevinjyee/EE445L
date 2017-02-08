@@ -34,16 +34,14 @@
 #include "PWMSine.h"
 #include "Switch.h"
 #include "FIFOqueue.h"
-#include "Display.h"
 #include "FSM.h"
 #include "Clock.h"
+#include "LCD.h"
 
 #define PA3							(*((volatile uint32_t *)0x40004020)) // Menu switch
 #define PA2             (*((volatile uint32_t *)0x40004010)) // Select switch
 #define PA1             (*((volatile uint32_t *)0x40004008)) // Up switch
 #define PA0							(*((volatile uint32_t *)0x40004004)) // Down switch
-#define AM							0
-#define PM							1
 #define SYSTICK_RELOAD	0x4C4B40 // Reload value for an interrupt frequency of 10Hz.
 
 #define HOUR 0
@@ -162,19 +160,10 @@ void init_All(){
 	Switch_Init();
 	Timer2Arm();
 	ST7735_InitR(INITR_REDTAB);
-  SysTick_Init(SYSTICK_RELOAD);
+  SysTick_Init(SYSTICK_RELOAD / 256);
 	//Timer1_Init();
 	
 	
-}
-
-
-
-void draw_Time(){
-	char timeStringBuffer[10] = {' '}; //Initialize array to empty string 
-	format_Time(timeStringBuffer);
-	ST7735_SetCursor(0,0);
-  ST7735_OutString(timeStringBuffer);
 }
 
 void set_Time(){
@@ -186,15 +175,16 @@ void set_Time(){
 int main(void){
   init_All();
 	
-	ST7735_DrawBitmap(4,159,ClockFace,128,160);
+	draw_Clock();
+	//draw_Hands();
 	EnableInterrupts();
-	PMWSine_Init(); // Initialize sound generation
+	//PMWSine_Init(); // Initialize sound generation
 	
 	int i = 0;
 	uint32_t current_state = 0x00;	
   while(1){
 		draw_Time(); // Start updating time.
-		uint32_t lastinput =0x00;
+		uint32_t lastinput = 0x00;
 		uint32_t input = Switch_In();
 		DelayWait1ms(1);
 		if(input == lastinput)
