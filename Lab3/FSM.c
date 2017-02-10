@@ -40,6 +40,8 @@ bool updateTime = true;
 uint32_t time;
 volatile int curentMenuPos =0;
 volatile int currentSetTimePos = 0 ; //-1 just entered menu	//0 is hours, 1 is minutes, 2 is seconds, 3 is Meridian
+volatile int currentSetAlarmPos = 0;
+int AlarmOn = FALSE;
 
 
 uint32_t MainScreen(uint32_t);
@@ -70,7 +72,7 @@ uint32_t Next_State(uint32_t current_state, uint32_t keyInputs)
 
 
 void clear_Menu(){
-			ST7735_FillRect(0,0,120,2,ST7735_BLACK);
+			ST7735_FillRect(0,0,125,10,ST7735_BLACK);
 			ST7735_DrawString(0,1,"Set Time",ST7735_BLACK);
 			ST7735_DrawString(0,2,"Set Alarm",ST7735_BLACK);
 			ST7735_DrawString(0,3,"Choose Song",ST7735_BLACK);
@@ -172,16 +174,16 @@ uint32_t SetTime(uint32_t input)
 	hours = modifiedtime % 100;
 	meridian = (modifiedtime / 100) % 10;
 	
-	format_setTime(hourBuffer,HOUR);
-	format_setTime(minuteBuffer, MIN);
-	format_setTime(secondsBuffer, SEC);
-	format_setTime(meridianBuffer,MER);
+	format_setTime(hourBuffer,HOUR,FALSE);
+	format_setTime(minuteBuffer, MIN,FALSE);
+	format_setTime(secondsBuffer, SEC,FALSE);
+	format_setTime(meridianBuffer,MER,FALSE);
 	
 	if(redrawTime)
 	{
-		ST7735_SetCursor(25,0);
-		//ST7735_OutString("Set Time");
+		
 		clear_Menu();
+		ST7735_DrawString(0,0,"Set Time",ST7735_WHITE);
 		ST7735_DrawString(0,1,hourBuffer,ST7735_CYAN);
 		ST7735_DrawString(2,1,":",ST7735_WHITE);
 		ST7735_DrawString(3,1,minuteBuffer,ST7735_WHITE);
@@ -212,16 +214,16 @@ uint32_t SetTime(uint32_t input)
 					break;
 				case 1: //Minute Field
 					minutes = (minutes - 1)%60;
-					if(minutes == 0)
+					if(minutes <= 0)
 					{
-						minutes = 60;
+						minutes = 59;
 					}
 					break;
 				case 2:	//Seconds Field
 					seconds = (seconds -1)%60;
-					if(seconds == 0)
+					if(seconds <= 0)
 					{
-						seconds = 60;
+						seconds = 59;
 					}
 					break;
 				case 3: //Meridian Field
@@ -235,7 +237,7 @@ uint32_t SetTime(uint32_t input)
 			{
 				case 0: //Hour Field
 					hours = (hours + 1)%12;
-					if(hours == 0)
+					if(hours <= 0)
 					{
 						hours = 12;
 					}
@@ -258,6 +260,7 @@ uint32_t SetTime(uint32_t input)
 				currentSetTimePos =0;
 				redrawTime = TRUE;
 				updateTime = true;
+				ST7735_DrawString(0,0,"Set Time",ST7735_BLACK);
 				ST7735_DrawString(0,1,hourBuffer,ST7735_BLACK);
 				ST7735_DrawString(2,1,":",ST7735_WHITE);
 				ST7735_DrawString(3,1,minuteBuffer,ST7735_BLACK);
@@ -276,6 +279,7 @@ uint32_t SetTime(uint32_t input)
 				currentSetTimePos =0;
 				redrawTime = TRUE;
 				updateTime = true;
+				ST7735_DrawString(0,0,"Set Time",ST7735_BLACK);
 				ST7735_DrawString(0,1,hourBuffer,ST7735_BLACK);
 				ST7735_DrawString(2,1,":",ST7735_WHITE);
 				ST7735_DrawString(3,1,minuteBuffer,ST7735_BLACK);
@@ -290,10 +294,10 @@ uint32_t SetTime(uint32_t input)
 	}
 		Time = (100000000 * meridian) + (1000000 * hours) + (1000 * minutes) + seconds;
 		time = Time;
-		format_setTime(hourBuffer,HOUR);
-		format_setTime(minuteBuffer, MIN);
-		format_setTime(secondsBuffer, SEC);
-		format_setTime(meridianBuffer,MER);
+		format_setTime(hourBuffer,HOUR,FALSE);
+		format_setTime(minuteBuffer, MIN,FALSE);
+		format_setTime(secondsBuffer, SEC,FALSE);
+		format_setTime(meridianBuffer,MER,FALSE);
 	switch(currentSetTimePos)
 	{
 		
@@ -374,16 +378,16 @@ uint32_t SetAlarm(uint32_t input)
 	hours = modifiedtime % 100;
 	meridian = (modifiedtime / 100) % 10;
 	
-	format_setTime(hourBuffer,HOUR);
-	format_setTime(minuteBuffer, MIN);
-	format_setTime(secondsBuffer, SEC);
-	format_setTime(meridianBuffer,MER);
+	format_setTime(hourBuffer,HOUR,TRUE);
+	format_setTime(minuteBuffer, MIN,TRUE);
+	format_setTime(secondsBuffer, SEC,TRUE);
+	format_setTime(meridianBuffer,MER,TRUE);
 	
 	if(redrawTime)
 	{
-		ST7735_SetCursor(25,0);
-		//ST7735_OutString("Set Alarm");
+		
 		clear_Menu();
+		ST7735_DrawString(0,0,"Set Alarm",ST7735_WHITE);
 		ST7735_DrawString(0,1,hourBuffer,ST7735_CYAN);
 		ST7735_DrawString(2,1,":",ST7735_WHITE);
 		ST7735_DrawString(3,1,minuteBuffer,ST7735_WHITE);
@@ -391,11 +395,12 @@ uint32_t SetAlarm(uint32_t input)
 		ST7735_DrawString(6,1,secondsBuffer,ST7735_WHITE);
 		ST7735_DrawString(8,1," ",ST7735_WHITE);
 		ST7735_DrawString(9,1,meridianBuffer,ST7735_WHITE);
+		ST7735_DrawString(11,1,"OFF",ST7735_WHITE);
 		
 		redrawTime = FALSE;
 	}
 	
-	DelayWait2ms(1);
+	
 
 	//Determine Input and Action on Configuring Time
 	switch(input)
@@ -403,37 +408,40 @@ uint32_t SetAlarm(uint32_t input)
 		
 		case 0x01: 
 			//DownSwitch
-			switch(currentSetTimePos)
+			switch(currentSetAlarmPos)
 			{
 				case 0: //Hour Field
 					hours = (hours - 1)%12;
-					if(hours == 0)
+					if(hours <= 0)
 					{
 						hours = 12;
 					}
 					break;
 				case 1: //Minute Field
 					minutes = (minutes - 1)%60;
-					if(minutes == 0)
+					if(minutes <= 0)
 					{
-						minutes = 60;
+						minutes = 59;
 					}
 					break;
 				case 2:	//Seconds Field
 					seconds = (seconds -1)%60;
-					if(seconds == 0)
+					if(seconds <= 0)
 					{
-						seconds = 60;
+						seconds = 59;
 					}
 					break;
 				case 3: //Meridian Field
 					meridian = (meridian + 1)%2;
 					break;
+				case 4: //OFF or ON
+					AlarmOn = (AlarmOn+1)%2;
+					break;
 			}
 			break;
 		case 0x02:
 			//Up Switch
-			switch(currentSetTimePos)
+			switch(currentSetAlarmPos)
 			{
 				case 0: //Hour Field
 					hours = (hours + 1)%12;
@@ -451,15 +459,19 @@ uint32_t SetAlarm(uint32_t input)
 				case 3: //Meridian Field
 					meridian = (meridian + 1)%2;
 					break;
+				case 4: //
+					AlarmOn = (AlarmOn +1)%2;
+					break;
 			}
 			break;
 		case 0x04:
 			//Select Switch
-			if(currentSetTimePos == 3)
+			if(currentSetAlarmPos == 4)
 			{
-				currentSetTimePos =0;
+				currentSetAlarmPos =0;
 				redrawTime = TRUE;
 				updateTime = true;
+				ST7735_DrawString(0,0,"Set Alarm",ST7735_BLACK);
 				ST7735_DrawString(0,1,hourBuffer,ST7735_BLACK);
 				ST7735_DrawString(2,1,":",ST7735_WHITE);
 				ST7735_DrawString(3,1,minuteBuffer,ST7735_BLACK);
@@ -467,17 +479,27 @@ uint32_t SetAlarm(uint32_t input)
 				ST7735_DrawString(6,1,secondsBuffer,ST7735_BLACK);
 				ST7735_DrawString(8,1," ",ST7735_WHITE);
 				ST7735_DrawString(9,1,meridianBuffer,ST7735_BLACK);
-				set_Time(hours,minutes,seconds,meridian);
+				ST7735_DrawString(11,1," ",ST7735_WHITE);
+				if(AlarmOn){
+					ST7735_DrawString(12,1,"ON ",ST7735_BLACK);
+
+				}
+				else{
+				ST7735_DrawString(12,1,"OFF",ST7735_BLACK);
+			
+				}
+				AlarmTime = (100000000 * meridian) + (1000000 * hours) + (1000 * minutes) + seconds;
 				return 0x00;//back to main screen
 			}
 			else{	
-			currentSetTimePos = (currentSetTimePos +1)%4; //increment field to adjust
+			currentSetAlarmPos = (currentSetAlarmPos +1)%5; //increment field to adjust
 			}
 			break;
-		case 0x08: 
-				currentSetTimePos =0;
+			case 0x08: 
+				currentSetAlarmPos =0;
 				redrawTime = TRUE;
 				updateTime = true;
+				ST7735_DrawString(0,0,"Set Alarm",ST7735_BLACK);
 				ST7735_DrawString(0,1,hourBuffer,ST7735_BLACK);
 				ST7735_DrawString(2,1,":",ST7735_WHITE);
 				ST7735_DrawString(3,1,minuteBuffer,ST7735_BLACK);
@@ -485,18 +507,27 @@ uint32_t SetAlarm(uint32_t input)
 				ST7735_DrawString(6,1,secondsBuffer,ST7735_BLACK);
 				ST7735_DrawString(8,1," ",ST7735_WHITE);
 				ST7735_DrawString(9,1,meridianBuffer,ST7735_BLACK);
-				set_Time(hours,minutes,seconds,meridian);
+				ST7735_DrawString(11,1," ",ST7735_WHITE);
+				if(AlarmOn){
+					ST7735_DrawString(12,1,"ON ",ST7735_BLACK);
+					
+				}
+				else{
+				ST7735_DrawString(12,1,"OFF",ST7735_BLACK);
+					
+				}
+				AlarmTime = (100000000 * meridian) + (1000000 * hours) + (1000 * minutes) + seconds;
 				return 0x00;//back to main screen
 			return 0x00;
 		
 	}
-		Time = (100000000 * meridian) + (1000000 * hours) + (1000 * minutes) + seconds;
-		time = Time;
-		format_setTime(hourBuffer,HOUR);
-		format_setTime(minuteBuffer, MIN);
-		format_setTime(secondsBuffer, SEC);
-		format_setTime(meridianBuffer,MER);
-	switch(currentSetTimePos)
+		AlarmTime = (100000000 * meridian) + (1000000 * hours) + (1000 * minutes) + seconds;
+		time = AlarmTime;
+		format_setTime(hourBuffer,HOUR,TRUE);
+		format_setTime(minuteBuffer, MIN,TRUE);
+		format_setTime(secondsBuffer, SEC,TRUE);
+		format_setTime(meridianBuffer,MER,TRUE);
+	switch(currentSetAlarmPos)
 	{
 		
 		case 0:
@@ -508,6 +539,13 @@ uint32_t SetAlarm(uint32_t input)
 		ST7735_DrawString(6,1,secondsBuffer,ST7735_WHITE);
 		ST7735_DrawString(8,1," ",ST7735_WHITE);
 		ST7735_DrawString(9,1,meridianBuffer,ST7735_WHITE);
+		ST7735_DrawString(11,1," ",ST7735_WHITE);
+				if(AlarmOn){
+					ST7735_DrawString(12,1,"ON ",ST7735_WHITE);
+				}
+				else{
+				ST7735_DrawString(12,1,"OFF",ST7735_WHITE);
+				}
 		break;
 		case 1:
 				ST7735_DrawString(0,1,hourBuffer,ST7735_WHITE);
@@ -517,6 +555,14 @@ uint32_t SetAlarm(uint32_t input)
 		ST7735_DrawString(6,1,secondsBuffer,ST7735_WHITE);
 		ST7735_DrawString(8,1," ",ST7735_WHITE);
 		ST7735_DrawString(9,1,meridianBuffer,ST7735_WHITE);
+		ST7735_DrawString(11,1," ",ST7735_WHITE);
+				if(AlarmOn){
+					ST7735_DrawString(12,1,"ON ",ST7735_WHITE);
+				
+				}
+				else{
+				ST7735_DrawString(12,1,"OFF",ST7735_WHITE);
+				}
 		break;
 		
 		case 2:
@@ -527,6 +573,13 @@ uint32_t SetAlarm(uint32_t input)
 		ST7735_DrawString(6,1,secondsBuffer,ST7735_CYAN);
 		ST7735_DrawString(8,1," ",ST7735_WHITE);
 		ST7735_DrawString(9,1,meridianBuffer,ST7735_WHITE);
+			ST7735_DrawString(11,1," ",ST7735_WHITE);
+				if(AlarmOn){
+					ST7735_DrawString(12,1,"ON ",ST7735_WHITE);
+				}
+				else{
+				ST7735_DrawString(12,1,"OFF",ST7735_WHITE);
+				}
 		break;
 		case 3:
 				ST7735_DrawString(0,1,hourBuffer,ST7735_WHITE);
@@ -536,6 +589,29 @@ uint32_t SetAlarm(uint32_t input)
 		ST7735_DrawString(6,1,secondsBuffer,ST7735_WHITE);
 		ST7735_DrawString(8,1," ",ST7735_WHITE);
 		ST7735_DrawString(9,1,meridianBuffer,ST7735_CYAN);
+		ST7735_DrawString(11,1," ",ST7735_WHITE);
+				if(AlarmOn){
+					ST7735_DrawString(12,1,"ON ",ST7735_WHITE);
+				}
+				else{
+				ST7735_DrawString(12,1,"OFF",ST7735_WHITE);
+				}
+		break;
+		case 4:
+		ST7735_DrawString(0,1,hourBuffer,ST7735_WHITE);
+		ST7735_DrawString(2,1,":",ST7735_WHITE);
+		ST7735_DrawString(3,1,minuteBuffer,ST7735_WHITE);
+		ST7735_DrawString(5,1,":",ST7735_WHITE);
+		ST7735_DrawString(6,1,secondsBuffer,ST7735_WHITE);
+		ST7735_DrawString(8,1," ",ST7735_WHITE);
+		ST7735_DrawString(9,1,meridianBuffer,ST7735_WHITE);
+			ST7735_DrawString(11,1," ",ST7735_WHITE);
+				if(AlarmOn){
+					ST7735_DrawString(12,1,"ON ",ST7735_CYAN);
+				}
+				else{
+				ST7735_DrawString(12,1,"OFF",ST7735_CYAN);
+				}
 		break;
 	
 	}
@@ -546,6 +622,6 @@ uint32_t SetAlarm(uint32_t input)
 	
 	
 	
-	return 0x01;
+	return 0x02;
 	
 }
