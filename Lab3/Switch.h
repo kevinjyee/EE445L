@@ -8,6 +8,8 @@
 // Header files contain the prototypes for public functions
 // this file explains what the module does
 
+#include <stdio.h>
+
 // **************Switch_Init*********************
 // Initialize Switch key inputs, called once 
 // Input: none 
