@@ -60,11 +60,15 @@ void WaitForInterrupt(void);  // low power mode
 
 volatile uint32_t Switch1 = 0;
 volatile uint32_t Time = 0; // (Meridian)hh0mm0ss
+volatile uint32_t AlarmTime =0;
 volatile uint8_t SelectSeconds;
 volatile uint8_t SelectMinutes;
 volatile uint8_t SelectHours;
 volatile uint8_t SelectMeridian;
 volatile unsigned long LastE = 0; 
+
+bool animateAlarm = false;
+extern int AlarmOn;
 
 
 // Retrieves seconds, minutes, and hour from Time global variable in thread-safe fashion.
@@ -175,9 +179,37 @@ int main(void){
 	uint32_t current_state = 0x00;	
   uint32_t input,lastinput =0x00;
 	while(1){
+		if(current_state == 0x00)
+		{
 		draw_Time(); // Start updating time.
-
+			if(AlarmOn == 1)
+			{
+				ST7735_SetCursor(80,10);
+				ST7735_OutString("  AlrmOn");
+			}
+		}
+		if(Time == AlarmTime && AlarmOn == 1)
+		{
+			animateAlarm = true;
+		}
+		
+		while(animateAlarm)
+		{
 			
+				ST7735_FillScreen(0);
+				ST7735_DrawString(0,0,"Alarm!",ST7735_MAGENTA);
+				
+			if(Fifo_Get(&input))
+			{
+				animate_Clock();
+				animateAlarm = false;
+				AlarmOn = 0;
+				draw_Clock();
+				break;
+			}
+		}
+		
+		
 		if(Fifo_Get(&input))
 		{
 			current_state = Next_State(current_state, input);			

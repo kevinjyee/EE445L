@@ -70,9 +70,16 @@ void format_Time(char* timeStringBuffer){
 	format_And_Output_Time(timeStringBuffer, null1, null2);
 }
 
-void format_setTime(char* timeStringBuffer, int type){
+void format_setTime(char* timeStringBuffer, int type, int ALARM){
 	int8_t seconds, minutes, hours, meridian, index;
-	uint32_t time = Time;
+	uint32_t time;
+	if(ALARM == 0)
+	{
+		time = Time;
+	}
+	else{
+		time = AlarmTime;
+	}
 	seconds = time % 100;
 	time = time / 1000;
 	minutes = time % 100;
