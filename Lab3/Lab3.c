@@ -156,7 +156,7 @@ void init_All(){
 	init_switchmain();
 	
 	ST7735_InitR(INITR_REDTAB);
-  SysTick_Init(SYSTICK_RELOAD);
+  SysTick_Init(SYSTICK_RELOAD/64);
 	Timer3_Init(Tempo[4]);
 	//Timer1_Init();
 	
@@ -187,8 +187,8 @@ uint32_t find_minAlarm(){
 	else{
 		AlarmOn = 0;
 	}
-
-
+return index;
+}
 
 void check_Alarm(uint32_t current_state){
 	if(current_state == 0x00)
@@ -206,8 +206,8 @@ void check_Alarm(uint32_t current_state){
 		{
 			if(Time == AlarmTimeArray[i] && AlarmONOFFArray[i] == 1)
 		{
-			Enable_PWM();
-			AlarmONOFFArray[i] == 0;
+			//Enable_PWM();
+			AlarmONOFFArray[i] = 0;
 			animateAlarm = true;
 		}
 			
@@ -219,7 +219,6 @@ int main(void){
   init_All();
 	draw_Clock();
 	EnableInterrupts();
-	PMWSine_Init(); // Initialize sound generation
 	uint32_t current_state = 0x00;	
   uint32_t input,lastinput =0x00;
 	while(1){
