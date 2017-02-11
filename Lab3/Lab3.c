@@ -38,6 +38,7 @@
 #include "FSM.h"
 #include "Clock.h"
 #include "LCD.h"
+#include "Timer0A.h"
 
 #define PA3							(*((volatile uint32_t *)0x40004020)) // Menu switch
 #define PA2             (*((volatile uint32_t *)0x40004010)) // Select switch
@@ -145,7 +146,7 @@ void init_All(){
 	init_switchmain();
 	
 	ST7735_InitR(INITR_REDTAB);
-  SysTick_Init(SYSTICK_RELOAD / 64);
+  SysTick_Init(SYSTICK_RELOAD);
 	//Timer1_Init();
 	
 	
@@ -161,9 +162,13 @@ int main(void){
 	//draw_Hands();
 	EnableInterrupts();
 
-	PMWSine_Init(); // Initialize sound generation
-
-	//PMWSine_Init(); // Initialize sound generation
+	while(1){
+		PMWSine_Init(1563); // Initialize sound generation
+		DelayWait2ms(2);
+	}
+	//PMWSine_Init(1563); // Initialize sound generation
+	//DelayWait2ms(10);
+	//PMWSine_Init(20000);// initialize 1000 Hz sine wave output
 	
 	int i = 0;
 

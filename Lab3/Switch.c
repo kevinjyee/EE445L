@@ -82,7 +82,8 @@ void Switch_Init(void){
   GPIO_PORTE_PCTL_R &= ~0xFFFFFFFF; // regular function
   GPIO_PORTE_DEN_R |= 0x0F;      // enable digital I/O on PA3-0
 	GPIO_PORTE_IS_R &= ~0x0F;         // 8) edge-sensitive
-  GPIO_PORTE_IBE_R |= 0x0F;        // 9) both edges
+  GPIO_PORTE_IBE_R &= ~0x0F;        // 9) not both edges
+	GPIO_PORTE_IEV_R |= ~0x0F;				// 9) rising edge trigger
 	
 }
 
