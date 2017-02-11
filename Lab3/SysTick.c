@@ -53,6 +53,7 @@ volatile uint8_t Meridian;
 extern volatile uint32_t Time;
 extern volatile uint32_t AlarmTime;
 
+
 // Initialize SysTick with busy wait running at bus clock.
 void SysTick_Init(uint32_t period){
   NVIC_ST_CTRL_R = 0;                   // disable SysTick during setup

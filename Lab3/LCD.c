@@ -203,9 +203,15 @@ void draw_Time(){
   uint8_t hours;
 	char timeStringBuffer[10] = {' '}; //Initialize array to empty string 
 	format_And_Output_Time(timeStringBuffer, &minutes, &hours);
+	long start1 = NVIC_ST_CURRENT_R;
 	draw_Hands(minutes, hours);
+	long start2 = NVIC_ST_CURRENT_R;
+	uint32_t difference = start2-start1;
 	ST7735_SetCursor(0,0);
   ST7735_OutString(timeStringBuffer);
+	
+	//ST7735_OutUDec(difference);
+	
 }
 
 void DelayWait1Millisecond(uint32_t n){

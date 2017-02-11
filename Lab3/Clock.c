@@ -15,6 +15,9 @@
 #define MER 3
 #define ALL 4
 
+
+
+
 // Convert time variable to format (h0)(h1):(m0)(m1):(s0)(s1) (Mer0)(Mer1)
 void format_And_Output_Time(char* timeStringBuffer, uint8_t* minute_hand, uint8_t* hour_hand){
 	int8_t seconds, minutes, hours, meridian, index;
@@ -70,7 +73,7 @@ void format_Time(char* timeStringBuffer){
 	format_And_Output_Time(timeStringBuffer, null1, null2);
 }
 
-void format_setTime(char* timeStringBuffer, int type, int ALARM){
+void format_setTime(char* timeStringBuffer, int type, int ALARM,int setMultipleAlarmTimePos){
 	int8_t seconds, minutes, hours, meridian, index;
 	uint32_t time;
 	if(ALARM == 0)
@@ -78,7 +81,8 @@ void format_setTime(char* timeStringBuffer, int type, int ALARM){
 		time = Time;
 	}
 	else{
-		time = AlarmTime;
+		time = AlarmTimeArray[setMultipleAlarmTimePos];
+		
 	}
 	seconds = time % 100;
 	time = time / 1000;

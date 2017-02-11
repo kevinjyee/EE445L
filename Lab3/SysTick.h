@@ -39,6 +39,7 @@
 extern volatile uint32_t Time;
 
 extern volatile uint32_t AlarmTime;
+
 // Initialize SysTick with busy wait running at bus clock.
 void SysTick_Init(uint32_t period);
 

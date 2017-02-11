@@ -480,6 +480,11 @@
               <FileType>1</FileType>
               <FilePath>.\FIFOqueue.c</FilePath>
             </File>
+            <File>
+              <FileName>LCD.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LCD.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

@@ -35,3 +35,7 @@ void PWM0A_Init(uint16_t period, uint16_t duty);
 // change duty cycle
 // duty is number of PWM clock cycles output is high  (2<=duty<=period-1)
 void PWM0A_Duty(uint16_t duty);
+
+void Enable_PWM(void);
+
+void Disable_PWM(void);

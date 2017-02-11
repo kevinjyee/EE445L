@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-void format_setTime(char*,int,int);
+void format_setTime(char*,int,int,int);
 
 void format_Time(char* timeStringBuffer);
 

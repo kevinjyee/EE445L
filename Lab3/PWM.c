@@ -62,6 +62,19 @@
 // PWM clock rate = processor clock rate/SYSCTL_RCC_PWMDIV
 //                = BusClock/2
 //                = 50 MHz/2 = 25 MHz (in this example)
+
+void Enable_PWM()
+{
+	PWM0_ENABLE_R |= PWM_ENABLE_PWM0EN;//  enable PWM0 Generator 0
+	
+}
+
+void Disable_PWM()
+{
+	PWM0_ENABLE_R |= ~PWM_ENABLE_PWM0EN;//  enable PWM0 Generator 0
+}
+
+
 void PWM0A_Init(uint16_t period, uint16_t duty){
                                    // 1) activate clock for PWM0
   SYSCTL_RCGCPWM_R |= SYSCTL_RCGCPWM_R0;
@@ -87,7 +100,7 @@ void PWM0A_Init(uint16_t period, uint16_t duty){
   PWM0_0_LOAD_R = period - 1;      // 5) cycles needed to count down to 0
   PWM0_0_CMPA_R = duty - 1;        // 6) count value when output rises
   PWM0_0_CTL_R |= PWM_0_CTL_ENABLE;// 7) start PWM0 Generator 0
-  PWM0_ENABLE_R |= PWM_ENABLE_PWM0EN;//  enable PWM0 Generator 0
+  
 }
 // change duty cycle
 // duty is number of PWM clock cycles output is high  (2<=duty<=period-1)

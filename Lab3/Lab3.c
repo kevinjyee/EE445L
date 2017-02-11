@@ -38,6 +38,7 @@
 #include "FSM.h"
 #include "Clock.h"
 #include "LCD.h"
+#include "PWM.h"
 
 #define PA3							(*((volatile uint32_t *)0x40004020)) // Menu switch
 #define PA2             (*((volatile uint32_t *)0x40004010)) // Select switch
@@ -50,6 +51,7 @@
 #define SEC 2
 #define MER 3
 #define ALL 4
+#define NUMALARMS 8
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -152,50 +154,78 @@ void init_All(){
   SysTick_Init(SYSTICK_RELOAD / 64);
 	//Timer1_Init();
 	
-	
 }
 
+uint32_t find_minAlarm(){
+	uint32_t min =0XFFFFFFFF;
+  int index = -1;
+	bool foundalarm = false;
+	for(int i =0; i < NUMALARMS; i++)
+	{
+		if(AlarmONOFFArray[i] == 1)
+		{
+			if(AlarmTimeArray[i] - Time < min)
+			{
+			min = AlarmTimeArray[i];
+			index = i;
+			}
+			foundalarm = true;
+			
+		}
+		
+	}
+	if(foundalarm)
+	{
+		AlarmOn = 1;
+	}
+	else{
+		AlarmOn = 0;
+	}
+	
+	return index;
+}
 
+void check_Alarm(uint32_t current_state){
+	if(current_state == 0x00)
+		{
+		draw_Time(); // Start updating time.
+			uint32_t minalarm = find_minAlarm();
+			if(AlarmOn == 1)
+			{
+				ST7735_OutString(" Alarm");
+				ST7735_OutUDec(minalarm);
+				ST7735_OutString("On");
+			}
+		}
+		for(int i =0; i < NUMALARMS; i++)
+		{
+			if(Time == AlarmTimeArray[i] && AlarmONOFFArray[i] == 1)
+		{
+			Enable_PWM();
+			AlarmONOFFArray[i] == 0;
+			animateAlarm = true;
+		}
+			
+		}
+	}
 
 
 int main(void){
   init_All();
-	
 	draw_Clock();
-	//draw_Hands();
 	EnableInterrupts();
-
 	PMWSine_Init(); // Initialize sound generation
-
-	//PMWSine_Init(); // Initialize sound generation
-	
-	int i = 0;
-
 	uint32_t current_state = 0x00;	
   uint32_t input,lastinput =0x00;
 	while(1){
-		if(current_state == 0x00)
-		{
-		draw_Time(); // Start updating time.
-			if(AlarmOn == 1)
-			{
-				ST7735_SetCursor(80,10);
-				ST7735_OutString("  AlrmOn");
-			}
-		}
-		if(Time == AlarmTime && AlarmOn == 1)
-		{
-			animateAlarm = true;
-		}
-		
+		check_Alarm(current_state);
 		while(animateAlarm)
 		{
-			
 				ST7735_FillScreen(0);
 				ST7735_DrawString(0,0,"Alarm!",ST7735_MAGENTA);
-				
 			if(Fifo_Get(&input))
 			{
+				Disable_PWM();
 				animate_Clock();
 				animateAlarm = false;
 				AlarmOn = 0;
@@ -203,7 +233,6 @@ int main(void){
 				break;
 			}
 		}
-		
 		
 		if(Fifo_Get(&input))
 		{
@@ -213,9 +242,7 @@ int main(void){
 		}
 		else
 		{
-				current_state = Next_State(current_state,0x00);
-			
-				
+				current_state = Next_State(current_state,0x00);	
 		}
   }
 }
