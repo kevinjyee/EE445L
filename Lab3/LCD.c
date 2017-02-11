@@ -14,7 +14,7 @@
 #include "LCD.h"
 #include "FSM.h"
 
-#define CIRCLE_OFFSET		87
+#define CIRCLE_OFFSET		89
 
 
 
@@ -29,6 +29,10 @@ volatile int32_t HourHandXbuf[180] = { -30, -58, -85, -113, -140, -168, -195, -2
 };
 volatile int32_t HourHandYbuf[180] = { -1019, -1018, -1015, -1012, -1008, -1002, -996, -989, -980, -971, -961, -950, -939, -926, -912, -898, -883, -867, -850, -832, -814, -795, -775, -755, -734, -712, -690, -667, -644, -620, -595, -570, -545, -519, -493, -467, -440, -413, -386, -358, -331, -303, -276, -248, -220, -192, -164, -136, -108, -81, -53, -26, 0, 27, 53, 79, 105, 130, 155, 180, 204, 227, 250, 272, 294, 315, 335, 355, 374, 392, 410, 427, 443, 458, 472, 486, 499, 510, 521, 531, 540, 549, 556, 562, 568, 572, 575, 578, 579, 580, 579, 578, 575, 572, 568, 562, 556, 549, 540, 531, 521, 510, 499, 486, 472, 458, 443, 427, 410, 392, 374, 355, 335, 315, 294, 272, 250, 227, 204, 180, 155, 130, 105, 79, 53, 27, 0, -26, -53, -81, -108, -136, -164, -192, -220, -248, -276, -303, -331, -358, -386, -413, -440, -467, -493, -519, -545, -570, -595, -620, -644, -667, -690, -712, -734, -755, -775, -795, -814, -832, -850, -867, -883, -898, -912, -926, -939, -950, -961, -971, -980, -989, -996, -1002, -1008, -1012, -1015, -1018, -1019, -1020
 };
+
+volatile uint8_t lastMinute = 61;
+volatile uint8_t lastHour = 13;
+
 /**************ST7735_XYplotInit***************
  Specify the X and Y axes for an x-y scatter plot
  Draw the title and clear the plot area
@@ -135,7 +139,7 @@ void ST7735_Translate1(uint32_t num, int32_t bufX[], int32_t bufY[]){
 //		from rosettacode.org
 void ST7735_Line1(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
 	{
-		int xSlope, ySlope, xDif, yDif, signX, signY, error, delta_error;
+		int xDif, yDif, signX, signY, error, delta_error;
 		xDif = x2 - x1;
 		xDif = xDif > 0 ? xDif : -xDif; // Take absolute value of xDif.
 		yDif = y2 - y1;
@@ -169,25 +173,37 @@ uint16_t get_Minute_Hand_Index(uint8_t minutes){
 }
 
 uint16_t get_Hour_Hand_Index(uint8_t minutes, uint8_t hours){
-	uint16_t temp =  (((((hours % 12) * 15) + ((minutes / 12) * 3)) + CIRCLE_OFFSET) % 180);
-	if(temp > 180){
-		temp = temp %180;
+	return(((((hours % 12) * 15) + ((minutes / 12) * 3)) + CIRCLE_OFFSET) % 180);
+}
+
+uint8_t indicesAreClose(uint16_t prevMinutesIndex, uint16_t hoursIndex){
+	int16_t diff = prevMinutesIndex - hoursIndex;
+	if(diff < 0){
+		diff *= -1;
 	}
-	return temp;
+	return (diff < 12);
 }
 
 void draw_Hands(uint8_t minutes, uint8_t hours){
-	// Origin ~ 62x, 99y
+	// Origin ~ 63x, 99y
 		uint16_t minutesIndex = get_Minute_Hand_Index(minutes);
-		uint16_t prevMinutesIndex = (minutesIndex >= 3) ? minutesIndex - 3 : 177; // Don't want negative index.
+		uint16_t prevMinutesIndex = (minutesIndex >= 3) ? minutesIndex - 3 : (177 + minutesIndex); // Don't want negative index.
 		uint16_t hoursIndex = get_Hour_Hand_Index(minutes, hours);
-		uint16_t prevHoursIndex = (hoursIndex >= 3) ? hoursIndex - 3 : 177; // Don't want negative index.
-		ST7735_Line1(62, 99, MinuteHandXbuf[prevMinutesIndex], MinuteHandYbuf[prevMinutesIndex], ST7735_BLACK); // Delete old minute hand
-		ST7735_Line1(62, 99, HourHandXbuf[prevHoursIndex], HourHandYbuf[prevHoursIndex], ST7735_BLACK); // Delete old hour hand
-
-		ST7735_Line1(62, 99, MinuteHandXbuf[minutesIndex], MinuteHandYbuf[minutesIndex], ST7735_GREEN); // Draw new minute hand
-		ST7735_Line1(62, 99, HourHandXbuf[hoursIndex], HourHandYbuf[hoursIndex], ST7735_GREEN); // Draw new hour hand
+		uint16_t prevHoursIndex = (hoursIndex >= 3) ? hoursIndex - 3 : (177 + hoursIndex); // Don't want negative index.
+		ST7735_Line1(63, 99, MinuteHandXbuf[prevMinutesIndex], MinuteHandYbuf[prevMinutesIndex], ST7735_BLACK); // Delete old minute hand
+		if((minutes % 12 == 0) || (hours != lastHour)){
+			ST7735_Line1(63, 99, HourHandXbuf[prevHoursIndex], HourHandYbuf[prevHoursIndex], ST7735_BLACK); // Delete old hour hand
+		}
+			ST7735_Line1(63, 99, MinuteHandXbuf[minutesIndex], MinuteHandYbuf[minutesIndex], ST7735_GREEN); // Draw new minute hand
+		if((minutes % 12 == 0) || (hours != lastHour) || indicesAreClose(prevMinutesIndex, hoursIndex)){
+			/* Draw new hour hand if minutes = multiple of 12, if the hours have been changed, or if the minute hand is close enough to
+			 		the hour hand that its line clear method might delete part of the hour hand.
+			*/
+			ST7735_Line1(63, 99, HourHandXbuf[hoursIndex], HourHandYbuf[hoursIndex], ST7735_GREEN); // Draw new hour hand
+		}
+	
 		
+	/*
 		for(int i = 0; i < 180; i++){
 			ST7735_DrawPixel(MinuteHandXbuf[i],   MinuteHandYbuf[i],   ST7735_CYAN);
 		}
@@ -195,6 +211,7 @@ void draw_Hands(uint8_t minutes, uint8_t hours){
 		for(int i = 0; i < 180; i++){
 			ST7735_DrawPixel(HourHandXbuf[i],   HourHandYbuf[i],   ST7735_CYAN);
 		}
+		*/
 	
 }	
 
@@ -207,6 +224,12 @@ void draw_Time(){
 	draw_Hands(minutes, hours);
 	long start2 = NVIC_ST_CURRENT_R;
 	uint32_t difference = start2-start1;
+	if((minutes != lastMinute) || (hours != lastHour)){
+		draw_Hands(minutes, hours);
+		lastMinute = minutes;
+		lastHour = hours;
+	}
+
 	ST7735_SetCursor(0,0);
   ST7735_OutString(timeStringBuffer);
 	

@@ -39,6 +39,9 @@
 #include "Clock.h"
 #include "LCD.h"
 #include "PWM.h"
+#include "Timer0A.h"
+#include "Timer3.h"
+
 
 #define PA3							(*((volatile uint32_t *)0x40004020)) // Menu switch
 #define PA2             (*((volatile uint32_t *)0x40004010)) // Select switch
@@ -67,6 +70,8 @@ volatile uint8_t SelectMinutes;
 volatile uint8_t SelectHours;
 volatile uint8_t SelectMeridian;
 volatile unsigned long LastE = 0; 
+
+uint32_t Tempo[10] = { 60, 80, 100, 120, 140, 160, 180, 200, 220, 240 };
 
 bool animateAlarm = false;
 extern int AlarmOn;
@@ -151,7 +156,8 @@ void init_All(){
 	init_switchmain();
 	
 	ST7735_InitR(INITR_REDTAB);
-  SysTick_Init(SYSTICK_RELOAD / 64);
+  SysTick_Init(SYSTICK_RELOAD);
+	Timer3_Init(Tempo[4]);
 	//Timer1_Init();
 	
 }
@@ -181,9 +187,8 @@ uint32_t find_minAlarm(){
 	else{
 		AlarmOn = 0;
 	}
-	
-	return index;
-}
+
+
 
 void check_Alarm(uint32_t current_state){
 	if(current_state == 0x00)

@@ -85,7 +85,7 @@ void PWM0A_Init(uint16_t period, uint16_t duty){
                                    // allow time to finish activating
   while((SYSCTL_PRGPIO_R&SYSCTL_PRGPIO_R1)==0){};
   GPIO_PORTB_AFSEL_R |= 0x40;      // 2) enable alt funct on PB6
-  GPIO_PORTB_ODR_R &= ~0x40;       //    disable open drain on PB6 ???
+  GPIO_PORTB_ODR_R &= ~0x40;       //    disable open drain on PB6. Open drain used for multiple i/p to single pin.
   GPIO_PORTB_DEN_R |= 0x40;        //    enable digital I/O on PB6
   GPIO_PORTB_AMSEL_R &= ~0x40;     //    disable analog function on PB6
                                    //    configure PB6 as PWM

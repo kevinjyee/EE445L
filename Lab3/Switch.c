@@ -77,13 +77,14 @@ static void GPIOArm(void){
 void Switch_Init(void){
 	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOE; // activate port E
 	while((SYSCTL_PRGPIO_R&0x10)==0){};
-  GPIO_PORTE_DIR_R &=~ 0x0F;      // make PA3-0 in make the input pins
-  GPIO_PORTE_AFSEL_R &= ~0x0F;   // disable alt funct on PA3-0
-	GPIO_PORTE_AMSEL_R &= ~0x0F;      // no analog on PA3-0
+  GPIO_PORTE_DIR_R &=~ 0x0F;      // make PE3-0 in make the input pins
+  GPIO_PORTE_AFSEL_R &= ~0x0F;   // disable alt funct on PE3-0
+	GPIO_PORTE_AMSEL_R &= ~0x0F;      // no analog on PE3-0
   GPIO_PORTE_PCTL_R &= ~0xFFFFFFFF; // regular function
-  GPIO_PORTE_DEN_R |= 0x0F;      // enable digital I/O on PA3-0
+  GPIO_PORTE_DEN_R |= 0x0F;      // enable digital I/O on PE3-0
 	GPIO_PORTE_IS_R &= ~0x0F;         // 8) edge-sensitive
-  GPIO_PORTE_IBE_R |= 0x0F;        // 9) both edges
+  GPIO_PORTE_IBE_R &= ~0x0F;        // 9) not both edges
+	GPIO_PORTE_IEV_R |= ~0x0F;				// 9) rising edge trigger
 	
 }
 
