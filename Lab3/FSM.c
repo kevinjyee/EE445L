@@ -37,7 +37,8 @@ void WaitForInterrupt(void);  // low power mode
 void setTime(void);
 
 int selectSwitchToggled = FALSE;
-int redrawTime = TRUE;
+int redrawTime = true;
+extern volatile int redrawHands;
 bool updateTime = true;
 uint32_t time;
 volatile int curentMenuPos =0;
@@ -244,6 +245,7 @@ uint32_t SetTime(uint32_t input)
 					meridian = (meridian + 1)%2;
 					break;
 			}
+			draw_Hands(minutes, hours);
 			break;
 		case 0x02:
 			//Up Switch
@@ -266,6 +268,7 @@ uint32_t SetTime(uint32_t input)
 					meridian = (meridian + 1)%2;
 					break;
 			}
+			draw_Hands(minutes, hours);
 			break;
 		case 0x04:
 			//Select Switch
@@ -273,6 +276,7 @@ uint32_t SetTime(uint32_t input)
 			{
 				currentSetTimePos =0;
 				redrawTime = TRUE;
+				redrawHands = TRUE;
 				updateTime = true;
 				ST7735_DrawString(0,0,"Set Time",ST7735_BLACK);
 				ST7735_DrawString(0,1,hourBuffer,ST7735_BLACK);
@@ -293,7 +297,15 @@ uint32_t SetTime(uint32_t input)
 			break;
 		case 0x08: 
 				currentSetTimePos =0;
+	
 				redrawTime = TRUE;
+				redrawHands = TRUE;
+				ST7735_DrawString(0,0,"Set Time",ST7735_BLACK);
+				ST7735_DrawString(0,1,hourBuffer,ST7735_BLACK);
+				ST7735_DrawString(3,1,minuteBuffer,ST7735_BLACK);
+				ST7735_DrawString(6,1,secondsBuffer,ST7735_BLACK);
+				ST7735_DrawString(9,1,meridianBuffer,ST7735_BLACK);
+		/*
 				updateTime = true;
 				ST7735_DrawString(0,0,"Set Time",ST7735_BLACK);
 				ST7735_DrawString(0,1,hourBuffer,ST7735_BLACK);
@@ -303,8 +315,10 @@ uint32_t SetTime(uint32_t input)
 				ST7735_DrawString(6,1,secondsBuffer,ST7735_BLACK);
 				ST7735_DrawString(8,1," ",ST7735_WHITE);
 				ST7735_DrawString(9,1,meridianBuffer,ST7735_BLACK);
+				
 				clear_OldHands();
-				set_Time(hours,minutes,seconds,meridian);
+		*/
+				//set_Time(hours,minutes,seconds,meridian);
 				
 				return 0x00;//back to main screen
 			return 0x00;
@@ -407,11 +421,13 @@ uint32_t SetMultipleAlarm(uint32_t input)
 		case 0x04:
 			//Select Switch
 			redrawTime = true;
+			redrawHands = TRUE;
 			input = 0x00;
 			return SetAlarms(input);
 		case 0x08: 
 			//Menu Button
-		redrawTime = true;
+			redrawTime = true;
+			redrawHands = TRUE;
 			draw_Clock();
 			draw_Time();
 			return 0x00;
@@ -557,6 +573,7 @@ uint32_t SetAlarms(uint32_t input)
 			{
 				currentSetAlarmPos =0;
 				redrawTime = TRUE;
+				redrawHands = TRUE;
 				updateTime = true;
 				ST7735_DrawString(0,0,"Set Alarm",ST7735_BLACK);
 				ST7735_DrawString(0,1,hourBuffer,ST7735_BLACK);
@@ -585,6 +602,7 @@ uint32_t SetAlarms(uint32_t input)
 			case 0x08: 
 				currentSetAlarmPos =0;
 				redrawTime = TRUE;
+				redrawHands = TRUE;
 				updateTime = true;
 				ST7735_DrawString(0,0,"Set Alarm",ST7735_BLACK);
 				ST7735_DrawString(0,1,hourBuffer,ST7735_BLACK);
@@ -746,11 +764,13 @@ if(redrawTime)
 		  draw_Clock();
 			draw_Time();
 			redrawTime = true;
+			redrawHands = TRUE;
 			draw_Time();
 			return 0x00;
 		case 0x08: 
 			//Menu Button
 			redrawTime = true;
+			redrawHands = TRUE;
 			draw_Clock();
 			draw_Time();
 			return 0x00;

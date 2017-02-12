@@ -34,6 +34,12 @@ volatile int32_t HourHandYbuf[180] = { -1019, -1018, -1015, -1012, -1008, -1002,
 volatile uint8_t lastMinute = 61;
 volatile uint8_t lastHour = 13;
 
+volatile uint16_t lastDrawnMinuteIndex = 0;
+volatile uint16_t lastDrawnHourIndex = 0;
+
+volatile uint8_t newly_Loaded = 1;
+volatile int redrawHands = 1;
+
 /**************ST7735_XYplotInit***************
  Specify the X and Y axes for an x-y scatter plot
  Draw the title and clear the plot area
@@ -188,19 +194,21 @@ uint8_t indicesAreClose(uint16_t prevMinutesIndex, uint16_t hoursIndex){
 void draw_Hands(uint8_t minutes, uint8_t hours){
 	// Origin ~ 63x, 99y
 		uint16_t minutesIndex = get_Minute_Hand_Index(minutes);
-		uint16_t prevMinutesIndex = (minutesIndex >= 3) ? minutesIndex - 3 : (177 + minutesIndex); // Don't want negative index.
+		//uint16_t prevMinutesIndex = (minutesIndex >= 3) ? minutesIndex - 3 : (177 + minutesIndex); // Don't want negative index.
 		uint16_t hoursIndex = get_Hour_Hand_Index(minutes, hours);
-		uint16_t prevHoursIndex = (hoursIndex >= 3) ? hoursIndex - 3 : (177 + hoursIndex); // Don't want negative index.
-		ST7735_Line1(63, 99, MinuteHandXbuf[prevMinutesIndex], MinuteHandYbuf[prevMinutesIndex], ST7735_BLACK); // Delete old minute hand
-		if((minutes % 12 == 0) || (hours != lastHour)){
-			ST7735_Line1(63, 99, HourHandXbuf[prevHoursIndex], HourHandYbuf[prevHoursIndex], ST7735_BLACK); // Delete old hour hand
+		//uint16_t prevHoursIndex = (hoursIndex >= 3) ? hoursIndex - 3 : (177 + hoursIndex); // Don't want negative index.
+		ST7735_Line1(63, 99, MinuteHandXbuf[lastDrawnMinuteIndex], MinuteHandYbuf[lastDrawnMinuteIndex], ST7735_BLACK); // Delete old minute hand
+		if((hoursIndex != lastDrawnHourIndex)){
+			ST7735_Line1(63, 99, HourHandXbuf[lastDrawnHourIndex], HourHandYbuf[lastDrawnHourIndex], ST7735_BLACK); // Delete old hour hand
 		}
 			ST7735_Line1(63, 99, MinuteHandXbuf[minutesIndex], MinuteHandYbuf[minutesIndex], ST7735_GREEN); // Draw new minute hand
-		if((minutes % 12 == 0) || (hours != lastHour) || indicesAreClose(prevMinutesIndex, hoursIndex)){
+			lastDrawnMinuteIndex = minutesIndex;
+		if((hoursIndex != lastDrawnHourIndex) || indicesAreClose(lastDrawnMinuteIndex, hoursIndex) || redrawHands){
 			/* Draw new hour hand if minutes = multiple of 12, if the hours have been changed, or if the minute hand is close enough to
 			 		the hour hand that its line clear method might delete part of the hour hand.
 			*/
 			ST7735_Line1(63, 99, HourHandXbuf[hoursIndex], HourHandYbuf[hoursIndex], ST7735_GREEN); // Draw new hour hand
+			lastDrawnHourIndex = hoursIndex;
 		}
 	
 		
@@ -248,8 +256,9 @@ void draw_Time(){
 	format_And_Output_Time(timeStringBuffer, &minutes, &hours);
 
 	
-	if((minutes != lastMinute) || (hours != lastHour)){
+	if(redrawHands || (minutes != lastMinute) || (hours != lastHour)){
 		draw_Hands(minutes, hours);
+		redrawHands = 0;
 		lastMinute = minutes;
 		lastHour = hours;
 	}
@@ -280,11 +289,18 @@ void animate_Clock(){
 	}
 }
 
-void draw_Clock(void){
-	ST7735_DrawBitmap(0,159,ClockFace,128,160);
+void initialize_Hands(void){
 	ST7735_XYplotInit1(-2500, 2500, -2500, 2500); //convert maxxX and maxxY to thousands based on resoltuion
 	ST7735_Translate1(180, (int32_t*) MinuteHandXbuf, (int32_t*) MinuteHandYbuf); // Translate circle to screen for line drawing.
 	ST7735_Translate1(180, (int32_t*) HourHandXbuf, (int32_t*) HourHandYbuf); // Translate circle to screen for line drawing.
+}
+
+void draw_Clock(void){
+	ST7735_DrawBitmap(0,159,ClockFace,128,160);
+	if(newly_Loaded){
+		initialize_Hands();
+		newly_Loaded = 0;
+	}
 	//animate_Clock();
 	//ST7735_DrawBitmap(2,159,ClockFace,126,160); Inspiration for sideways clock?
 

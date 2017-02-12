@@ -88,7 +88,7 @@ void Switch_Init(void){
 }
 
 // **************Switch_In*********************
-// Input from Swithc key inputs 
+// Input from Switch key inputs 
 // Input: none 
 // Output: 1 to 3 depending on keys
 // 0x01 is just Key0, 0x02 is just Key1, 0x04 is just Key2
