@@ -413,7 +413,7 @@ uint32_t SetMultipleAlarm(uint32_t input)
 			//Up Switch
 			
 			setMultipleAlarmPos = (setMultipleAlarmPos - 1)%NUMALARMS;
-			if(setMultipleAlarmPos <= 0 )
+			if(setMultipleAlarmPos < 0 )
 			{
 				setMultipleAlarmPos = NUMALARMS - 1; 
 			}
@@ -600,7 +600,7 @@ uint32_t SetAlarms(uint32_t input)
 			}
 			break;
 			case 0x08: 
-				currentSetAlarmPos =0;
+				currentSetAlarmPos = 0;
 				redrawTime = TRUE;
 				redrawHands = TRUE;
 				updateTime = true;
@@ -622,6 +622,7 @@ uint32_t SetAlarms(uint32_t input)
 					
 				}
 				AlarmTimeArray[setMultipleAlarmPos] = (100000000 * meridian) + (1000000 * hours) + (1000 * minutes) + seconds;
+				draw_Clock();
 				return 0x00;//back to main screen
 			return 0x00;
 		
