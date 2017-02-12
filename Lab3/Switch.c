@@ -28,7 +28,7 @@ void PortF_Init(void){
   GPIO_PORTF_DIR_R |= 0x0E;   // make PF123 output (PF1 built-in LED)
   GPIO_PORTF_AFSEL_R &= ~0x0E;// disable alt funct on PF123
   GPIO_PORTF_DEN_R |= 0x0E;   // enable digital I/O on PF123
-  GPIO_PORTF_PCTL_R = (GPIO_PORTF_PCTL_R&0xFFFFFF0F)+0x00000000;
+  GPIO_PORTF_PCTL_R = (GPIO_PORTF_PCTL_R&0xFFFFFF0F)+0x00000000; // no alternate functions 
   GPIO_PORTF_AMSEL_R &= ~0x0E;     // disable analog functionality on PF123
 }
 
@@ -43,10 +43,10 @@ void Timer2Arm(void){
   TIMER2_CTL_R = 0x00000000;    // 1) disable timer2A during setup
   TIMER2_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
   TIMER2_TAMR_R = 0x00000001;   // 3) OneSHot Mode
-  TIMER2_TAILR_R = 160000;      // 4) 10ms reload value
-  TIMER2_TAPR_R = 0;            // 5) bus clock resolution
+  TIMER2_TAILR_R = 160000;      // 4) 10ms reload value (period) 
+  TIMER2_TAPR_R = 0;            // 5) bus clock resolution (prescale register) Timer frequency will be bus frequency divided by prescale + 1 
   TIMER2_ICR_R = 0x00000001;    // 6) clear timer2A timeout flag
-  TIMER2_IMR_R = 0x00000001;    // 7) arm timeout interrupt
+  TIMER2_IMR_R = 0x00000001;    // 7) arm timeout interrupt (timer register is requested) 
 	NVIC_PRI5_R = (NVIC_PRI5_R&0x00FFFFFF)|0x80000000; // 8) priority 4 (change to priority 4, lower priority than timer 0)
 // interrupts enabled in the main program after all devices initialized
 // vector number 39, interrupt number 23
@@ -103,27 +103,25 @@ void GPIOPortE_Handler(void)
 {
 	PF2 ^= 0x04;
 	PF2 ^= 0x04;
-	GPIO_PORTE_IM_R &= ~0x0F;     // disarm interrupt on PA
+	GPIO_PORTE_IM_R &= ~0x0F; // disarm interrupt on PA so we dont get double clicks
 	if(LastE){    // 0x0F means it was previously released
  
-		Fifo_Put(LastE);
+		Fifo_Put(LastE); //Register the falling edge only.
   }
 	PF2 ^= 0x04;
-	Timer2Arm(); 
+	Timer2Arm(); //arm the timer again to be ready for countdown
 
 }
 
 
 void Timer2A_Handler(void){
-	
-	
   TIMER2_IMR_R = 0x00000000;    // disarm timeout interrupt
 	LastE = Switch_In();  // switch state
-	GPIOArm();
+	GPIOArm(); //Timer is done, so arm the handler to listen
 }
 
 void init_switchmain(void){
-	Fifo_Init();
+	Fifo_Init(); 
 	Switch_Init();
 	PortF_Init();
 	Timer2Arm();

@@ -323,9 +323,10 @@ uint32_t SetTime(uint32_t input)
 				ST7735_DrawString(3,1,minuteBuffer,ST7735_BLACK);
 				ST7735_DrawString(6,1,secondsBuffer,ST7735_BLACK);
 				ST7735_DrawString(9,1,meridianBuffer,ST7735_BLACK);
-				//Time = (100000000 * meridian) + (1000000 * hours) + (1000 * minutes) + seconds;
-				//time = Time;
-				Time = OldTime;
+				Time = (100000000 * meridian) + (1000000 * hours) + (1000 * minutes) + seconds;
+				time = Time;
+				clear_OldHands();
+				set_Time(hours,minutes,seconds,meridian);
 		/*
 				updateTime = true;
 				ST7735_DrawString(0,0,"Set Time",ST7735_BLACK);
