@@ -13,6 +13,7 @@
 #include "Display.h"
 #include "LCD.h"
 #include "FSM.h"
+#include "Fifoqueue.h"
 
 #define CIRCLE_OFFSET		89
 
@@ -285,7 +286,12 @@ void animate_Clock(){
 	for(int i = 160; i > 0; i--){
 			
 		ST7735_DrawBitmap(0,159,ClockFace,i,160);
-		DelayWait1Millisecond(1);
+		//DelayWait1Millisecond(1);
+		uint32_t input =0;
+		if(Fifo_Get(&input))
+		{
+			break;
+		}
 	}
 }
 

@@ -14,3 +14,4 @@ extern volatile int currentSongPos;
 
 extern int AlarmOn;
 
+extern volatile int redrawHands;

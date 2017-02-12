@@ -182,10 +182,8 @@ uint32_t find_minAlarm(){
 			min = AlarmTimeArray[i];
 			index = i;
 			}
-			foundalarm = true;
-			
-		}
-		
+			foundalarm = true;	
+		}		
 	}
 	if(foundalarm)
 	{
@@ -230,21 +228,20 @@ int main(void){
   uint32_t input,lastinput = 0x00;
 	while(1){
 		check_Alarm(current_state);
-		while(animateAlarm)
-		{
-				ST7735_FillScreen(0);
-				ST7735_DrawString(0,0,"Alarm!",ST7735_MAGENTA);
-			if(Fifo_Get(&input))
+	
+			if(animateAlarm)
 			{
-
+				
 				animate_Clock();
 				animateAlarm = false;
 				AlarmOn = 0;
 			  sound_Off();
+				redrawHands = 1;
 				draw_Clock();
-				break;
+				draw_Time();
+				
 			}
-		}
+		
 
 			
 		

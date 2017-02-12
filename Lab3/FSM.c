@@ -413,9 +413,9 @@ uint32_t SetMultipleAlarm(uint32_t input)
 			//Up Switch
 			
 			setMultipleAlarmPos = (setMultipleAlarmPos - 1)%NUMALARMS;
-			if(curentMenuPos < 0 )
+			if(setMultipleAlarmPos <= 0 )
 			{
-				curentMenuPos = 7; 
+				setMultipleAlarmPos = NUMALARMS - 1; 
 			}
 			break;
 		case 0x04:
