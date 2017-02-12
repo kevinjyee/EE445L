@@ -315,6 +315,7 @@ uint32_t SetTime(uint32_t input)
 	
 				redrawTime = TRUE;
 				redrawHands = TRUE;
+				updateTime = true;
 				ST7735_DrawString(0,0,"Set Time",ST7735_BLACK);
 				ST7735_DrawString(0,1,hourBuffer,ST7735_BLACK);
 				ST7735_DrawString(3,1,minuteBuffer,ST7735_BLACK);
