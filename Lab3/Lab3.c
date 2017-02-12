@@ -210,10 +210,12 @@ int main(void){
 				animateAlarm = false;
 				AlarmOn = 0;
 			  sound_Off();
-				//redrawHands = 1;
-				//draw_Clock();
-				//draw_Time();
 				clear_Screen();
+				if(current_state == 0x00){
+					redrawHands = 1;
+					draw_Clock();
+					draw_Time();
+				}
 				alarm_triggered = 0;
 				resetClock = true;
 			}
