@@ -126,7 +126,7 @@ uint32_t processMenuItem(int currentMenuPos)
 
 uint32_t MainScreen(uint32_t input)
 {
-	
+	set_Time(hours,minutes,seconds,meridian);
 	//Determine Input and Action on MainScreen
 	switch(input)
 	{
@@ -498,7 +498,6 @@ uint32_t SetAlarms(uint32_t input)
 	modifiedtime = modifiedtime / 1000;
 	hours = modifiedtime % 100;
 	meridian = (modifiedtime / 100) % 10;
-	meridian = 0;
 	
 	if(hours == 0)
 	{
