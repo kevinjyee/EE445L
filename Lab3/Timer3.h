@@ -29,6 +29,12 @@
 #ifndef __TIMER3INTS_H__ // do not include more than once
 #define __TIMER3INTS_H__
 
+// ***************** Disable_Timer3 ****************
+// Disables Timer3 to stop PMWSine calls.
+// Inputs:  none
+// Outputs: none
+void Disable_Timer3(void);
+
 // ***************** Timer3_Init ****************
 // Activate Timer3 interrupts periodically
 // Inputs:  period in units (1/clockfreq)
