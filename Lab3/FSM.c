@@ -282,7 +282,9 @@ uint32_t SetTime(uint32_t input)
 				ST7735_DrawString(6,1,secondsBuffer,ST7735_BLACK);
 				ST7735_DrawString(8,1," ",ST7735_WHITE);
 				ST7735_DrawString(9,1,meridianBuffer,ST7735_BLACK);
+				clear_OldHands();
 				set_Time(hours,minutes,seconds,meridian);
+				
 				return 0x00;//back to main screen
 			}
 			else{	
@@ -301,7 +303,9 @@ uint32_t SetTime(uint32_t input)
 				ST7735_DrawString(6,1,secondsBuffer,ST7735_BLACK);
 				ST7735_DrawString(8,1," ",ST7735_WHITE);
 				ST7735_DrawString(9,1,meridianBuffer,ST7735_BLACK);
+				clear_OldHands();
 				set_Time(hours,minutes,seconds,meridian);
+				
 				return 0x00;//back to main screen
 			return 0x00;
 		

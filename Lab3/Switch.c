@@ -47,7 +47,7 @@ void Timer2Arm(void){
   TIMER2_TAPR_R = 0;            // 5) bus clock resolution
   TIMER2_ICR_R = 0x00000001;    // 6) clear timer2A timeout flag
   TIMER2_IMR_R = 0x00000001;    // 7) arm timeout interrupt
-	NVIC_PRI5_R = (NVIC_PRI5_R&0x00FFFFFF)|0x20000000; // 8) priority 4 (change to priority 4, lower priority than timer 0)
+	NVIC_PRI5_R = (NVIC_PRI5_R&0x00FFFFFF)|0x80000000; // 8) priority 4 (change to priority 4, lower priority than timer 0)
 // interrupts enabled in the main program after all devices initialized
 // vector number 39, interrupt number 23
   NVIC_EN0_R = 1<<23;           // 9) enable IRQ 23 in NVIC
@@ -77,15 +77,14 @@ static void GPIOArm(void){
 void Switch_Init(void){
 	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOE; // activate port E
 	while((SYSCTL_PRGPIO_R&0x10)==0){};
-  GPIO_PORTE_DIR_R &=~ 0x0F;      // make PE3-0 in make the input pins
-  GPIO_PORTE_AFSEL_R &= ~0x0F;   // disable alt funct on PE3-0
-	GPIO_PORTE_AMSEL_R &= ~0x0F;      // no analog on PE3-0
+  GPIO_PORTE_DIR_R &=~ 0x0F;      // make PA3-0 in make the input pins
+  GPIO_PORTE_AFSEL_R &= ~0x0F;   // disable alt funct on PA3-0
+	GPIO_PORTE_AMSEL_R &= ~0x0F;      // no analog on PA3-0
   GPIO_PORTE_PCTL_R &= ~0xFFFFFFFF; // regular function
-  GPIO_PORTE_DEN_R |= 0x0F;      // enable digital I/O on PE3-0
+  GPIO_PORTE_DEN_R |= 0x0F;      // enable digital I/O on PA3-0
 	GPIO_PORTE_IS_R &= ~0x0F;         // 8) edge-sensitive
-  GPIO_PORTE_IBE_R &= ~0x0F;        // 9) not both edges
-	GPIO_PORTE_IEV_R |= ~0x0F;				// 9) rising edge trigger
-	
+  GPIO_PORTE_IBE_R |= 0x0F;        // 9) both edges
+	 
 }
 
 // **************Switch_In*********************

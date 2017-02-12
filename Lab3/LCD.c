@@ -16,7 +16,8 @@
 
 #define CIRCLE_OFFSET		89
 
-
+void DisableInterrupts(void); // Disable interrupts
+void EnableInterrupts(void);  // Enable interrupts
 
 // 180 points on a circle for minute hand.
 volatile int32_t MinuteHandXbuf[180] = { -45, -87, -128, -169, -211, -252, -293, -333, -373, -413, -452, -490, -529, -566, -603, -639, -673, -708, -741, -774, -805, -836, -866, -894, -922, -948, -973, -997, -1020, -1042, -1062, -1081, -1099, -1115, -1130, -1144, -1156, -1167, -1176, -1185, -1191, -1196, -1200, -1202, -1203, -1202, -1200, -1196, -1191, -1185, -1176, -1167, -1156, -1144, -1130, -1115, -1099, -1081, -1062, -1042, -1020, -997, -973, -948, -922, -894, -866, -836, -805, -774, -741, -708, -673, -639, -603, -566, -529, -490, -452, -413, -373, -333, -293, -252, -211, -169, -128, -87, -45, -3, 39, 81, 122, 163, 205, 246, 287, 327, 367, 407, 446, 484, 523, 560, 597, 633, 667, 702, 735, 768, 799, 830, 860, 888, 916, 942, 967, 991, 1014, 1036, 1056, 1075, 1093, 1109, 1124, 1138, 1150, 1161, 1170, 1179, 1185, 1190, 1194, 1196, 1197, 1196, 1194, 1190, 1185, 1179, 1170, 1161, 1150, 1138, 1124, 1109, 1093, 1075, 1056, 1036, 1014, 991, 967, 942, 916, 888, 860, 830, 799, 768, 735, 702, 667, 633, 597, 560, 523, 484, 446, 407, 367, 327, 287, 246, 205, 163, 122, 81, 39, -3
@@ -215,6 +216,31 @@ void draw_Hands(uint8_t minutes, uint8_t hours){
 	
 }	
 
+void clear_OldHands(){
+	DisableInterrupts();
+	uint8_t minutes = lastMinute;
+  uint8_t hours = lastHour;
+	uint16_t minutesIndex = get_Minute_Hand_Index(minutes);
+	uint16_t prevMinutesIndex = (minutesIndex >= 3) ? minutesIndex - 3 : (177 + minutesIndex); // Don't want negative index.
+		uint16_t hoursIndex = get_Hour_Hand_Index(minutes, hours);
+		uint16_t prevHoursIndex = (hoursIndex >= 3) ? hoursIndex - 3 : (177 + hoursIndex); // Don't want negative index.
+
+	
+		ST7735_Line1(63, 99, MinuteHandXbuf[prevMinutesIndex], MinuteHandYbuf[prevMinutesIndex], ST7735_BLACK); // Delete old minute hand
+
+			ST7735_Line1(63, 99, HourHandXbuf[prevHoursIndex], HourHandYbuf[prevHoursIndex], ST7735_BLACK); // Delete old hour hand
+		
+			ST7735_Line1(63, 99, MinuteHandXbuf[minutesIndex], MinuteHandYbuf[minutesIndex], ST7735_BLACK); // Draw new minute hand
+
+			/* Draw new hour hand if minutes = multiple of 12, if the hours have been changed, or if the minute hand is close enough to
+			 		the hour hand that its line clear method might delete part of the hour hand.
+			*/
+			ST7735_Line1(63, 99, HourHandXbuf[hoursIndex], HourHandYbuf[hoursIndex], ST7735_BLACK); // Draw new hour hand
+	
+		
+		EnableInterrupts();
+	}
+
 void draw_Time(){
 	uint8_t minutes;
   uint8_t hours;
@@ -264,4 +290,3 @@ void draw_Clock(void){
 
 	//draw_Hands();
 }
-

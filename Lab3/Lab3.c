@@ -229,7 +229,7 @@ int main(void){
 				ST7735_DrawString(0,0,"Alarm!",ST7735_MAGENTA);
 			if(Fifo_Get(&input))
 			{
-				Disable_PWM();
+				//Disable_PWM();
 				animate_Clock();
 				animateAlarm = false;
 				AlarmOn = 0;
@@ -237,6 +237,8 @@ int main(void){
 				break;
 			}
 		}
+
+			
 		
 		if(Fifo_Get(&input))
 		{

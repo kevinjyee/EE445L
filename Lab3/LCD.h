@@ -69,3 +69,5 @@ void animate_Clock(void);
 
 // A local delay function for clock animation.
 void DelayWait1Millisecond(uint32_t n);
+
+void clear_OldHands(void);
