@@ -282,7 +282,7 @@ void DelayWait1Millisecond(uint32_t n){
   }
 }
 
-void animate_Clock(){
+int animate_Clockwise(){
 	for(int i = 160; i > 0; i--){
 			
 		ST7735_DrawBitmap(0,159,ClockFace,i,160);
@@ -290,9 +290,33 @@ void animate_Clock(){
 		uint32_t input =0;
 		if(Fifo_Get(&input))
 		{
-			break;
+			return 1;
 		}
 	}
+	return 0;
+}
+
+int animate_Counter_Clockwise(){
+	for(int i = 1; i < 161; i++){
+			
+		ST7735_DrawBitmap(0,159,ClockFace,i,160);
+		//DelayWait1Millisecond(1);
+		uint32_t input =0;
+		if(Fifo_Get(&input))
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
+int animate_Clock(){
+	int mute = animate_Clockwise();
+	if(mute){
+		return mute;
+	}
+	mute = animate_Counter_Clockwise();
+	return mute;
 }
 
 void initialize_Hands(void){

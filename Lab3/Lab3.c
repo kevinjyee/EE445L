@@ -73,7 +73,7 @@ volatile unsigned long LastE = 0;
 
 uint32_t Tempo[10] = { 60, 80, 100, 120, 140, 160, 180, 200, 220, 240 };
 
-bool animateAlarm = false;
+volatile bool animateAlarm = false;
 extern int AlarmOn;
 
 
@@ -101,38 +101,6 @@ void DelayWait2ms(uint32_t n){uint32_t volatile time;
   }
 }
 
-
-/*
-// This debug function initializes Timer0A to request interrupts
-// at a 100 Hz frequency.  It is similar to FreqMeasure.c.
-void Timer0A_Init100HzInt(void){
-  volatile uint32_t delay;
-  DisableInterrupts();
-  // **** general initialization ****
-  SYSCTL_RCGCTIMER_R |= 0x01;      // activate timer0
-  delay = SYSCTL_RCGCTIMER_R;      // allow time to finish activating
-  TIMER0_CTL_R &= ~TIMER_CTL_TAEN; // disable timer0A during setup
-  TIMER0_CFG_R = 0;                // configure for 32-bit timer mode
-  // **** timer0A initialization ****
-                                   // configure for periodic mode
-  TIMER0_TAMR_R = TIMER_TAMR_TAMR_PERIOD;
-  TIMER0_TAILR_R = 799999;         // start value for 100 Hz interrupts
-  TIMER0_IMR_R |= TIMER_IMR_TATOIM;// enable timeout (rollover) interrupt
-  TIMER0_ICR_R = TIMER_ICR_TATOCINT;// clear timer0A timeout flag
-  TIMER0_CTL_R |= TIMER_CTL_TAEN;  // enable timer0A 32-b, periodic, interrupts
-  // **** interrupt initialization ****
-                                   // Timer0A=priority 2
-  NVIC_PRI4_R = (NVIC_PRI4_R&0x00FFFFFF)|0x40000000; // top 3 bits
-  NVIC_EN0_R = 1<<19;              // enable interrupt 19 in NVIC
-}
-void Timer0A_Handler(void){
-  TIMER0_ICR_R = TIMER_ICR_TATOCINT;    // acknowledge timer0A timeout
-	PF2 ^= 0x04;                   // profile
-  PF2 ^= 0x04;                   // profile
-	
-	PF2 ^= 0x04;                   // profile
-}
-*/
 void Timer1_Init(void){
   SYSCTL_RCGCTIMER_R |= 0x02;   // 0) activate TIMER1
   //PeriodicTask = task;          // user function
@@ -164,7 +132,7 @@ void init_All(){
 	init_switchmain();
 	
 	ST7735_InitR(INITR_REDTAB);
-  SysTick_Init(SYSTICK_RELOAD/64);
+  SysTick_Init(SYSTICK_RELOAD);
 	//Timer1_Init();
 	
 }
@@ -226,23 +194,26 @@ int main(void){
 	EnableInterrupts();
 	uint32_t current_state = 0x00;	
   uint32_t input,lastinput = 0x00;
+	uint8_t alarm_triggered = 0;
+	int mute = 0;
 	while(1){
 		check_Alarm(current_state);
-	
-			if(animateAlarm)
-			{
 				
-				animate_Clock();
+			while(animateAlarm && !mute)
+			{
+				alarm_triggered = 1;
+				mute = animate_Clock();		
+			}
+			if(alarm_triggered){
+				mute = 0;
 				animateAlarm = false;
 				AlarmOn = 0;
 			  sound_Off();
 				redrawHands = 1;
 				draw_Clock();
 				draw_Time();
-				
+				alarm_triggered = 0;
 			}
-		
-
 			
 		
 		if(Fifo_Get(&input))

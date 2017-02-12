@@ -39,6 +39,7 @@ void setTime(void);
 int selectSwitchToggled = FALSE;
 int redrawTime = true;
 extern volatile int redrawHands;
+extern volatile bool animateAlarm;
 bool updateTime = true;
 uint32_t time;
 volatile int curentMenuPos =0;
@@ -457,7 +458,7 @@ uint32_t SetAlarms(uint32_t input)
 	int hours,minutes,seconds,meridian;
 	uint32_t modifiedtime = 0;
 
-		time = AlarmTimeArray[setMultipleAlarmPos];
+	time = AlarmTimeArray[setMultipleAlarmPos];
 		
 	
 	

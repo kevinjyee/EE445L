@@ -64,8 +64,8 @@ void draw_Clock(void);
 // Draw clock hands.
 void draw_Hands(uint8_t minutes, uint8_t hours);
 
-// An edgy clock animation for future use.
-void animate_Clock(void);
+// An edgy clock animation.
+int animate_Clock(void);
 
 // A local delay function for clock animation.
 void DelayWait1Millisecond(uint32_t n);
