@@ -48,6 +48,7 @@ volatile int currentSetTimePos = 0 ; //-1 just entered menu	//0 is hours, 1 is m
 volatile int currentSetAlarmPos = 0;
 volatile int setMultipleAlarmPos =0;
 volatile int currentSongPos = 0;
+volatile int OldTime;
 
 uint32_t AlarmTimeArray[NUMALARMS] ={0};
 int AlarmONOFFArray[NUMALARMS] = {0};
@@ -182,6 +183,7 @@ uint32_t SetTime(uint32_t input)
 	uint32_t modifiedtime = 0;
 	if(updateTime)
 	{
+		OldTime = Time;
 		time = Time;
 		updateTime = false;
 		
@@ -321,8 +323,9 @@ uint32_t SetTime(uint32_t input)
 				ST7735_DrawString(3,1,minuteBuffer,ST7735_BLACK);
 				ST7735_DrawString(6,1,secondsBuffer,ST7735_BLACK);
 				ST7735_DrawString(9,1,meridianBuffer,ST7735_BLACK);
-				Time = (100000000 * meridian) + (1000000 * hours) + (1000 * minutes) + seconds;
-				time = Time;
+				//Time = (100000000 * meridian) + (1000000 * hours) + (1000 * minutes) + seconds;
+				//time = Time;
+				Time = OldTime;
 		/*
 				updateTime = true;
 				ST7735_DrawString(0,0,"Set Time",ST7735_BLACK);
