@@ -175,6 +175,11 @@ void ST7735_Line1(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t c
 			}
 		}
 	}
+	
+void clear_Screen()
+{
+	ST7735_FillScreen(0);
+}
 
 uint16_t get_Minute_Hand_Index(uint8_t minutes){
 	return (((minutes * 3) + CIRCLE_OFFSET) % 180);

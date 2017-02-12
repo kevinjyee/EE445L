@@ -49,6 +49,9 @@ void ST7735_Translate1(uint32_t num, int32_t bufX[], int32_t bufY[]);
 //		from rosettacode.org
 void ST7735_Line1(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);
 
+// Blank out screen.
+void clear_Screen(void);
+
 // Find an index into the minute hand circle buffer for the current minute hand.
 uint16_t get_Minute_Hand_Index(uint8_t minutes);
 

@@ -40,6 +40,7 @@ int selectSwitchToggled = FALSE;
 int redrawTime = true;
 extern volatile int redrawHands;
 extern volatile bool animateAlarm;
+extern volatile bool resetClock;
 bool updateTime = true;
 uint32_t time;
 volatile int curentMenuPos =0;
@@ -58,6 +59,15 @@ uint32_t SetAlarm(uint32_t);
 uint32_t SetAlarms(uint32_t);
 uint32_t SetMultipleAlarm(uint32_t);
 uint32_t ChooseSong(uint32_t);
+
+char BeepingAlarm[17] = {' ', ' ', 'B', 'e', 'e', 'p', 'i', 'n', 'g', ' ', 'A', 'l', 'a', 'r', 'm', ' ', 0};
+char Siren[17] = {' ', ' ', 'S', 'i', 'r', 'e', 'n', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 0};
+char ImperialMarch[17] = {' ', ' ', 'I', 'm', 'p', 'e', 'r', 'i', 'a', 'l', ' ', 'M', 'a', 'r', 'c', 'h', 0};
+char MorningMood[17] = {' ', ' ', 'M', 'o', 'r', 'n', 'i', 'n', 'g', ' ', 'M', 'o', 'o', 'd', ' ', ' ', 0};
+char NewBarkTown[17] = {' ', ' ', 'N', 'e', 'w', ' ', 'B', 'a', 'r', 'k', ' ', 'T', 'o', 'w', 'n', ' ', 0};
+char* song_Choice[5] = {		
+	BeepingAlarm, Siren, ImperialMarch, MorningMood, NewBarkTown
+};
 
 void set_Time(int hours, int minutes, int seconds, int meridian){
 	DisableInterrupts();
@@ -86,9 +96,9 @@ uint32_t Next_State(uint32_t current_state, uint32_t keyInputs)
 
 void clear_Menu(){
 			ST7735_FillRect(0,0,125,10,ST7735_BLACK);
-			ST7735_DrawString(0,1,"Set Time",ST7735_BLACK);
-			ST7735_DrawString(0,2,"Set Alarm",ST7735_BLACK);
-			ST7735_DrawString(0,3,"Choose Song",ST7735_BLACK);
+			ST7735_DrawString(0,1,"  Set Time",ST7735_BLACK);
+			ST7735_DrawString(0,2,"  Set Alarm",ST7735_BLACK);
+			ST7735_DrawString(0,3,"  Choose Song",ST7735_BLACK);
 }
 
 
@@ -145,19 +155,19 @@ uint32_t MainScreen(uint32_t input)
 	switch(curentMenuPos)
 	{
 		case 0:
-			ST7735_DrawString(0,1,"Set Time",ST7735_CYAN);
-			ST7735_DrawString(0,2,"Set Alarm",ST7735_WHITE);
-			ST7735_DrawString(0,3,"Choose Song",ST7735_WHITE);
+			ST7735_DrawString(0,1,"  Set Time",ST7735_CYAN);
+			ST7735_DrawString(0,2,"  Set Alarm",ST7735_WHITE);
+			ST7735_DrawString(0,3,"  Choose Song",ST7735_WHITE);
 			break;
 		case 1:
-			ST7735_DrawString(0,1,"Set Time",ST7735_WHITE);
-			ST7735_DrawString(0,2,"Set Alarm",ST7735_CYAN);
-			ST7735_DrawString(0,3,"Choose Song",ST7735_WHITE);
+			ST7735_DrawString(0,1,"  Set Time",ST7735_WHITE);
+			ST7735_DrawString(0,2,"  Set Alarm",ST7735_CYAN);
+			ST7735_DrawString(0,3,"  Choose Song",ST7735_WHITE);
 			break;
 		case 2:
-			ST7735_DrawString(0,1,"Set Time",ST7735_WHITE);
-			ST7735_DrawString(0,2,"Set Alarm",ST7735_WHITE);
-			ST7735_DrawString(0,3,"Choose Song",ST7735_CYAN);
+			ST7735_DrawString(0,1,"  Set Time",ST7735_WHITE);
+			ST7735_DrawString(0,2,"  Set Alarm",ST7735_WHITE);
+			ST7735_DrawString(0,3,"  Choose Song",ST7735_CYAN);
 			break;
 	}
 	return 0x00;
@@ -195,11 +205,11 @@ uint32_t SetTime(uint32_t input)
 	format_setTime(secondsBuffer, SEC,FALSE,FALSE);
 	format_setTime(meridianBuffer,MER,FALSE,FALSE);
 	
+	ST7735_DrawString(0,0,"Set Time",ST7735_YELLOW);
 	if(redrawTime)
 	{
 		
 		clear_Menu();
-		ST7735_DrawString(0,0,"Set Time",ST7735_WHITE);
 		ST7735_DrawString(0,1,hourBuffer,ST7735_CYAN);
 		ST7735_DrawString(2,1,":",ST7735_WHITE);
 		ST7735_DrawString(3,1,minuteBuffer,ST7735_WHITE);
@@ -207,8 +217,12 @@ uint32_t SetTime(uint32_t input)
 		ST7735_DrawString(6,1,secondsBuffer,ST7735_WHITE);
 		ST7735_DrawString(8,1," ",ST7735_WHITE);
 		ST7735_DrawString(9,1,meridianBuffer,ST7735_WHITE);
-		
 		redrawTime = FALSE;
+	}
+	if(resetClock){
+		resetClock = false;
+		draw_Clock();
+		draw_Hands(minutes, hours);
 	}
 	
 	
@@ -306,6 +320,8 @@ uint32_t SetTime(uint32_t input)
 				ST7735_DrawString(3,1,minuteBuffer,ST7735_BLACK);
 				ST7735_DrawString(6,1,secondsBuffer,ST7735_BLACK);
 				ST7735_DrawString(9,1,meridianBuffer,ST7735_BLACK);
+				Time = (100000000 * meridian) + (1000000 * hours) + (1000 * minutes) + seconds;
+				time = Time;
 		/*
 				updateTime = true;
 				ST7735_DrawString(0,0,"Set Time",ST7735_BLACK);
@@ -388,13 +404,15 @@ uint32_t SetTime(uint32_t input)
 void formatAlarmType(char* buffer,int i )
 {
 	char alarmchoice = i + '0';
-	buffer[0]='A';
-	buffer[1]='l';
-	buffer[2]='a';
-	buffer[3]='r';
-	buffer[4]='m';
-	buffer[5]=' ';
-	buffer[6]= alarmchoice;
+	buffer[0]=' ';
+	buffer[1]=' ';
+	buffer[2]='A';
+	buffer[3]='l';
+	buffer[4]='a';
+	buffer[5]='r';
+	buffer[6]='m';
+	buffer[7]=' ';
+	buffer[8]= alarmchoice;
 }
 uint32_t SetMultipleAlarm(uint32_t input)
 {
@@ -434,16 +452,17 @@ uint32_t SetMultipleAlarm(uint32_t input)
 			return 0x00;
 		
 	}
+		ST7735_DrawString(0,0,"Alarm Choices:",ST7735_YELLOW);
 		for(int i =0; i < NUMALARMS; i++)
 	{
-		char buffer[7] ={' '};
+		char buffer[9] ={' '};
 		formatAlarmType(buffer,i);
 		if(setMultipleAlarmPos == i)
 		{
-			ST7735_DrawString(0,i,buffer,ST7735_CYAN);
+			ST7735_DrawString(0,i + 1,buffer,ST7735_CYAN);
 		}
 		else{
-			ST7735_DrawString(0,i,buffer,ST7735_WHITE);
+			ST7735_DrawString(0,i + 1,buffer,ST7735_WHITE);
 		}
 		
 	}
@@ -475,6 +494,7 @@ uint32_t SetAlarms(uint32_t input)
 	modifiedtime = modifiedtime / 1000;
 	hours = modifiedtime % 100;
 	meridian = (modifiedtime / 100) % 10;
+	meridian = 0;
 	
 	if(hours == 0)
 	{
@@ -485,12 +505,12 @@ uint32_t SetAlarms(uint32_t input)
 	format_setTime(secondsBuffer, SEC,TRUE,setMultipleAlarmPos);
 	format_setTime(meridianBuffer,MER,TRUE,setMultipleAlarmPos);
 	
+	ST7735_DrawString(0,0,"Set Alarm",ST7735_YELLOW);
 	if(redrawTime)
 	{
 		
 		clear_Menu();
 		ST7735_FillScreen(0);
-		ST7735_DrawString(0,0,"Set Alarm",ST7735_WHITE);
 		ST7735_DrawString(0,1,hourBuffer,ST7735_CYAN);
 		ST7735_DrawString(2,1,":",ST7735_WHITE);
 		ST7735_DrawString(3,1,minuteBuffer,ST7735_WHITE);
@@ -727,17 +747,6 @@ uint32_t SetAlarms(uint32_t input)
 	
 }
 
-void formatSongType(char* buffer,int i )
-{
-	char songchoice = i + '0';
-	buffer[0]='S';
-	buffer[1]='o';
-	buffer[2]='n';
-	buffer[3]='g';
-	buffer[4]=' ';
-	buffer[5]=songchoice;
-}
-
 uint32_t ChooseSong(uint32_t input)
 {
 if(redrawTime)
@@ -778,17 +787,15 @@ if(redrawTime)
 			return 0x00;
 		
 	}
-	
+	ST7735_DrawString(0,0,"Song Choices:",ST7735_YELLOW);
 	for(int i =0; i < NUMSONGS; i++)
 	{
-		char buffer[6] = {'S','o','n','g',' ','1'};
-		formatSongType(buffer,i);
 		if(i == currentSongPos)
 		{
-			ST7735_DrawString(0,i,buffer,ST7735_CYAN);
+			ST7735_DrawString(0,i + 1,song_Choice[i],ST7735_CYAN);
 		}
 		else{
-			ST7735_DrawString(0,i,buffer,ST7735_WHITE);
+			ST7735_DrawString(0,i + 1,song_Choice[i],ST7735_WHITE);
 		}
 	}
 		

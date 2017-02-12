@@ -74,6 +74,7 @@ volatile unsigned long LastE = 0;
 uint32_t Tempo[10] = { 60, 80, 100, 120, 140, 160, 180, 200, 220, 240 };
 
 volatile bool animateAlarm = false;
+volatile bool resetClock;
 extern int AlarmOn;
 
 
@@ -209,10 +210,12 @@ int main(void){
 				animateAlarm = false;
 				AlarmOn = 0;
 			  sound_Off();
-				redrawHands = 1;
-				draw_Clock();
-				draw_Time();
+				//redrawHands = 1;
+				//draw_Clock();
+				//draw_Time();
+				clear_Screen();
 				alarm_triggered = 0;
+				resetClock = true;
 			}
 			
 		
@@ -224,7 +227,7 @@ int main(void){
 		}
 		else
 		{
-				current_state = Next_State(current_state,0x00);	
+			current_state = Next_State(current_state,0x00);	
 		}
   }
 }
