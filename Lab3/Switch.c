@@ -84,7 +84,7 @@ void Switch_Init(void){
   GPIO_PORTE_DEN_R |= 0x0F;      // enable digital I/O on PA3-0
 	GPIO_PORTE_IS_R &= ~0x0F;         // 8) edge-sensitive
   GPIO_PORTE_IBE_R |= 0x0F;        // 9) both edges
-	 
+	
 }
 
 // **************Switch_In*********************

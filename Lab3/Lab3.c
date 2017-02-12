@@ -150,6 +150,14 @@ void Timer1_Init(void){
   TIMER1_CTL_R = 0x00000001;    // 10) enable TIMER1A
 }
 
+void sound_On(){
+	Timer3_Init(Tempo[4]);
+}
+
+void sound_Off(){
+	Disable_Timer3();
+	Disable_PWM();
+}
 
 void init_All(){
 	PLL_Init(Bus50MHz);                   // 50 MHz
@@ -157,7 +165,6 @@ void init_All(){
 	
 	ST7735_InitR(INITR_REDTAB);
   SysTick_Init(SYSTICK_RELOAD/64);
-	Timer3_Init(Tempo[4]);
 	//Timer1_Init();
 	
 }
@@ -206,13 +213,13 @@ void check_Alarm(uint32_t current_state){
 		{
 			if(Time == AlarmTimeArray[i] && AlarmONOFFArray[i] == 1)
 		{
-			//Enable_PWM();
+			sound_On();
 			AlarmONOFFArray[i] = 0;
 			animateAlarm = true;
 		}
 			
 		}
-	}
+}
 
 
 int main(void){
@@ -220,7 +227,7 @@ int main(void){
 	draw_Clock();
 	EnableInterrupts();
 	uint32_t current_state = 0x00;	
-  uint32_t input,lastinput =0x00;
+  uint32_t input,lastinput = 0x00;
 	while(1){
 		check_Alarm(current_state);
 		while(animateAlarm)
@@ -229,10 +236,11 @@ int main(void){
 				ST7735_DrawString(0,0,"Alarm!",ST7735_MAGENTA);
 			if(Fifo_Get(&input))
 			{
-				//Disable_PWM();
+
 				animate_Clock();
 				animateAlarm = false;
 				AlarmOn = 0;
+			  sound_Off();
 				draw_Clock();
 				break;
 			}

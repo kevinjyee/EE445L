@@ -71,7 +71,7 @@ void Enable_PWM()
 
 void Disable_PWM()
 {
-	PWM0_ENABLE_R |= ~PWM_ENABLE_PWM0EN;//  enable PWM0 Generator 0
+	PWM0_ENABLE_R &= ~PWM_ENABLE_PWM0EN;//  enable PWM0 Generator 0
 }
 
 
@@ -100,6 +100,7 @@ void PWM0A_Init(uint16_t period, uint16_t duty){
   PWM0_0_LOAD_R = period - 1;      // 5) cycles needed to count down to 0
   PWM0_0_CMPA_R = duty - 1;        // 6) count value when output rises
   PWM0_0_CTL_R |= PWM_0_CTL_ENABLE;// 7) start PWM0 Generator 0
+	Enable_PWM();
   
 }
 // change duty cycle

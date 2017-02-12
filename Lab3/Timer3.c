@@ -37,6 +37,15 @@
 uint32_t tempo_Max_Count;
 uint32_t tempo_Counter;
 
+
+// ***************** Disable_Timer3 ****************
+// Disables Timer3 to stop PMWSine calls.
+// Inputs:  none
+// Outputs: none
+void Disable_Timer3(void){
+	TIMER3_CTL_R = 0x00000000;
+}
+
 // ***************** Timer3_Init ****************
 // Activate Timer3 interrupts periodically
 // Inputs:  period in units (1/clockfreq)

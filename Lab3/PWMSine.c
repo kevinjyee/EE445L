@@ -155,8 +155,9 @@ void OutputSineWave(void){
   static uint8_t index = 0;        // counting index of output sequence
   PWM0A_Duty(Square_Wave[index]);         // output next value in sequence
   index = (index + 1)&0x1F;        // increment counter
-  PF2 ^= 0x04;
+  //PF2 ^= 0x04;
 }
+
 void PMWSine_Init(uint8_t song_Id){
   //PLL_Init(Bus50MHz);              // 50 MHz
                                    // 1) activate clock for Port F
@@ -165,6 +166,7 @@ void PMWSine_Init(uint8_t song_Id){
 		song_Index = 0;
 		previous_Song = song_Id;
 	}
+	/*
   SYSCTL_RCGCGPIO_R |= SYSCTL_RCGCGPIO_R5;
                                    // allow time to finish activating
   while((SYSCTL_PRGPIO_R&SYSCTL_PRGPIO_R5)==0){};
@@ -174,6 +176,7 @@ void PMWSine_Init(uint8_t song_Id){
   GPIO_PORTF_DIR_R |= 0x04;        // 5) make PF2 out (PF2 built-in blue LED)
   GPIO_PORTF_AFSEL_R &= ~0x04;     // 6) disable alt funct on PF2
   GPIO_PORTF_DEN_R |= 0x04;        // 7) enable digital I/O on PF2
+	*/
   PWM0A_Init(250, 125);            // initialize PWM0A, 100kHz, 50% duty
 	switch(song_Id){
 		case 0: Timer0A_Init(&OutputSineWave, Notes[BEEP_BEEP_BEEP_BEEP[song_Index]]);
