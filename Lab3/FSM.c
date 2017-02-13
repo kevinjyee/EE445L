@@ -126,7 +126,7 @@ uint32_t processMenuItem(int currentMenuPos)
 
 uint32_t MainScreen(uint32_t input)
 {
-	set_Time(hours,minutes,seconds,meridian);
+
 	//Determine Input and Action on MainScreen
 	switch(input)
 	{
