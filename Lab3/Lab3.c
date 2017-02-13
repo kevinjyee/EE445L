@@ -62,7 +62,7 @@ long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
 
-volatile uint32_t Switch1 = 0;
+//volatile uint32_t Switch1 = 0;
 volatile uint32_t Time = 0; // (Meridian)hh0mm0ss
 volatile uint32_t AlarmTime =0;
 volatile uint8_t SelectSeconds;

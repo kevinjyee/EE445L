@@ -53,9 +53,29 @@ volatile uint8_t Meridian;
 extern volatile uint32_t Time;
 extern volatile uint32_t AlarmTime;
 
+#define PF1       (*((volatile uint32_t *)0x40025008))
+#define PF2       (*((volatile uint32_t *)0x40025010))
+#define PF3       (*((volatile uint32_t *)0x40025020))
+
+// Initialize Port F so PF1, PF2 and PF3 are heartbeats
+void PortF_Init(void){
+	volatile unsigned long delay;
+	
+	SYSCTL_RCGCGPIO_R |= 0x00000020; // activate port F
+	int x=0;
+   x++;
+   x--;
+   x++;	//    allow time for clock to stabilize
+  GPIO_PORTF_DIR_R |= 0x0E;   // make PF123 output (PF1 built-in LED)
+  GPIO_PORTF_AFSEL_R &= ~0x0E;// disable alt funct on PF123
+  GPIO_PORTF_DEN_R |= 0x0E;   // enable digital I/O on PF123
+  GPIO_PORTF_PCTL_R = (GPIO_PORTF_PCTL_R&0xFFFFFF0F)+0x00000000; // no alternate functions 
+  GPIO_PORTF_AMSEL_R &= ~0x0E;     // disable analog functionality on PF123
+}
 
 // Initialize SysTick with busy wait running at bus clock.
 void SysTick_Init(uint32_t period){
+	PortF_Init();
   NVIC_ST_CTRL_R = 0;                   // disable SysTick during setup
   NVIC_ST_RELOAD_R = period - 1;  // maximum reload value
   NVIC_ST_CURRENT_R = 0;                // any write to current clears it
@@ -95,7 +115,10 @@ void incrementTime(){
 }
 
 void SysTick_Handler(void){
+	PF2 ^= 0x04; // Heartbeat while SysTick is counting (so, like, always)
+	PF2 ^= 0x04;
 	incrementTime();
+	PF2 ^= 0x04;
 }
 
 // Sets current time of alarm clock.

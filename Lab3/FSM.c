@@ -48,7 +48,7 @@ volatile int currentSetTimePos = 0 ; //-1 just entered menu	//0 is hours, 1 is m
 volatile int currentSetAlarmPos = 0;
 volatile int setMultipleAlarmPos =0;
 volatile int currentSongPos = 0;
-volatile int OldTime;
+//volatile int OldTime;
 
 uint32_t AlarmTimeArray[NUMALARMS] ={0};
 int AlarmONOFFArray[NUMALARMS] = {0};
@@ -183,7 +183,7 @@ uint32_t SetTime(uint32_t input)
 	uint32_t modifiedtime = 0;
 	if(updateTime)
 	{
-		OldTime = Time;
+		//OldTime = Time;
 		time = Time;
 		updateTime = false;
 		

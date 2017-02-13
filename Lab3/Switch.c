@@ -14,26 +14,7 @@ extern volatile unsigned long LastE;      // previous input for port A
 uint16_t timeout_Count = 0;
 uint32_t Switch_In(void);
 
-#define PF1       (*((volatile uint32_t *)0x40025008))
-#define PF2       (*((volatile uint32_t *)0x40025010))
-#define PF3       (*((volatile uint32_t *)0x40025020))
 #define RELOAD_10HZ	0x4C4B40 // Reload value for an interrupt frequency of 10Hz.
-
-// Initialize Port F so PF1, PF2 and PF3 are heartbeats
-void PortF_Init(void){
-	volatile unsigned long delay;
-	
-	SYSCTL_RCGCGPIO_R |= 0x00000020; // activate port F
-	int x=0;
-   x++;
-   x--;
-   x++;	//    allow time for clock to stabilize
-  GPIO_PORTF_DIR_R |= 0x0E;   // make PF123 output (PF1 built-in LED)
-  GPIO_PORTF_AFSEL_R &= ~0x0E;// disable alt funct on PF123
-  GPIO_PORTF_DEN_R |= 0x0E;   // enable digital I/O on PF123
-  GPIO_PORTF_PCTL_R = (GPIO_PORTF_PCTL_R&0xFFFFFF0F)+0x00000000; // no alternate functions 
-  GPIO_PORTF_AMSEL_R &= ~0x0E;     // disable analog functionality on PF123
-}
 
 // ***************** Timer2_ARM ****************
 // Activate Timer2 interrupts to run user task periodically
@@ -87,15 +68,12 @@ void Timer1A_Init(void){
 // Outputs: none
 void Timer1A_Handler(void){
   TIMER1_ICR_R = TIMER_ICR_TATOCINT;// acknowledge timer0A timeout
-	PF2 ^= 0x04;
-	PF2 ^= 0x04;
 	long i_bit = StartCritical();
 	timeout_Count = (timeout_Count + 1) % 100;
 	if(timeout_Count == 99){ //
 		Fifo_Put(0x08); //Register the falling edge only.
 	}
 	EndCritical(i_bit);
-	PF2 ^= 0x04;
 }
 
 // ***************** Disable_Timer1 ****************
@@ -159,8 +137,6 @@ uint32_t Switch_In(void){
 
 void GPIOPortE_Handler(void)
 {
-	PF2 ^= 0x04;
-	PF2 ^= 0x04;
 	GPIO_PORTE_IM_R &= ~0x0F; // disarm interrupt on PA so we dont get double clicks
 	long i_bit = StartCritical();
 	timeout_Count = 0;
@@ -169,7 +145,6 @@ void GPIOPortE_Handler(void)
  
 		Fifo_Put(LastE); //Register the falling edge only.
   }
-	PF2 ^= 0x04;
 	Timer2Arm(); //arm the timer again to be ready for countdown
 
 }
@@ -184,7 +159,6 @@ void Timer2A_Handler(void){
 void init_switchmain(void){
 	Fifo_Init(); 
 	Switch_Init();
-	PortF_Init();
 	Timer2Arm();
 	Timer1A_Init();
 	
