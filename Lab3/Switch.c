@@ -98,6 +98,22 @@ void Timer1A_Handler(void){
 	PF2 ^= 0x04;
 }
 
+// ***************** Disable_Timer1 ****************
+// Disables Timer1 to stop screen timeout during an alarm.
+// Inputs:  none
+// Outputs: none
+void Disable_Timer1(void){
+	TIMER1_CTL_R = 0x00000000;
+}
+
+// ***************** Enable_Timer1 ****************
+// Enables Timer1 to start screen timeout counter.
+// Inputs:  none
+// Outputs: none
+void Enable_Timer1(void){
+	TIMER1_CTL_R = 0x00000001;   
+}
+
 // **************GPIOArm*********************
 // Initialize switch key inputs, called once 
 // Input: none 

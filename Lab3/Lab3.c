@@ -183,12 +183,16 @@ int main(void){
 	while(1){
 		check_Alarm(current_state);
 				
+			if(animateAlarm){
+				Disable_Timer1(); // Disable screen timeout.
+			}
 			while(animateAlarm && !mute)
 			{
 				alarm_triggered = 1;
 				mute = animate_Clock();		
 			}
 			if(alarm_triggered){
+				Enable_Timer1(); // Enable screen timeout.
 				mute = 0;
 				animateAlarm = false;
 				AlarmOn = 0;

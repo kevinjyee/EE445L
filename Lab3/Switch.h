@@ -8,7 +8,7 @@
 // Header files contain the prototypes for public functions
 // this file explains what the module does
 
-#include <stdio.h>
+#include <stdint.h>
 
 // **************Switch_Init*********************
 // Initialize Switch key inputs, called once 
@@ -24,5 +24,17 @@ void Switch_Init(void);
 uint32_t Switch_In(void);
 
 void Timer2Arm(void);
+
+// ***************** Disable_Timer1 ****************
+// Disables Timer1 to stop screen timeout during an alarm.
+// Inputs:  none
+// Outputs: none
+void Disable_Timer1(void);
+
+// ***************** Enable_Timer1 ****************
+// Enables Timer1 to start screen timeout counter.
+// Inputs:  none
+// Outputs: none
+void Enable_Timer1(void);
 
 void init_switchmain(void);
