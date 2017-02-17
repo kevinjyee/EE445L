@@ -1,30 +1,31 @@
-// ADCTestMain.c
-// Runs on TM4C123
-// This program periodically samples ADC channel 0 and stores the
-// result to a global variable that can be accessed with the JTAG
-// debugger and viewed with the variable watch feature.
-// Daniel Valvano
-// September 5, 2015
-
-/* This example accompanies the book
-   "Embedded Systems: Real Time Interfacing to Arm Cortex M Microcontrollers",
-   ISBN: 978-1463590154, Jonathan Valvano, copyright (c) 2015
-
- Copyright 2015 by Jonathan W. Valvano, valvano@mail.utexas.edu
-    You may use, edit, run or distribute this file
-    as long as the above copyright notice remains
- THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- VALVANO SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- For more information about my classes, my research, and my books, see
- http://users.ece.utexas.edu/~valvano/
+/* File Name:    main.c
+ * Authors:      Kevin Yee (kjy252), Stefan Bordovsky (sb39782)
+ * Created:      02/069/2017
+ * Description:  Main functions to test for plotting floating pts, fixed pts and images
+ *               
+ * 
+ * Lab Number: MW 330-500
+ * TA: Mahesh
+ * 
+ * Hardware Configurations:
+ * ST7735R LCD:
+ *     Backlight    (pin 10) connected to +3.3 V
+ *     MISO         (pin 9) unconnected
+ *     SCK          (pin 8) connected to PA2 (SSI0Clk)
+ *     MOSI         (pin 7) connected to PA5 (SSI0Tx)
+ *     TFT_CS       (pin 6) connected to PA3 (SSI0Fss)
+ *     CARD_CS      (pin 5) unconnected
+ *     Data/Command (pin 4) connected to PA6 (GPIO)
+ *     RESET        (pin 3) connected to PA7 (GPIO)
+ *     VCC          (pin 2) connected to +3.3 V
+ *     Gnd          (pin 1) connected to ground
+ *		 Down Switch				 PE0
+ *		 Up Switch					 PE1
+ *		 Select Switch			 PE2
+ *		 Main Switch				 PE3
+ *		 Speaker Input			 PB6
+ 
  */
-
-// center of X-ohm potentiometer connected to PE3/AIN0
-// bottom of X-ohm potentiometer connected to ground
-// top of X-ohm potentiometer connected to +3.3V 
 #include <stdint.h>
 #include <stdbool.h>
 #include "../inc/tm4c123gh6pm.h"
@@ -77,9 +78,10 @@ volatile bool animateAlarm = false;
 volatile bool resetClock;
 extern int AlarmOn;
 
-
-// Retrieves seconds, minutes, and hour from Time global variable in thread-safe fashion.
-// Consider switching to bit operations to avoid overhead of division.
+/*Function: getTime
+* Retrieves seconds, minutes, and hour from Time global variable in thread-safe fashion.
+* Consider switching to bit operations to avoid overhead of division.
+*/
 void getTime(uint8_t* meridian, uint8_t* hours, uint8_t* minutes, uint8_t* seconds){
 	uint32_t time = Time;
 	*seconds = time % 100;
@@ -92,6 +94,9 @@ void getTime(uint8_t* meridian, uint8_t* hours, uint8_t* minutes, uint8_t* secon
 	
 }
 
+/*Function: DelayWait2ms
+*
+*/
 void DelayWait2ms(uint32_t n){uint32_t volatile time;
   while(n){
     time = 7272400*4/91;  // 10msec
@@ -102,41 +107,52 @@ void DelayWait2ms(uint32_t n){uint32_t volatile time;
   }
 }
 
+/*Function: sound_On
+*
+*/
 void sound_On(){
 	Timer3_Init(Tempo[4]);
 }
 
+
+/*Function: sound_Off
+*
+*/
 void sound_Off(){
 	Disable_Timer3();
 	Disable_PWM();
 }
 
+/*Function: init_All
+*Initializes all the Timers and switches
+*/
 void init_All(){
 	PLL_Init(Bus50MHz);                   // 50 MHz
 	init_switchmain();
-	
 	ST7735_InitR(INITR_REDTAB);
   SysTick_Init(SYSTICK_RELOAD);
-	//Timer1_Init();
-	
 }
 
+/*Function: find_minAlarm
+*/
 uint32_t find_minAlarm(){
-	uint32_t min =0XFFFFFFFF;
+	uint32_t MINALARM =0XFFFFFFFF;
   int index = -1;
 	bool foundalarm = false;
+	
 	for(int i =0; i < NUMALARMS; i++)
 	{
 		if(AlarmONOFFArray[i] == 1)
 		{
-			if(AlarmTimeArray[i] - Time < min)
+			if(AlarmTimeArray[i] - Time < MINALARM)
 			{
-			min = AlarmTimeArray[i];
+			MINALARM = AlarmTimeArray[i];
 			index = i;
 			}
 			foundalarm = true;	
 		}		
-	}
+	}//find closest alarm time
+	
 	if(foundalarm)
 	{
 		AlarmOn = 1;
@@ -147,6 +163,8 @@ uint32_t find_minAlarm(){
 return index;
 }
 
+/*Function: check_Alarm
+*/
 void check_Alarm(uint32_t current_state){
 	if(current_state == 0x00)
 		{
@@ -171,28 +189,11 @@ void check_Alarm(uint32_t current_state){
 		}
 }
 
-
-int main(void){
-  init_All();
-	draw_Clock();
-	EnableInterrupts();
-	uint32_t current_state = 0x00;	
-  uint32_t input,lastinput = 0x00;
-	uint8_t alarm_triggered = 0;
-	int mute = 0;
-	while(1){
-		check_Alarm(current_state);
-				
-			if(animateAlarm){
-				Disable_Timer1(); // Disable screen timeout.
-			}
-			while(animateAlarm && !mute)
-			{
-				alarm_triggered = 1;
-				mute = animate_Clock();		
-			}
-			if(alarm_triggered){
-				Enable_Timer1(); // Enable screen timeout.
+/*Function: animate_Alarm
+*/
+void animate_Alarm(int* mute,uint8_t* alarm_triggered,uint32_t* current_state){
+	
+	Enable_Timer1(); // Enable screen timeout.
 				mute = 0;
 				animateAlarm = false;
 				AlarmOn = 0;
@@ -205,9 +206,33 @@ int main(void){
 				}
 				alarm_triggered = 0;
 				resetClock = true;
+}
+
+
+
+
+int main(void){
+  init_All();
+	draw_Clock();
+	EnableInterrupts();
+	uint32_t current_state = 0x00;	
+  uint32_t input,lastinput = 0x00;
+	uint8_t alarm_triggered = 0;
+	int mute = 0;
+	while(1){
+		check_Alarm(current_state);
+			if(animateAlarm){
+				Disable_Timer1(); // Disable screen timeout.
+			}
+			while(animateAlarm && !mute)
+			{
+				alarm_triggered = 1;
+				mute = animate_Clock();		
+			}
+			if(alarm_triggered){
+				animate_Alarm(&mute,&alarm_triggered,&current_state);
 			}
 			
-		
 		if(Fifo_Get(&input))
 		{
 			current_state = Next_State(current_state, input);			
