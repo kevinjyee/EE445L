@@ -176,7 +176,7 @@ struct{
   char HostName[MAX_HOSTNAME_SIZE];
   unsigned long DestinationIP;
   int SockID;
-}appData;
+}voltageData;
 
 typedef enum{
     CONNECTED = 0x01,
@@ -225,40 +225,99 @@ void extracTemp(char* Recvbuff, char* tempbuffer){
 	}
 	
 	}
+
+void itoa(uint32_t voltage, char buffer[]){
 	
+	char const digits[] = "0123456789";
+	char* pos = buffer;
+	int counter = voltage;
+	do{
+		
+		++pos;
+		counter = counter/10;
+		
+	}while(counter);
+	*pos = '\0';
+	do{
+		*--pos = digits[voltage%10];
+		voltage /= 10;
+	
+}while(voltage);
+	
+}
+	
+#define SENDSTRING1 "GET /query?city=Austin%2C%20Texas&id=Kevin%20and%20Stefan&greet=" 
+#define SENDSTRING2 " HTTP/1.1\r\nUser-Agent: Keil\r\nHost: ee445l-kjy252.appspot.com\r\n\r\n"
+#define SERVER "ee445l-kjy252.appspot.com"
+#define REQUESTT "GET /query?city=Austin%2C%20Texas&id=Kevin%20and%20Stefan&greet=FUCKFINALLYYESSSSFUCKK HTTP/1.1\r\nUser-Agent: Keil\r\nHost: ee445l-kjy252.appspot.com\r\n\r\n"
 void getVoltage(char* voltbuffer){
 	uint32_t ADCval = ADC0_InSeq3();
 	ST7735_SetCursor(0,1);
 	ST7735_OutString("Voltage ");
 	ST7735_OutUDec(ADCval);
-}
 	
+	
+	char voltagebuffer[10];
+	char TCPPACKET[100] ="";
+	itoa(ADCval,voltagebuffer);
+	ST7735_OutString(" ");
+	ST7735_OutString(voltagebuffer);
+	
+	strcat(TCPPACKET,SENDSTRING1);
+	strcat(TCPPACKET,voltagebuffer);
+	strcat(TCPPACKET,SENDSTRING2);
+	
+	int32_t retVal;  SlSecParams_t secParams;
+  char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr; //Socket creates a scoet
+	
+	strcpy(voltageData.HostName,SERVER);
+	retVal = sl_NetAppDnsGetHostByName(voltageData.HostName,strlen(voltageData.HostName),
+                                                &voltageData.DestinationIP, SL_AF_INET);
+																								
+	if(retVal == 0){
+      Addr.sin_family = SL_AF_INET;
+      Addr.sin_port = sl_Htons(80);
+      Addr.sin_addr.s_addr = sl_Htonl(voltageData.DestinationIP);// IP to big endian 
+      ASize = sizeof(SlSockAddrIn_t);
+      SockID = sl_Socket(SL_AF_INET,SL_SOCK_STREAM, 0);
+      if( SockID >= 0 ){
+        retVal = sl_Connect(SockID, ( SlSockAddr_t *)&Addr, ASize);
+      }
+      if((SockID >= 0)&&(retVal >= 0)){
+        strcpy(voltageData.SendBuff,REQUESTT); 
+        sl_Send(SockID, voltageData.SendBuff, strlen(voltageData.SendBuff), 0);// Send the HTTP GET 
+        sl_Recv(SockID, Recvbuff, MAX_RECV_BUFF_SIZE, 0);// Receive response 
+        sl_Close(SockID);
+        LED_GreenOn();
+        UARTprintf("\r\n\r\n");
+        UARTprintf("Voltage data sent");  UARTprintf("\r\n");
+				UARTprintf(Recvbuff);
+				
+      }
+	
+}
+	}
 
 /*
  * Application's entry point
  */
 // 1) change Austin Texas to your city
 // 2) you can change metric to imperial if you want temperature in F
-#define SERVER "ee445l-kjy252.appspot.com"
+
 #define REQUEST "GET /data/2.5/weather?q=Austin%20Texas&APPID=1bc54f645c5f1c75e681c102ed4bbca4&units=metric HTTP/1.1\r\nUser-Agent: Keil\r\nHost:api.openweathermap.org\r\nAccept: */*\r\n\r\n"
 // 1) go to http://openweathermap.org/appid#use 
 // 2) Register on the Sign up page
 // 3) get an API key (APPID) replace the 1234567890abcdef1234567890abcdef with your APPID
 
 
-static int32_t getConnection(void)
-{
-	  memcpy(appData.HostName,SERVER,strlen(SERVER));
-		
 
-}
 	
 int main(void){int32_t retVal;  SlSecParams_t secParams;
   char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr;
   initClk();        // PLL 50 MHz
-  UART_Init();      // Send data to PC, 115200 bps
+  UART_Init();      // Send data to PC, 115200 bps (baud rate)
   LED_Init();       // initialize LaunchPad I/O 
-	ADC0_InitSWTriggerSeq3_Ch9();
+	ADC0_InitSWTriggerSeq3_Ch9(); //initialize for ADC Sampling 
 	ST7735_InitR(INITR_REDTAB);
   UARTprintf("Weather App\n");
   retVal = configureSimpleLinkToDefaultState(pConfig); // set policies
@@ -296,14 +355,20 @@ int main(void){int32_t retVal;  SlSecParams_t secParams;
         UARTprintf("\r\n\r\n");
         UARTprintf(Recvbuff);  UARTprintf("\r\n");
 				char tempbuffer[50] = " ";
-				char voltagebuffer[50] = " ";
+				
 				extracTemp(Recvbuff,tempbuffer);
 				ST7735_SetCursor(0,0);
+				ST7735_FillScreen(ST7735_BLACK);
 				ST7735_OutString("Temperature ");
+				strcat(tempbuffer," C");
 				ST7735_OutString(tempbuffer);
-				//getVoltage(voltagebuffer);
+			
+				
       }
+			char voltagebuffer[50] = " ";
+			getVoltage(voltagebuffer);
     }
+		
     while(Board_Input()==0){}; // wait for touch
     LED_GreenOff();
   }
