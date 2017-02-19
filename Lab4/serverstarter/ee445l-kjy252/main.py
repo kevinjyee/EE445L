@@ -69,8 +69,11 @@ class MainPage(webapp2.RequestHandler):
         # [END query]
 
         for greeting in greetings:
-            voltage = int(filter(greeting.greet.isdigit, greeting.greet))
-            voltage = int((voltage / 100) + 10)
+            try:
+                voltage = int(filter(greeting.greet.isdigit, greeting.greet))
+                voltage = int((voltage / 100) + 10)
+            except:
+                voltage = 25
             voltage = str(voltage)
             self.response.write("<font size='%s'" % voltage)
             self.response.write('<b>%s@%s</b>: <i>%s</i> (accessed from %s)</font>' %
