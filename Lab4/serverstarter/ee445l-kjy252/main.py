@@ -67,9 +67,13 @@ class MainPage(webapp2.RequestHandler):
             ancestor=logbook_key('logbook')).order(-Greeting.date)
         greetings = greetings_query.fetch()
         # [END query]
-        
+
         for greeting in greetings:
-            self.response.write('<b>%s@%s</b>: <i>%s</i> (accessed from %s)' %
+            voltage = int(filter(greeting.greet.isdigit, greeting.greet))
+            voltage = int((voltage / 100) + 10)
+            voltage = str(voltage)
+            self.response.write("<font size='%s'" % voltage)
+            self.response.write('<b>%s@%s</b>: <i>%s</i> (accessed from %s)</font>' %
                                         (greeting.author, greeting.city, greeting.greet, greeting.ipaddr))
             self.response.write('<hr>')
 
