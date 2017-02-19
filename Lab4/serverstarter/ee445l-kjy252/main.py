@@ -68,12 +68,28 @@ class MainPage(webapp2.RequestHandler):
         greetings = greetings_query.fetch()
         # [END query]
 
-        for greeting in greetings:
+        '''
+        for i in range (0, 4):
             try:
-                voltage = int(filter(greeting.greet.isdigit, greeting.greet))
-                voltage = int((voltage / 100) + 10)
+                test = '4000'
+                voltage = int(random.randint(0, 4000))
+                voltage = int(filter(str.isdigit, test))
+                voltage = int(voltage / 100)
             except:
-                voltage = 25
+                voltage = 10
+            voltage = str(voltage)
+            self.response.write("<font size='%s'" % voltage)
+            self.response.write('<b>TEST</b>: <i>RUN</i> (accessed from LOCALHOST)</font>')
+            self.response.write('<hr>')
+        '''
+
+        for greeting in greetings:
+            voltage = int(random.randint(0, 4000))
+            try:
+                voltage = int(filter(str.isdigit, greeting.greet))
+                voltage = int(voltage / 400)
+            except:
+                voltage = 15
             voltage = str(voltage)
             self.response.write("<font size='%s'" % voltage)
             self.response.write('<b>%s@%s</b>: <i>%s</i> (accessed from %s)</font>' %
