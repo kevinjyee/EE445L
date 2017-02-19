@@ -71,6 +71,7 @@ void UART_Init(void){
 #define CONNECTION_STATUS_BIT   0
 #define IP_AQUIRED_STATUS_BIT   1
 
+void getVoltageData(void);
 /* Application specific status/error codes */
 typedef enum{
     DEVICE_NOT_IN_STATION_MODE = -0x7D0,/* Choosing this number to avoid overlap w/ host-driver's error codes */
@@ -212,11 +213,7 @@ void queryWebserver(char* Host,char* MessageRequest)
         sl_Send(SockID, SendBuff, strlen(SendBuff), 0);// Send the HTTP GET 
         sl_Recv(SockID, Recvbuff, MAX_RECV_BUFF_SIZE, 0);// Receive response 
         sl_Close(SockID);
-        LED_GreenOn();
-        UARTprintf("\r\n\r\n");
-        UARTprintf("Voltage data sent");  UARTprintf("\r\n");
-				UARTprintf(Recvbuff);
-				
+        UARTprintf("This line reached");
       }
 	
 }
@@ -273,26 +270,26 @@ void queryWebserver(char* Host,char* MessageRequest)
 				
 				extracTemp(Recvbuff,tempbuffer);
 				ST7735_SetCursor(0,0);
-				ST7735_FillScreen(ST7735_BLACK);
 				ST7735_OutString("Temperature ");
 				strcat(tempbuffer," C");
 				ST7735_OutString(tempbuffer);
 		
 	}
 	
-#define SENDSTRING1 "GET /query?city=Austin%2C%20Texas&id=Kevin%20and%20Stefan&greet=" 
+
+	
+	#define SENDSTRING1 "GET /query?city=Austin%2C%20Texas&id=Kevin%20and%20Stefan&greet=" 
 #define SENDSTRING2 " HTTP/1.1\r\nUser-Agent: Keil\r\nHost: ee445l-kjy252.appspot.com\r\n\r\n"
 #define SERVER "ee445l-kjy252.appspot.com"
 #define REQUESTT "GET /query?city=Austin%2C%20Texas&id=Kevin%20and%20Stefan&greet=FUCKFINALLYYESSSSFUCKK HTTP/1.1\r\nUser-Agent: Keil\r\nHost: ee445l-kjy252.appspot.com\r\n\r\n"
-void getVoltage(){
+void getVoltageData(){
 	uint32_t ADCval = ADC0_InSeq3();
-	ST7735_SetCursor(0,1);
+	ST7735_SetCursor(0,2);
 	ST7735_OutString("Voltage ");
-	ST7735_OutUDec(ADCval);
-	
+
 	
 	char voltagebuffer[10];
-	char TCPPACKET[100] ="";
+	char TCPPACKET[200] ="";
 	itoa(ADCval,voltagebuffer);
 	ST7735_OutString(" ");
 	ST7735_OutString(voltagebuffer);
@@ -301,14 +298,14 @@ void getVoltage(){
 	strcat(TCPPACKET,voltagebuffer);
 	strcat(TCPPACKET,SENDSTRING2);
 	
-	UARTprintf(TCPPACKET);
+	//UARTprintf(TCPPACKET);
 
 	
-	strcpy(voltageData.HostName,SERVER);
-	queryWebserver(voltageData.HostName,TCPPACKET);
-
+	strcpy(HostName,SERVER);
+	queryWebserver(HostName,TCPPACKET);
+	UARTprintf("Voltage Data Sent");
+	
 	}
-	
 
 /*
  * Application's entry point
@@ -327,13 +324,25 @@ int main(void){
 	init_All();
   connect_internet();
   while(1){
+		
+			
+			
+			//ST7735_OutString("Board inputs work");
+				//LED_GreenOff();
+			//
+			getVoltageData();
 			getWeather();
-			getVoltage();
+			LED_GreenOn();
+		while(Board_Input()==0){}; // wait for touch
+			LED_GreenOff();
+
+			//
+		
       }
-    while(Board_Input()==0){}; // wait for touch
-    LED_GreenOff();
-		ST7735_FillScreen(0);
+   
   }
+
+
 
 
 /*!
