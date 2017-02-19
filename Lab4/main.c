@@ -1,83 +1,29 @@
-/*
- * main.c - Example project for UT.6.02x Embedded Systems - Shape the World
- * Jonathan Valvano and Ramesh Yerraballi
- * September 14, 2016
- * Hardware requirements 
-     TM4C123 LaunchPad, optional Nokia5110
-     CC3100 wifi booster and 
-     an internet access point with OPEN, WPA, or WEP security
+/* File Name:    main.c
+ * Authors:      Kevin Yee (kjy252), Stefan Bordovsky (sb39782)
+ * Created:      02/19/2017
+ * Description:  Get Weather Application
+ *               
+ * 
+ * Lab Number: MW 330-500
+ * TA: Mahesh
+ * 
+ * Hardware Configurations:
+ * ST7735R LCD:
+ *     Backlight    (pin 10) connected to +3.3 V
+ *     MISO         (pin 9) unconnected
+ *     SCK          (pin 8) connected to PA2 (SSI0Clk)
+ *     MOSI         (pin 7) connected to PA5 (SSI0Tx)
+ *     TFT_CS       (pin 6) connected to PA3 (SSI0Fss)
+ *     CARD_CS      (pin 5) unconnected
+ *     Data/Command (pin 4) connected to PA6 (GPIO)
+ *     RESET        (pin 3) connected to PA7 (GPIO)
+ *     VCC          (pin 2) connected to +3.3 V
+ *     Gnd          (pin 1) connected to ground
+ *		 PE2					 Potentiometer
  
- * derived from TI's getweather example
- * Copyright (C) 2014 Texas Instruments Incorporated - http://www.ti.com/
- *
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *    Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *
- *    Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the
- *    distribution.
- *
- *    Neither the name of Texas Instruments Incorporated nor the names of
- *    its contributors may be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
-*/
-
-/*
- * Application Name     -   Get weather
- * Application Overview -   This is a sample application demonstrating how to
-                            connect to openweathermap.org server and request for
-              weather details of a city.
- * Application Details  -   http://processors.wiki.ti.com/index.php/CC31xx_SLS_Get_Weather_Application
- *                          doc\examples\sls_get_weather.pdf
+ 
+ 
  */
- /* CC3100 booster pack connections (unused pins can be used by user application)
-Pin  Signal        Direction      Pin   Signal     Direction
-P1.1  3.3 VCC         IN          P2.1  Gnd   GND      IN
-P1.2  PB5 UNUSED      NA          P2.2  PB2   IRQ      OUT
-P1.3  PB0 UART1_TX    OUT         P2.3  PE0   SSI2_CS  IN
-P1.4  PB1 UART1_RX    IN          P2.4  PF0   UNUSED   NA
-P1.5  PE4 nHIB        IN          P2.5  Reset nRESET   IN
-P1.6  PE5 UNUSED      NA          P2.6  PB7  SSI2_MOSI IN
-P1.7  PB4 SSI2_CLK    IN          P2.7  PB6  SSI2_MISO OUT
-P1.8  PA5 UNUSED      NA          P2.8  PA4   UNUSED   NA
-P1.9  PA6 UNUSED      NA          P2.9  PA3   UNUSED   NA
-P1.10 PA7 UNUSED      NA          P2.10 PA2   UNUSED   NA
-
-Pin  Signal        Direction      Pin   Signal      Direction
-P3.1  +5  +5 V       IN           P4.1  PF2 UNUSED      OUT
-P3.2  Gnd GND        IN           P4.2  PF3 UNUSED      OUT
-P3.3  PD0 UNUSED     NA           P4.3  PB3 UNUSED      NA
-P3.4  PD1 UNUSED     NA           P4.4  PC4 UART1_CTS   IN
-P3.5  PD2 UNUSED     NA           P4.5  PC5 UART1_RTS   OUT
-P3.6  PD3 UNUSED     NA           P4.6  PC6 UNUSED      NA
-P3.7  PE1 UNUSED     NA           P4.7  PC7 NWP_LOG_TX  OUT
-P3.8  PE2 UNUSED     NA           P4.8  PD6 WLAN_LOG_TX OUT
-P3.9  PE3 UNUSED     NA           P4.9  PD7 UNUSED      IN (see R74)
-P3.10 PF1 UNUSED     NA           P4.10 PF4 UNUSED      OUT(see R75)
-
-UART0 (PA1, PA0) sends data to the PC via the USB debug cable, 115200 baud rate
-Port A, SSI0 (PA2, PA3, PA5, PA6, PA7) sends data to Nokia5110 LCD
-
-*/
 #include "..\cc3100\simplelink\include\simplelink.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
@@ -96,6 +42,8 @@ Port A, SSI0 (PA2, PA3, PA5, PA6, PA7) sends data to Nokia5110 LCD
 #include <string.h>
 #include "ST7735.h"
 #include "ADCSWTrigger.h"
+
+
 //#define SSID_NAME  "valvanoAP" /* Access point name to connect to */
 #define SEC_TYPE   SL_SEC_TYPE_WPA
 //#define PASSKEY    "12345678"  /* Password in case of secure AP */ 
@@ -202,7 +150,6 @@ static int32_t configureSimpleLinkToDefaultState(char *);
  * STATIC FUNCTION DEFINITIONS -- End
  */
 
-
 void Crash(uint32_t time){
   while(1){
     for(int i=time;i;i--){};
@@ -210,6 +157,8 @@ void Crash(uint32_t time){
   }
 }
 
+
+/*Helper Function to extract Temperature from getWeather API*/
 
 void extracTemp(char* Recvbuff, char* tempbuffer){
 	const char TEMP[] = "\"temp\"";
@@ -223,34 +172,119 @@ void extracTemp(char* Recvbuff, char* tempbuffer){
 		tempbuffer[i++] = *start;
 		start ++;
 	}
-	
 	}
 
+/*Helper function to turn ADC Data into string format */
 void itoa(uint32_t voltage, char buffer[]){
-	
 	char const digits[] = "0123456789";
 	char* pos = buffer;
 	int counter = voltage;
 	do{
-		
 		++pos;
 		counter = counter/10;
-		
 	}while(counter);
 	*pos = '\0';
 	do{
 		*--pos = digits[voltage%10];
 		voltage /= 10;
-	
 }while(voltage);
+}
+
+void queryWebserver(char* Host,char* MessageRequest)
+{
+			
+	int32_t retVal;  SlSecParams_t secParams;
+  char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr; //Socket creates a scoet
+		retVal = sl_NetAppDnsGetHostByName(Host,strlen(Host),
+                                                &DestinationIP, SL_AF_INET);
+																								
+	if(retVal == 0){
+      Addr.sin_family = SL_AF_INET;
+      Addr.sin_port = sl_Htons(80);
+      Addr.sin_addr.s_addr = sl_Htonl(DestinationIP);// IP to big endian 
+      ASize = sizeof(SlSockAddrIn_t);
+      SockID = sl_Socket(SL_AF_INET,SL_SOCK_STREAM, 0);
+      if( SockID >= 0 ){
+        retVal = sl_Connect(SockID, ( SlSockAddr_t *)&Addr, ASize);
+      }
+      if((SockID >= 0)&&(retVal >= 0)){
+        strcpy(SendBuff,MessageRequest); 
+        sl_Send(SockID, SendBuff, strlen(SendBuff), 0);// Send the HTTP GET 
+        sl_Recv(SockID, Recvbuff, MAX_RECV_BUFF_SIZE, 0);// Receive response 
+        sl_Close(SockID);
+        LED_GreenOn();
+        UARTprintf("\r\n\r\n");
+        UARTprintf("Voltage data sent");  UARTprintf("\r\n");
+				UARTprintf(Recvbuff);
+				
+      }
 	
 }
+	
+}
+	
+
+
+	
+
+/* Initializes clock,uarts,leds,and ADC Channels
+ *
+ */	
+	void init_All(){
+	initClk();        // PLL 50 MHz
+  UART_Init();      // Send data to PC, 115200 bps (baud rate)
+  LED_Init();       // initialize LaunchPad I/O 
+	ADC0_InitSWTriggerSeq3_Ch9(); //initialize for ADC Sampling 
+	ST7735_InitR(INITR_REDTAB);
+	}
+	
+/* Connect to the wifi modules
+ *
+ */
+	
+	void connect_internet(){
+	int32_t retVal;  SlSecParams_t secParams;
+  char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr;
+		  retVal = configureSimpleLinkToDefaultState(pConfig); // set policies
+  if(retVal < 0)Crash(4000000);
+  retVal = sl_Start(0, pConfig, 0);
+  if((retVal < 0) || (ROLE_STA != retVal) ) Crash(8000000);
+  secParams.Key = PASSKEY;
+  secParams.KeyLen = strlen(PASSKEY);
+  secParams.Type = SEC_TYPE; // OPEN, WPA, or WEP
+  sl_WlanConnect(SSID_NAME, strlen(SSID_NAME), 0, &secParams, 0);
+  while((0 == (g_Status&CONNECTED)) || (0 == (g_Status&IP_AQUIRED))){
+    _SlNonOsMainLoopTask();
+  }
+  UARTprintf("Connected\n");
+	}
+	
+#define REQUEST "GET /data/2.5/weather?q=Austin%20Texas&APPID=1bc54f645c5f1c75e681c102ed4bbca4&units=metric HTTP/1.1\r\nUser-Agent: Keil\r\nHost:api.openweathermap.org\r\nAccept: */*\r\n\r\n"
+	
+	
+	/*getWeather()
+	 *Queries openweather map for the current weather
+	 */
+	
+	void getWeather(){
+		strcpy(HostName,"api.openweathermap.org"); // works 9/2016
+		queryWebserver(HostName,REQUEST);
+		char tempbuffer[50] = " ";
+				
+				extracTemp(Recvbuff,tempbuffer);
+				ST7735_SetCursor(0,0);
+				ST7735_FillScreen(ST7735_BLACK);
+				ST7735_OutString("Temperature ");
+				strcat(tempbuffer," C");
+				ST7735_OutString(tempbuffer);
+		
+	}
 	
 #define SENDSTRING1 "GET /query?city=Austin%2C%20Texas&id=Kevin%20and%20Stefan&greet=" 
 #define SENDSTRING2 " HTTP/1.1\r\nUser-Agent: Keil\r\nHost: ee445l-kjy252.appspot.com\r\n\r\n"
 #define SERVER "ee445l-kjy252.appspot.com"
 #define REQUESTT "GET /query?city=Austin%2C%20Texas&id=Kevin%20and%20Stefan&greet=FUCKFINALLYYESSSSFUCKK HTTP/1.1\r\nUser-Agent: Keil\r\nHost: ee445l-kjy252.appspot.com\r\n\r\n"
-void getVoltage(char* voltbuffer){
+void getVoltage(){
 	uint32_t ADCval = ADC0_InSeq3();
 	ST7735_SetCursor(0,1);
 	ST7735_OutString("Voltage ");
@@ -267,36 +301,14 @@ void getVoltage(char* voltbuffer){
 	strcat(TCPPACKET,voltagebuffer);
 	strcat(TCPPACKET,SENDSTRING2);
 	
-	int32_t retVal;  SlSecParams_t secParams;
-  char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr; //Socket creates a scoet
+	UARTprintf(TCPPACKET);
+
 	
 	strcpy(voltageData.HostName,SERVER);
-	retVal = sl_NetAppDnsGetHostByName(voltageData.HostName,strlen(voltageData.HostName),
-                                                &voltageData.DestinationIP, SL_AF_INET);
-																								
-	if(retVal == 0){
-      Addr.sin_family = SL_AF_INET;
-      Addr.sin_port = sl_Htons(80);
-      Addr.sin_addr.s_addr = sl_Htonl(voltageData.DestinationIP);// IP to big endian 
-      ASize = sizeof(SlSockAddrIn_t);
-      SockID = sl_Socket(SL_AF_INET,SL_SOCK_STREAM, 0);
-      if( SockID >= 0 ){
-        retVal = sl_Connect(SockID, ( SlSockAddr_t *)&Addr, ASize);
-      }
-      if((SockID >= 0)&&(retVal >= 0)){
-        strcpy(voltageData.SendBuff,REQUESTT); 
-        sl_Send(SockID, voltageData.SendBuff, strlen(voltageData.SendBuff), 0);// Send the HTTP GET 
-        sl_Recv(SockID, Recvbuff, MAX_RECV_BUFF_SIZE, 0);// Receive response 
-        sl_Close(SockID);
-        LED_GreenOn();
-        UARTprintf("\r\n\r\n");
-        UARTprintf("Voltage data sent");  UARTprintf("\r\n");
-				UARTprintf(Recvbuff);
-				
-      }
-	
-}
+	queryWebserver(voltageData.HostName,TCPPACKET);
+
 	}
+	
 
 /*
  * Application's entry point
@@ -304,75 +316,25 @@ void getVoltage(char* voltbuffer){
 // 1) change Austin Texas to your city
 // 2) you can change metric to imperial if you want temperature in F
 
-#define REQUEST "GET /data/2.5/weather?q=Austin%20Texas&APPID=1bc54f645c5f1c75e681c102ed4bbca4&units=metric HTTP/1.1\r\nUser-Agent: Keil\r\nHost:api.openweathermap.org\r\nAccept: */*\r\n\r\n"
+
 // 1) go to http://openweathermap.org/appid#use 
 // 2) Register on the Sign up page
 // 3) get an API key (APPID) replace the 1234567890abcdef1234567890abcdef with your APPID
 
-
-
 	
-int main(void){int32_t retVal;  SlSecParams_t secParams;
-  char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr;
-  initClk();        // PLL 50 MHz
-  UART_Init();      // Send data to PC, 115200 bps (baud rate)
-  LED_Init();       // initialize LaunchPad I/O 
-	ADC0_InitSWTriggerSeq3_Ch9(); //initialize for ADC Sampling 
-	ST7735_InitR(INITR_REDTAB);
-  UARTprintf("Weather App\n");
-  retVal = configureSimpleLinkToDefaultState(pConfig); // set policies
-  if(retVal < 0)Crash(4000000);
-  retVal = sl_Start(0, pConfig, 0);
-  if((retVal < 0) || (ROLE_STA != retVal) ) Crash(8000000);
-  secParams.Key = PASSKEY;
-  secParams.KeyLen = strlen(PASSKEY);
-  secParams.Type = SEC_TYPE; // OPEN, WPA, or WEP
-  sl_WlanConnect(SSID_NAME, strlen(SSID_NAME), 0, &secParams, 0);
-  while((0 == (g_Status&CONNECTED)) || (0 == (g_Status&IP_AQUIRED))){
-    _SlNonOsMainLoopTask();
-  }
-  UARTprintf("Connected\n");
+int main(void){
+	UARTprintf("Weather App\n");
+	init_All();
+  connect_internet();
   while(1){
-   // strcpy(HostName,"openweathermap.org");  // used to work 10/2015
-    strcpy(HostName,"api.openweathermap.org"); // works 9/2016
-    retVal = sl_NetAppDnsGetHostByName(HostName,
-             strlen(HostName),&DestinationIP, SL_AF_INET);
-    if(retVal == 0){
-      Addr.sin_family = SL_AF_INET;
-      Addr.sin_port = sl_Htons(80);
-      Addr.sin_addr.s_addr = sl_Htonl(DestinationIP);// IP to big endian 
-      ASize = sizeof(SlSockAddrIn_t);
-      SockID = sl_Socket(SL_AF_INET,SL_SOCK_STREAM, 0);
-      if( SockID >= 0 ){
-        retVal = sl_Connect(SockID, ( SlSockAddr_t *)&Addr, ASize);
+			getWeather();
+			getVoltage();
       }
-      if((SockID >= 0)&&(retVal >= 0)){
-        strcpy(SendBuff,REQUEST); 
-        sl_Send(SockID, SendBuff, strlen(SendBuff), 0);// Send the HTTP GET 
-        sl_Recv(SockID, Recvbuff, MAX_RECV_BUFF_SIZE, 0);// Receive response 
-        sl_Close(SockID);
-        LED_GreenOn();
-        UARTprintf("\r\n\r\n");
-        UARTprintf(Recvbuff);  UARTprintf("\r\n");
-				char tempbuffer[50] = " ";
-				
-				extracTemp(Recvbuff,tempbuffer);
-				ST7735_SetCursor(0,0);
-				ST7735_FillScreen(ST7735_BLACK);
-				ST7735_OutString("Temperature ");
-				strcat(tempbuffer," C");
-				ST7735_OutString(tempbuffer);
-			
-				
-      }
-			char voltagebuffer[50] = " ";
-			getVoltage(voltagebuffer);
-    }
-		
     while(Board_Input()==0){}; // wait for touch
     LED_GreenOff();
+		ST7735_FillScreen(0);
   }
-}
+
 
 /*!
     \brief This function puts the device in its default state. It:
