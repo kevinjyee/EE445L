@@ -244,7 +244,8 @@ void queryWebserver(char* Host,char* MessageRequest)
 */
 
 void process_Times(unsigned long difference,Time* Timing)
-{
+{	
+		difference = difference & 0x00FFFFFF;
 		
 		if(difference > Timing->max)
 		{
@@ -306,9 +307,11 @@ void process_Times(unsigned long difference,Time* Timing)
 	
 	void getWeather(){
 		strcpy(HostName,"api.openweathermap.org"); // works 9/2016
+		NVIC_ST_CTRL_R = NVIC_ST_CTRL_ENABLE+NVIC_ST_CTRL_CLK_SRC;
 		unsigned long startTime =  NVIC_ST_CURRENT_R;
 		queryWebserver(HostName,REQUEST);
 		unsigned long endTime = NVIC_ST_CURRENT_R;
+		NVIC_ST_CTRL_R = 0; 
 		
 		process_Times(endTime-startTime,&WeatherTimings);
 		char tempbuffer[50] = " ";
@@ -348,9 +351,11 @@ void getVoltageData(){
 	
 
 	strcpy(HostName,SERVER);
+		NVIC_ST_CTRL_R = NVIC_ST_CTRL_ENABLE+NVIC_ST_CTRL_CLK_SRC;
 		unsigned long startTime =  NVIC_ST_CURRENT_R;
-		queryWebserver(HostName,TCPPACKET);;
+		queryWebserver(HostName,TCPPACKET);
 		unsigned long endTime = NVIC_ST_CURRENT_R;
+		NVIC_ST_CTRL_R = 0; 
 		process_Times(endTime-startTime,&VoltageTiming);
 	
 	}
