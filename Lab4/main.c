@@ -128,10 +128,12 @@ typedef struct Time{
     uint32_t min;
     uint32_t max;
     uint32_t total;
+		uint32_t iteration;
+		uint32_t sampledata[10];
 } Time;
 
-Time WeatherTimings ={0XFFFFFFFF,0,0};
-Time VoltageTiming = {0XFFFFFFFF,0,0};
+Time WeatherTimings ={0XFFFFFFFF,0,0,0,0};
+Time VoltageTiming = {0XFFFFFFFF,0,0,0,0};
 
 
 
@@ -253,6 +255,11 @@ void process_Times(unsigned long difference,Time* Timing)
 			Timing->min = difference;
 		}
 		Timing->total+= difference;	
+		
+		if(Timing->iteration < 10){
+		Timing->sampledata[Timing->iteration++] = difference/50000;
+		}
+		
 	}
 
 	
@@ -381,7 +388,7 @@ void getVoltageData(){
 		ST7735_OutString(" ms");
 		ST7735_SetCursor(0,8);
 		ST7735_OutString("Average ");
-		ST7735_OutUDec(WeatherTimings.total/(timesqueried)*1/50000);
+		ST7735_OutUDec(WeatherTimings.total/(timesqueried/2)*1/50000);
 		ST7735_OutString(" ms");
 		
 		ST7735_SetCursor(0,10);
@@ -396,7 +403,7 @@ void getVoltageData(){
 		ST7735_OutString(" ms");
 		ST7735_SetCursor(0,13);
 		ST7735_OutString("Average ");
-		ST7735_OutUDec(VoltageTiming.total/(timesqueried)*1/50000);
+		ST7735_OutUDec(VoltageTiming.total/(timesqueried/2)*1/50000);
 		ST7735_OutString(" ms");
 	}
 
@@ -444,9 +451,7 @@ int main(void){
            - Sets Tx power to maximum
            - Sets power policy to normal
            - Unregister mDNS services
-
     \param[in]      none
-
     \return         On success, zero is returned. On error, negative is returned
 */
 static int32_t configureSimpleLinkToDefaultState(char *pConfig){
@@ -546,13 +551,9 @@ static int32_t configureSimpleLinkToDefaultState(char *pConfig){
 
 /*!
     \brief This function handles WLAN events
-
     \param[in]      pWlanEvent is the event passed to the handler
-
     \return         None
-
     \note
-
     \warning
 */
 void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent){
@@ -603,13 +604,9 @@ void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent){
 /*!
     \brief This function handles events for IP address acquisition via DHCP
            indication
-
     \param[in]      pNetAppEvent is the event passed to the handler
-
     \return         None
-
     \note
-
     \warning
 */
 void SimpleLinkNetAppEventHandler(SlNetAppEvent_t *pNetAppEvent){
@@ -643,15 +640,11 @@ void SimpleLinkNetAppEventHandler(SlNetAppEvent_t *pNetAppEvent){
 
 /*!
     \brief This function handles callback for the HTTP server events
-
     \param[in]      pServerEvent - Contains the relevant event information
     \param[in]      pServerResponse - Should be filled by the user with the
                     relevant response information
-
     \return         None
-
     \note
-
     \warning
 */
 void SimpleLinkHttpServerCallback(SlHttpServerEvent_t *pHttpEvent,
@@ -665,9 +658,7 @@ void SimpleLinkHttpServerCallback(SlHttpServerEvent_t *pHttpEvent,
 
 /*!
     \brief This function handles general error events indication
-
     \param[in]      pDevEvent is the event passed to the handler
-
     \return         None
 */
 void SimpleLinkGeneralEventHandler(SlDeviceEvent_t *pDevEvent){
@@ -680,9 +671,7 @@ void SimpleLinkGeneralEventHandler(SlDeviceEvent_t *pDevEvent){
 
 /*!
     \brief This function handles socket events indication
-
     \param[in]      pSock is the event passed to the handler
-
     \return         None
 */
 void SimpleLinkSockEventHandler(SlSockEvent_t *pSock){
@@ -722,5 +711,3 @@ void SimpleLinkSockEventHandler(SlSockEvent_t *pSock){
 /*
  * * ASYNCHRONOUS EVENT HANDLERS -- End
  */
-
-
