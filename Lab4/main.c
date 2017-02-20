@@ -27,6 +27,7 @@
 #include "..\cc3100\simplelink\include\simplelink.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
+#include "inc/tm4c123gh6pm.h"
 #include "driverlib/debug.h"
 #include "driverlib/fpu.h"
 #include "driverlib/gpio.h"
@@ -42,6 +43,9 @@
 #include <string.h>
 #include "ST7735.h"
 #include "ADCSWTrigger.h"
+#include "SysTick.h"
+#include <stdbool.h>
+#include "fixed.h"
 
 
 //#define SSID_NAME  "valvanoAP" /* Access point name to connect to */
@@ -119,14 +123,20 @@ char HostName[MAX_HOSTNAME_SIZE];
 unsigned long DestinationIP;
 int SockID;
 
-struct{
-  char Recvbuff[MAX_RECV_BUFF_SIZE];
-  char SendBuff[MAX_SEND_BUFF_SIZE];
-  char HostName[MAX_HOSTNAME_SIZE];
-  unsigned long DestinationIP;
-  int SockID;
-}voltageData;
+bool firstrun = true;
+typedef struct Time{
+    uint32_t min;
+    uint32_t max;
+    uint32_t total;
+} Time;
 
+Time WeatherTimings ={0XFFFFFFFF,0,0};
+Time VoltageTiming = {0XFFFFFFFF,0,0};
+
+
+
+uint32_t lostpackets =0;
+uint32_t timesqueried = 0;
 typedef enum{
     CONNECTED = 0x01,
     IP_AQUIRED = 0x02,
@@ -198,7 +208,7 @@ void queryWebserver(char* Host,char* MessageRequest)
   char *pConfig = NULL; INT32 ASize = 0; SlSockAddrIn_t  Addr; //Socket creates a scoet
 		retVal = sl_NetAppDnsGetHostByName(Host,strlen(Host),
                                                 &DestinationIP, SL_AF_INET);
-																								
+	timesqueried++;
 	if(retVal == 0){
       Addr.sin_family = SL_AF_INET;
       Addr.sin_port = sl_Htons(80);
@@ -215,6 +225,10 @@ void queryWebserver(char* Host,char* MessageRequest)
         sl_Close(SockID);
         UARTprintf("This line reached");
       }
+			else
+			{
+				lostpackets ++;
+			}
 	
 }
 	
@@ -223,7 +237,26 @@ void queryWebserver(char* Host,char* MessageRequest)
 
 
 	
+/*
+*
+*/
 
+void process_Times(unsigned long difference,Time* Timing)
+{
+		
+		if(difference > Timing->max)
+		{
+			Timing->max = difference;
+		}
+		if(difference < Timing->min)
+		{
+			Timing->min = difference;
+		}
+		Timing->total+= difference;	
+	}
+
+	
+	
 /* Initializes clock,uarts,leds,and ADC Channels
  *
  */	
@@ -232,6 +265,7 @@ void queryWebserver(char* Host,char* MessageRequest)
   UART_Init();      // Send data to PC, 115200 bps (baud rate)
   LED_Init();       // initialize LaunchPad I/O 
 	ADC0_InitSWTriggerSeq3_Ch9(); //initialize for ADC Sampling 
+	SysTick_Init();
 	ST7735_InitR(INITR_REDTAB);
 	}
 	
@@ -265,11 +299,15 @@ void queryWebserver(char* Host,char* MessageRequest)
 	
 	void getWeather(){
 		strcpy(HostName,"api.openweathermap.org"); // works 9/2016
+		unsigned long startTime =  NVIC_ST_CURRENT_R;
 		queryWebserver(HostName,REQUEST);
+		unsigned long endTime = NVIC_ST_CURRENT_R;
+		
+		process_Times(endTime-startTime,&WeatherTimings);
 		char tempbuffer[50] = " ";
 				
 				extracTemp(Recvbuff,tempbuffer);
-				ST7735_SetCursor(0,0);
+				ST7735_SetCursor(0,1);
 				ST7735_OutString("Temperature ");
 				strcat(tempbuffer," C");
 				ST7735_OutString(tempbuffer);
@@ -301,10 +339,65 @@ void getVoltageData(){
 	//UARTprintf(TCPPACKET);
 
 	
+
 	strcpy(HostName,SERVER);
-	queryWebserver(HostName,TCPPACKET);
-	UARTprintf("Voltage Data Sent");
+		unsigned long startTime =  NVIC_ST_CURRENT_R;
+		queryWebserver(HostName,TCPPACKET);;
+		unsigned long endTime = NVIC_ST_CURRENT_R;
+		process_Times(endTime-startTime,&VoltageTiming);
 	
+	}
+
+	
+	
+	void printHeader(){
+		ST7735_SetCursor(0,0);
+		ST7735_OutString("Number of runs ");
+		
+		
+	}
+	
+	void processData(){
+		ST7735_SetCursor(0,0);
+		ST7735_OutString("Number of runs ");
+		ST7735_OutUDec(timesqueried/2);
+		ST7735_SetCursor(0,3);
+		ST7735_OutString("Packets Lost ");
+		ST7735_OutUDec(lostpackets);
+		ST7735_SetCursor(0,4);
+		ST7735_OutString("Percentage Lost ");
+		int percentlost = lostpackets/timesqueried;
+		ST7735_OutUDec(percentlost);
+		
+		ST7735_SetCursor(0,5);
+		ST7735_OutString("Weather Download ");
+		ST7735_SetCursor(0,6);
+		ST7735_OutString("Max ");
+		ST7735_OutUDec(WeatherTimings.max*1/50000);
+		ST7735_OutString(" ms");
+		ST7735_SetCursor(0,7);
+		ST7735_OutString("Min ");
+		ST7735_OutUDec(WeatherTimings.min*1/50000);
+		ST7735_OutString(" ms");
+		ST7735_SetCursor(0,8);
+		ST7735_OutString("Average ");
+		ST7735_OutUDec(WeatherTimings.total/(timesqueried)*1/50000);
+		ST7735_OutString(" ms");
+		
+		ST7735_SetCursor(0,10);
+		ST7735_OutString("Voltage Upload ");
+		ST7735_SetCursor(0,11);
+		ST7735_OutString("Max ");
+		ST7735_OutUDec(VoltageTiming.max*1/50000);
+		ST7735_OutString(" ms");
+		ST7735_SetCursor(0,12);
+		ST7735_OutString("Min ");
+		ST7735_OutUDec(VoltageTiming.min*1/50000);
+		ST7735_OutString(" ms");
+		ST7735_SetCursor(0,13);
+		ST7735_OutString("Average ");
+		ST7735_OutUDec(VoltageTiming.total/(timesqueried)*1/50000);
+		ST7735_OutString(" ms");
 	}
 
 /*
@@ -324,19 +417,15 @@ int main(void){
 	init_All();
   connect_internet();
   while(1){
-		
-			
-			
-			//ST7735_OutString("Board inputs work");
-				//LED_GreenOff();
-			//
+			printHeader();
 			getVoltageData();
 			getWeather();
+			processData();
 			LED_GreenOn();
 		while(Board_Input()==0){}; // wait for touch
 			LED_GreenOff();
-
-			//
+			ST7735_FillScreen(0);
+			
 		
       }
    
