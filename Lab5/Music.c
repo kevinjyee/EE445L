@@ -12,8 +12,9 @@
 #include <stdint.h>
 #include "../inc/tm4c123gh6pm.h"
 #include "SysTick.h"
+#include "Music.h"
 
-volatile uint8_t Note_Index = 0; 
+volatile uint16_t Note_Index = 0; 
 volatile uint8_t I = 0;
 volatile uint8_t J = 0;
 
@@ -26,31 +27,41 @@ typedef struct
 	int tempo;						// Sets tempo of song
   int soprano_Notes[200];  // Soprano melody for song.
 	int alto_Notes[200];			// Alto melody for song.
-} Song;  /* Song structs  */
+} Song;  /* Song structs */
 
-// Holds a list of songs which may be indexed into using song id.
+
 typedef struct
 {
-	Song songs[];
-} Song_Choices;
+	Song songs[1];
+} Song_Choices; /* Playlist for Lab 5! */
 
-// ***************** toggle_Play ****************
-// Plays music if none playing, pauses music if already playing.
+
+// ***************** Play ****************
+// Plays music when called.
 // Inputs:  none
 // Outputs: none
-void toggle_Play(){
+void Play(void){
+}
+
+// ***************** Pause ****************
+// Pauses music when called.
+// Inputs:  none
+// Outputs: none
+void Pause(void){
 }
 
 // ***************** change_Song ****************
 // Changes the song that is playing or begins playing the selected song.
 // Inputs:  none
 // Outputs: none
-void change_Song(){
+void Change_Song(){
 }
 
-// ***************** rewind ****************
+// ***************** Rewind ****************
 // Restart the current song.
 // Inputs:  none
 // Outputs: none
-void rewind(){
+void Rewind(){
 }
+
+// 

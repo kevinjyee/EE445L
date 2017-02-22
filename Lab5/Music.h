@@ -11,21 +11,32 @@
  
 #include <stdint.h>
 #include "../inc/tm4c123gh6pm.h"
+#include "SysTick.h"
 
-// ***************** toggle_Play ****************
-// Plays music if none playing, pauses music if already playing.
+extern volatile uint16_t Note_Index; 
+extern volatile uint8_t I;
+extern volatile uint8_t J;
+
+// ***************** Play ****************
+// Plays music when called.
 // Inputs:  none
 // Outputs: none
-void toggle_Play(void);
+void Play(void);
 
-// ***************** change_Song ****************
+// ***************** Pause ****************
+// Pauses music when called.
+// Inputs:  none
+// Outputs: none
+void Pause(void);
+
+// ***************** Change_Song ****************
 // Changes the song that is playing or begins playing the selected song.
 // Inputs:  none
 // Outputs: none
-void change_Song(void);
+void Change_Song(void);
 
-// ***************** rewind ****************
+// ***************** Rewind ****************
 // Restart the current song.
 // Inputs:  none
 // Outputs: none
-void rewind(void);
+void Rewind(void);

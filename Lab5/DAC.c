@@ -23,13 +23,13 @@ void DAC_Init(uint16_t data){
 	SYSCTL_RCGCGPIO_R != 0x08;						// Activate port D
 	while((SYSCTL_PRGPIO_R&0x08) == 0){};	// Wait until ready.
 	GPIO_PORTD_AFSEL_R |= 0x0B;						// Enable alt. function on PD0, 1, 3
-	GPIO_PORTD_DEN_R |= 0x0B;							// Configure PD2, 3, 5 as SSI
+	GPIO_PORTD_DEN_R |= 0x0B;							// Configure PD0, 1, 3 as SSI
 	GPIO_PORTD_PCTL_R = (GPIO_PORTD_PCTL_R&0xFFFF0F00) + 0x00002022; // Write 2 to port to signify SSI.
 	GPIO_PORTD_AMSEL_R = 0;								// Disable analog functionality on Port D
 	SSI1_CR1_R = 0x00000000;							// Disable SSI, master mode
 	SSI1_CPSR_R = 0x02;										// 8MHz SSIClk
 	SSI1_CR0_R &= ~(0x0000FFF0);					// SCR = 0, SPH = 0, Freescale
-	SSI1_CR0_R |= SSI_CR0_SPO;						// SPO = 0 (flip clock bit)
+	SSI1_CR0_R |= SSI_CR0_SPO;						// SPO = 1 (flip clock bit)
 	SSI1_CR0_R |= 0x0F;										// DSS = 16-bit data
 	SSI1_DR_R = data;											// Load data into TX FIFO
 	SSI1_CR1_R |= 0x00000002;							// Enable SSI

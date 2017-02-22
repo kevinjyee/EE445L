@@ -8,11 +8,13 @@
 // February 16, 2016
 
 
+extern char Toggle_Play;
+
 // **************Next_State*********************
 // Given the current state and the current input, find the next state of the FSM.
 // Input: Current state and current switch input.
 // Output: Next state
-void Next_State(uint32_t,uint32_t);
+uint32_t Next_State(uint32_t,uint32_t);
 
 // **************currentSongPos*********************
 // The position of the song screen selection. Can be moved up and down via

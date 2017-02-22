@@ -39,7 +39,7 @@
 #include "LCD.h"
 #include "Timer0A.h"
 #include "Timer3.h"
-
+#include "Music.h"
 
 #define PA3							(*((volatile uint32_t *)0x40004020)) // Menu switch
 #define PA2             (*((volatile uint32_t *)0x40004010)) // Select switch
@@ -62,6 +62,7 @@ void WaitForInterrupt(void);  // low power mode
 
 //volatile uint32_t Switch1 = 0;
 volatile unsigned long LastE = 0; 
+char Play_Toggled;
 
 uint32_t Tempo[10] = { 60, 80, 100, 120, 140, 160, 180, 200, 220, 240 };
 
@@ -98,7 +99,7 @@ void sound_Off(){
 */
 void init_All(){
 	PLL_Init(Bus50MHz);                   // 50 MHz
-	init_switchmain();
+	Switch_Init();
 	ST7735_InitR(INITR_REDTAB);
   SysTick_Init(SYSTICK_RELOAD);
 }
@@ -122,12 +123,17 @@ int main(void){
 		}
 		switch(current_state){
 			case TOGGLE_PLAY:
-				toggle_Play();
+				if(Play_Toggled){
+					Play();
+				} else{
+					Pause();
+				}
 			case CHANGE_SONG:
-				change_Song();
+				Change_Song();
 			case REWIND:
-				rewind();
+				Rewind();
 			default:
+				break;
 		}
   }
 }

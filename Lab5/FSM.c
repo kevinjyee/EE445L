@@ -34,7 +34,7 @@ void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
 
 int selectSwitchToggled = FALSE;
-int Toggle_Play = PAUSE;
+extern char Play_Toggled;
 volatile int currentSongPos = 0;
 int lastSongPos = -1;
 
@@ -79,15 +79,6 @@ void clear_Menu(){
 			ST7735_DrawString(0,3,"  Choose Song",ST7735_BLACK);
 }
 
-void Rewind(void){
-	
-}
-
-void togglePlay(void){
-	Toggle_Play ^= PLAY; // Toggle play/pause.
-	
-}
-
 uint32_t ChooseSong(uint32_t input)
 {
 	
@@ -107,8 +98,8 @@ uint32_t ChooseSong(uint32_t input)
 			}
 			break;
 		case 0x03:
-			Toggle_Play ^= PLAY;
-			if((currentSongPos != lastSongPos) && (Toggle_Play == PLAY)){
+			Play_Toggled ^= PLAY;
+			if((currentSongPos != lastSongPos) && (Play_Toggled == PLAY)){
 				lastSongPos = currentSongPos;
 				return CHANGE_SONG;
 			} else{

@@ -113,7 +113,7 @@ static void GPIOArm(void){
 // Initialize switch key inputs, called once 
 // Input: none 
 // Output: none
-void Switch_Init(void){
+void Switch_Input_Init(void){
 	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOE; // activate port E
 	while((SYSCTL_PRGPIO_R&0x10)==0){};
   GPIO_PORTE_DIR_R &=~ 0x0F;      // make PA3-0 in make the input pins
@@ -159,9 +159,9 @@ void Timer2A_Handler(void){
 	GPIOArm(); //Timer is done, so arm the handler to listen
 }
 
-void init_switchmain(void){
+void Switch_Init(void){
 	Fifo_Init(); 
-	Switch_Init();
+	Switch_Input_Init();
 	Timer2Arm();
 	//Timer1A_Init();
 }
