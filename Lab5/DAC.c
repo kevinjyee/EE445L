@@ -41,5 +41,5 @@ void DAC_Init(uint16_t data){
 // Outputs: none
 void DAC_Out(){
 	while((SSI1_SR_R & 0x00000002) == 0){}; // SSI TX FIFO not full.
-	SSI0_DR_R = code;
+	SSI1_DR_R = code;
 }
