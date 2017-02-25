@@ -24,6 +24,11 @@
 #include "../inc/tm4c123gh6pm.h"
 #include "Timer1.h"
 
+void DisableInterrupts(void); // Disable interrupts
+void EnableInterrupts(void);  // Enable interrupts
+uint32_t StartCritical (void);// previous I bit, disable interrupts
+void EndCritical(uint32_t sr);// restore I bit to previous value
+void WaitForInterrupt(void);  // low power mode
 void (*T1PeriodicTask)(void);   // user function
 
 // ***************** TIMER1_Init ****************
@@ -52,7 +57,9 @@ void Timer1_Init(void(*task)(void), uint32_t period){
 
 void Timer1A_Handler(void){
   TIMER1_ICR_R = TIMER_ICR_TATOCINT;// acknowledge TIMER1A timeout
+  uint32_t sr = StartCritical();
   (*T1PeriodicTask)();                // execute user task
+	EndCritical(sr);
 }
 
 void Timer1A_Halt(void){

@@ -66,7 +66,9 @@ void Timer0A_Init(void(*task)(void), uint32_t period){uint32_t sr;
 
 void Timer0A_Handler(void){
   TIMER0_ICR_R = TIMER_ICR_TATOCINT;// acknowledge timer0A timeout
+	uint32_t sr = StartCritical();
   (*T0PeriodicTask)();                // execute user task
+	EndCritical(sr);
 }
 
 void Timer0A_Halt(void){
