@@ -15,6 +15,13 @@
 #include "SysTick.h"
 #include "DAC.h"
 
+
+void DisableInterrupts(void); // Disable interrupts
+void EnableInterrupts(void);  // Enable interrupts
+long StartCritical (void);    // previous I bit, disable interrupts
+void EndCritical(long sr);    // restore I bit to previous value
+
+
 // ***************** DAC_Init ****************
 // Initializes DAC output pin and all timers used to produce sound.
 // Inputs:  none
