@@ -18,7 +18,6 @@
 #include "DAC.h"
 
 #define WAVETABLE_LENGTH					64
-#define NUM_NOTES									61
 #define NUM_DIFF_NOTE_DURATIONS		9
 #define	NUM_TEMPOS								8
 
@@ -42,16 +41,15 @@ volatile uint16_t alto_Note_Index = 0;
 extern volatile int currentSongPos;
 
 enum pitch{
-	C0, DF0, D0, EF0, E0, F0, GF0, G0, AF0, A0, BF0, B0,
 	C1, DF1, D1, EF1, E1, F1, GF1, G1, AF1, A1, BF1, B1,
 	C2, DF2, D2, EF2, E2, F2, GF2, G2, AF2, A2, BF2, B2,
 	C3, DF3, D3, EF3, E3, F3, GF3, G3, AF3, A3, BF3, B3,
 	C4, DF4, D4, EF4, E4, F4, GF4, G4, AF4, A4, BF4, B4,
 	C5, DF5, D5, EF5, E5, F5, GF5, G5, AF5, A5, BF5, B5,
-	REST
+	REST, NUM_NOTES
 };
 
-const unsigned short SineUpdateDelay[61] = {
+const unsigned short SineUpdateDelay[NUM_NOTES] = {
 	11945,11274,10641,10044,9480,8948,8446,7972,7525,7102,6704,
 	6327,5972,5637,5321,5022,4740,4474,4223,3986,3762,3551,3352,
 	3164,2986,2819,2660,2511,2370,2237,2112,1993,1881,1776,1676,1582,
