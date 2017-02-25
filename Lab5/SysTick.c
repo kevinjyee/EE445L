@@ -35,7 +35,7 @@
 #define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
 #define NVIC_ST_CTRL_ENABLE     0x00000001  // Counter mode
 #define NVIC_ST_RELOAD_M        0x00FFFFFF  // Counter load value
-#define SYSTICK_RELOAD	0x7A120 // Reload value for an interrupt frequency of 100Hz.
+#define SYSTICK_RELOAD	0x3D09 // Reload value for an interrupt frequency of 3.2kHz.
 
 #define PF1       (*((volatile uint32_t *)0x40025008))
 #define PF2       (*((volatile uint32_t *)0x40025010))

@@ -112,24 +112,26 @@ void OutputAltoWave(void){
 void Play_Song(void){
 	Song current_Song = testSongs.songs[currentSongPos];
 	
-	Note current_Soprano_Note = current_Song.soprano_Notes[soprano_Note_Index];
-	Timer0A_Init(&OutputSopranoWave, SineUpdateDelay[current_Soprano_Note.note_pitch]);
-	current_Soprano_Beats = (current_Soprano_Beats + 1) % time_value[current_Soprano_Note.note_time_value];
-	
-	Note current_Alto_Note = current_Song.alto_Notes[alto_Note_Index];
-	Timer1_Init(&OutputAltoWave, SineUpdateDelay[current_Alto_Note.note_pitch]);
-	current_Alto_Beats = (current_Alto_Beats + 1) % time_value[current_Alto_Note.note_time_value];
-	
-	if(current_Soprano_Beats == 0){
+	Note current_Soprano_Note = current_Song.soprano_Notes[soprano_Note_Index]; // Get current soprano note.
+	if(current_Soprano_Beats == 0){ // If at a new note, load Timer0A with new soprano frequency.
+		Timer0A_Init(&OutputSopranoWave, SineUpdateDelay[current_Soprano_Note.note_pitch]);
+	} else if(current_Soprano_Beats == time_value[current_Soprano_Note.note_time_value]){ // Update note index if moving to next note.
 		soprano_Note_Index = (soprano_Note_Index + 1) % current_Song.num_Soprano_Notes;
 	}
-	if(current_Alto_Beats == 0){
+	current_Soprano_Beats = (current_Soprano_Beats + 1) % time_value[current_Soprano_Note.note_time_value]; // Update beats
+	
+	Note current_Alto_Note = current_Song.alto_Notes[alto_Note_Index];
+	if(current_Alto_Beats == 0){ // If at new note, load Timer1A with new alto frequency.
+		Timer1_Init(&OutputAltoWave, SineUpdateDelay[current_Alto_Note.note_pitch]);
+	} else if(current_Alto_Beats == time_value[current_Alto_Note.note_time_value]){ // Update note index if moving to next note.
 		alto_Note_Index = (alto_Note_Index + 1) % current_Song.num_Alto_Notes;
 	}
+	current_Alto_Beats = (current_Alto_Beats + 1) % time_value[current_Alto_Note.note_time_value];
 	
 }
 
 // ***************** Music_Init ****************
+// Creates a dummy song.
 void Music_Init(void){
 	
 	Note testNote1 = {C4, WHOLE};
@@ -140,6 +142,22 @@ void Music_Init(void){
 	
 	Song testSong1 =  {0, "TestSong1", BPM100, {testNote1, testNote2}, 2, {testNote3, testNote4}, 2};
 	testSongs.songs[0] = testSong1;
+	
+	uint8_t NBT_ID = 1;
+	uint16_t NUM_NBT_SOPRANO_NOTES = 50;
+	uint16_t NUM_NBT_ALTO_NOTES = 50;
+	
+	Note D4_8 = {D4, EIGHTH};
+	Note E4_8 = {E4, EIGHTH};
+	Note GF4_4 = {GF4, QUARTER};
+	Note GF4_8 = {GF4, EIGHTH};
+	Note GF4_5 = {GF4, QUARTER_DOT};
+	Note BF4_4 = {A4, QUARTER};
+	Note G4_8 = {G4, EIGHTH};
+	
+	
+	//Song New_Bark_Town = {NBT_ID, "New Bark Town", BPM100, {}, NUM_NBT_SOPRANO_NOTES, {}, NUM_NBT_ALTO_NOTES};
+
 }
 
 
