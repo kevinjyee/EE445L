@@ -36,7 +36,7 @@
 #define RELOAD_100Hz	0x7A120 // Reload value for an interrupt frequency of 10Hz.
 
 uint32_t tempo_Max_Count;
-uint32_t tempo_Counter;
+uint32_t tempo_Counter2;
 
 
 // ***************** Disable_Timer3 ****************
@@ -67,14 +67,14 @@ void Timer3_Init(unsigned long tempo){
   TIMER3_CTL_R = 0x00000001;    // 10) enable TIMER3A
 	
 	tempo_Max_Count = (60 * 100) / (tempo * 4); // Timer3A counts every 100ms--tempo_Max_Count is number of 100ms to make one beat.
-	tempo_Counter = 0;
+	tempo_Counter2 = 0;
 }
 
 // Every time Timer3A interrupts, check for a change in song selection.
 void Timer3A_Handler(void){
-	if(tempo_Counter == 0){ // Every time tempo_Counter wraps around (one full beat), trigger PWM_Sine and play a new note.
+	if(tempo_Counter2 == 0){ // Every time tempo_Counter wraps around (one full beat), trigger PWM_Sine and play a new note.
 		
 	}
-	tempo_Counter = (tempo_Counter + 1) % tempo_Max_Count; // Increment tempo_Counter and wrap if hits tempo_Max_Count.
+	tempo_Counter2 = (tempo_Counter2 + 1) % tempo_Max_Count; // Increment tempo_Counter and wrap if hits tempo_Max_Count.
   TIMER3_ICR_R = TIMER_ICR_TATOCINT;// acknowledge TIMER3A timeout
 }

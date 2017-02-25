@@ -99,6 +99,7 @@ const uint16_t Sine_Wave[WAVETABLE_LENGTH] = {
 };
 
 void OutputSopranoWave(void){
+	
   DAC_Out(Sine_Wave[I] + Sine_Wave[J]);
 	I = (I + 1) % WAVETABLE_LENGTH;
 }
@@ -208,6 +209,7 @@ void Pause(void){
 // Inputs:  none
 // Outputs: none
 void Change_Song(){
+	SysTick_Init(&Play_Song, tempo_Reload[BPM100]);
 }
 
 // ***************** Rewind ****************

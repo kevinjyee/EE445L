@@ -97,7 +97,7 @@ uint32_t ChooseSong(uint32_t input)
 				currentSongPos = NUMSONGS-1; 
 			}
 			break;
-		case 0x03:
+		case 0x04:
 			Play_Toggled ^= PLAY;
 			if((currentSongPos != lastSongPos) && (Play_Toggled == PLAY)){
 				lastSongPos = currentSongPos;
@@ -105,7 +105,7 @@ uint32_t ChooseSong(uint32_t input)
 			} else{
 				return TOGGLE_PLAY;
 			}
-		case 0x04:
+		case 0x08:
 			return REWIND;
 		
 	}
