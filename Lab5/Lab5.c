@@ -38,6 +38,7 @@
 #include "FSM.h"
 #include "LCD.h"
 #include "Timer0A.h"
+#include "Timer1.h"
 #include "Timer3.h"
 #include "Music.h"
 
@@ -64,8 +65,6 @@ void WaitForInterrupt(void);  // low power mode
 volatile unsigned long LastE = 0; 
 char Play_Toggled;
 
-uint32_t Tempo[10] = { 60, 80, 100, 120, 140, 160, 180, 200, 220, 240 };
-
 /*Function: DelayWait2ms
 *
 */
@@ -79,21 +78,6 @@ void DelayWait2ms(uint32_t n){uint32_t volatile time;
   }
 }
 
-/*Function: sound_On
-* Starts playing sound at 140bpm.
-*/
-void sound_On(){
-	Timer3_Init(Tempo[4]);
-}
-
-
-/*Function: sound_Off
-* Turns off sound.
-*/
-void sound_Off(){
-	
-}
-
 /*Function: init_All
 *Initializes all the Timers and switches
 */
@@ -101,7 +85,6 @@ void init_All(){
 	PLL_Init(Bus50MHz);                   // 50 MHz
 	Switch_Init();
 	ST7735_InitR(INITR_REDTAB);
-  SysTick_Init(SYSTICK_RELOAD);
 }
 
 int main(void){

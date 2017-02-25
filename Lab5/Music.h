@@ -16,6 +16,7 @@
 extern volatile uint16_t Note_Index; 
 extern volatile uint8_t I;
 extern volatile uint8_t J;
+extern volatile int currentSongPos;
 
 // ***************** Play ****************
 // Plays music when called.

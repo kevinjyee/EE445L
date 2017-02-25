@@ -12,73 +12,135 @@
 #include <stdint.h>
 #include "../inc/tm4c123gh6pm.h"
 #include "SysTick.h"
+#include "Timer0A.h"
+#include "Timer1.h"
 #include "Music.h"
+#include "DAC.h"
+
+#define WAVETABLE_LENGTH					64
+#define NUM_NOTES									61
+#define NUM_DIFF_NOTE_DURATIONS		9
+#define	NUM_TEMPOS								8
 
 volatile uint16_t Note_Index = 0; 
 volatile uint8_t I = 0;
 volatile uint8_t J = 0;
+volatile uint8_t current_Soprano_Beats = 0;
+volatile uint8_t current_Alto_Beats = 0;
+volatile uint16_t soprano_Note_Index = 0;
+volatile uint16_t alto_Note_Index = 0;
+extern volatile int currentSongPos;
 
+enum pitch{
+	C0, DF0, D0, EF0, E0, F0, GF0, G0, AF0, A0, BF0, B0,
+	C1, DF1, D1, EF1, E1, F1, GF1, G1, AF1, A1, BF1, B1,
+	C2, DF2, D2, EF2, E2, F2, GF2, G2, AF2, A2, BF2, B2,
+	C3, DF3, D3, EF3, E3, F3, GF3, G3, AF3, A3, BF3, B3,
+	C4, DF4, D4, EF4, E4, F4, GF4, G4, AF4, A4, BF4, B4,
+	C5, DF5, D5, EF5, E5, F5, GF5, G5, AF5, A5, BF5, B5,
+	REST
+};
 
+const unsigned short SineUpdateDelay[NUM_NOTES] = {
+	11945,11274,10641,10044,9480,8948,8446,7972,7525,7102,6704,
+	6327,5972,5637,5321,5022,4740,4474,4223,3986,3762,3551,3352,
+	3164,2986,2819,2660,2511,2370,2237,2112,1993,1881,1776,1676,1582,
+	1493,1409,1330,1256,1185,1119,1056,997,941,888,838,791,747,705,665,
+	628,593,559,528,498,470,444,419,395,0
+};
+
+enum time_value{
+	THIRTY_SECOND, SIXTEENTH, EIGHTH, EIGHTH_DOT, QUARTER, QUARTER_DOT, HALF, HALF_DOT, WHOLE
+};
+
+const uint8_t time_value[NUM_DIFF_NOTE_DURATIONS] = {
+	1, 2, 4, 6, 8, 12, 16, 24, 32
+};
+
+enum tempo{
+	BPM60, BPM70, BPM80, BPM90, BPM100, BPM110, BPM120, BPM130
+};
+
+const uint32_t tempo_Reload[NUM_TEMPOS] = {
+	60, 70, 80, 90, 100, 110, 120, 130
+};
+
+typedef struct
+{
+	enum pitch note_pitch;
+	enum time_value note_time_value;
+} Note;
 
 typedef struct
 {
 	int id;								// For use in menu selection
 	char name[20];					// For use in printing name to LCD.
-	int tempo;						// Sets tempo of song
-  int soprano_Notes[200];  // Soprano melody for song.
-	int alto_Notes[200];			// Alto melody for song.
+	enum tempo my_tempo;						// Sets tempo of song
+  Note soprano_Notes[200];  // Soprano melody for song.
+	int num_Soprano_Notes;		// Number of soprano notes.
+	Note alto_Notes[200];			// Alto melody for song.
+	int num_Alto_Notes;				// Number of alto notes.
 } Song;  /* Song structs */
-
 
 typedef struct
 {
 	Song songs[1];
 } Song_Choices; /* Playlist for Lab 5! */
 
-#define C3 		0
-#define C3Sh 	1
-#define D3		2
-#define D3Sh	3
-#define E3		4
-#define F3		5
-#define F3Sh	6
-#define G3 		7
-#define G3Sh	8
-#define A3		9
-#define A3Sh	10
-#define B3		11
-#define C4 		12
-#define C4Sh 	13
-#define D4		14
-#define D4Sh	15
-#define E4		16
-#define F4		17
-#define F4Sh	18
-#define G4 		19
-#define G4Sh	20
-#define A4		21
-#define A4Sh	22
-#define B4		23
-#define C5		24
-#define C5Sh	25
-#define D5		26
-#define D5Sh  27
-#define E5    28
-#define F5    29
-#define F5Sh  30
-#define G5		31
-#define C6		32
-#define C7		33	
-#define REST  34
-#define NUM_NOTES 35
+Song_Choices testSongs;
 
-// Array of reload values to set wave frequency.
-const uint16_t Notes[NUM_NOTES] = { //C3-G5
-	19111, 18039, 17026, 16071, 15169, 14318, 13513, 12755, 12039, 11364,
-					10726, 10124, 9555, 9019, 8513, 8035, 7584, 7159, 6757, 6378, 
-					6020, 5682, 5363, 5061, 4778, 4510, 4257, 4018, 3792, 3579, 
-					3378, 3189, 2389, 1194, 65535
+// 1024-amplitude sine-wave.
+const uint16_t Sine_Wave[WAVETABLE_LENGTH] = {
+	1024, 1124, 1224, 1321, 1416, 1507, 1593, 1674, 1748, 1816, 1875, 1927, 1970,
+	2004, 2028, 2043, 2048, 2043, 2028, 2004, 1970, 1927, 1875, 1816, 1748, 1674,
+	1593, 1507, 1416, 1321, 1224, 1124, 1024, 924, 824, 727, 632, 541, 455, 374,
+	300, 232, 173, 121, 78, 44, 20, 5, 0, 5, 20, 44, 78, 121, 173, 232, 300, 374,
+	455, 541, 632, 727, 824, 924
 };
+
+void OutputSopranoWave(void){
+  DAC_Out(Sine_Wave[I] + Sine_Wave[J]);
+	I = (I + 1) % WAVETABLE_LENGTH;
+}
+
+void OutputAltoWave(void){
+	DAC_Out(Sine_Wave[I] + Sine_Wave[J]);
+	J = (J + 1) % WAVETABLE_LENGTH;
+}
+
+// ***************** Play_Song *****************
+void Play_Song(void){
+	Song current_Song = testSongs.songs[currentSongPos];
+	
+	Note current_Soprano_Note = current_Song.soprano_Notes[soprano_Note_Index];
+	Timer0A_Init(&OutputSopranoWave, SineUpdateDelay[current_Soprano_Note.note_pitch]);
+	current_Soprano_Beats = (current_Soprano_Beats + 1) % time_value[current_Soprano_Note.note_time_value];
+	
+	Note current_Alto_Note = current_Song.alto_Notes[alto_Note_Index];
+	Timer1_Init(&OutputAltoWave, SineUpdateDelay[current_Alto_Note.note_pitch]);
+	current_Alto_Beats = (current_Alto_Beats + 1) % time_value[current_Alto_Note.note_time_value];
+	
+	if(current_Soprano_Beats == 0){
+		soprano_Note_Index = (soprano_Note_Index + 1) % current_Song.num_Soprano_Notes;
+	}
+	if(current_Alto_Beats == 0){
+		alto_Note_Index = (alto_Note_Index + 1) % current_Song.num_Alto_Notes;
+	}
+	
+}
+
+// ***************** Music_Init ****************
+void Music_Init(void){
+	
+	Note testNote1 = {C4, WHOLE};
+	Note testNote2 = {D4, WHOLE};
+
+	Note testNote3 = {C2, HALF};
+	Note testNote4 = {B1, WHOLE};
+	
+	Song testSong1 =  {0, "TestSong1", BPM100, {testNote1, testNote2}, 2, {testNote3, testNote4}, 2};
+	testSongs.songs[0] = testSong1;
+}
 
 
 // ***************** Play ****************
@@ -86,6 +148,8 @@ const uint16_t Notes[NUM_NOTES] = { //C3-G5
 // Inputs:  none
 // Outputs: none
 void Play(void){
+	SysTick_Init(&Play_Song, tempo_Reload[BPM100]);
+	
 }
 
 // ***************** Pause ****************
@@ -93,6 +157,9 @@ void Play(void){
 // Inputs:  none
 // Outputs: none
 void Pause(void){
+	SysTick_Halt();
+	Timer0A_Halt();
+	Timer1A_Halt();
 }
 
 // ***************** change_Song ****************
@@ -107,6 +174,8 @@ void Change_Song(){
 // Inputs:  none
 // Outputs: none
 void Rewind(){
+	Pause();
+	current_Soprano_Beats = 0; current_Alto_Beats = 0;
+	soprano_Note_Index = 0; alto_Note_Index = 0;
+	SysTick_Init(&Play_Song, tempo_Reload[BPM100]);
 }
-
-// 

@@ -35,20 +35,15 @@
 #define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
 #define NVIC_ST_CTRL_ENABLE     0x00000001  // Counter mode
 #define NVIC_ST_RELOAD_M        0x00FFFFFF  // Counter load value
-#define SYSTICK_RELOAD	0x4C4B40 // Reload value for an interrupt frequency of 10Hz.
-
-volatile uint8_t dSeconds; // deciSeconds (one tenth of a second)
-volatile uint8_t Seconds;
-volatile uint8_t Minutes;
-volatile uint8_t Hours;
-volatile uint8_t Meridian;
-
-extern volatile uint32_t Time;
-extern volatile uint32_t AlarmTime;
+#define SYSTICK_RELOAD	0x7A120 // Reload value for an interrupt frequency of 100Hz.
 
 #define PF1       (*((volatile uint32_t *)0x40025008))
 #define PF2       (*((volatile uint32_t *)0x40025010))
 #define PF3       (*((volatile uint32_t *)0x40025020))
+void (*STPeriodicTask)(void);   // user function
+
+uint32_t tempo_Counter;		// A counter used to time each beat.
+uint32_t max_Tempo_Count;	// When tempo_Counter reaches this number, reset and move to next beat.
 
 // Initialize Port F so PF1, PF2 and PF3 are heartbeats
 void PortF_Init(void){
@@ -67,10 +62,13 @@ void PortF_Init(void){
 }
 
 // Initialize SysTick with busy wait running at bus clock.
-void SysTick_Init(uint32_t period){
+void SysTick_Init(void(*task)(void), uint32_t tempo){
 	PortF_Init();
   NVIC_ST_CTRL_R = 0;                   // disable SysTick during setup
-  NVIC_ST_RELOAD_R = period - 1;  // maximum reload value
+	STPeriodicTask = task;          // user function
+	max_Tempo_Count = (60 * 100) / tempo; 
+	tempo_Counter = 0;
+  NVIC_ST_RELOAD_R = SYSTICK_RELOAD - 1;  // maximum reload value
   NVIC_ST_CURRENT_R = 0;                // any write to current clears it
                                         // enable SysTick with core clock
 	NVIC_SYS_PRI3_R = (NVIC_SYS_PRI3_R&0x00FFFFFF) | 0x40000000; // Priority 2
@@ -79,8 +77,17 @@ void SysTick_Init(uint32_t period){
 
 // Increment time on each 10Hz interrupt.
 void SysTick_Handler(void){
-	PF2 ^= 0x04; // Heartbeat while SysTick is counting (so, like, always)
-	PF2 ^= 0x04;
-	// Something here
-	PF2 ^= 0x04;
+	if(!tempo_Counter){
+		PF2 ^= 0x04; // Heartbeat while SysTick is counting (so, like, always)
+		PF2 ^= 0x04;
+		(*STPeriodicTask)();                // execute user task
+		// Something here
+		PF2 ^= 0x04;
+	}
+	tempo_Counter = (tempo_Counter + 1) % max_Tempo_Count;
+}
+
+// Disable SysTick and Timers1 and 0.
+void SysTick_Halt(void){
+	NVIC_ST_CTRL_R = 0;
 }

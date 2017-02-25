@@ -12,16 +12,16 @@
  
 #include <stdint.h>
 #include "../inc/tm4c123gh6pm.h"
-#include "../SysTick.h"
+#include "SysTick.h"
 
 // ***************** DAC_Init ****************
 // Initializes DAC output pin and all timers used to produce sound.
 // Inputs:  none
 // Outputs: none
-void DAC_Init();
+void DAC_Init(uint16_t data);
 
 // ***************** DAC_Out ****************
 // Outputs a voltage value to the DAC
 // Inputs:  none
 // Outputs: none
-void DAC_Out();
+void DAC_Out(uint16_t data);

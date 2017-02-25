@@ -33,7 +33,6 @@
 
 #include <stdint.h>
 #include "PLL.h"
-#include "PWM.h"
 #include "timer0A.h"
 #include "PWMSine.h"
 
@@ -163,7 +162,7 @@ uint8_t previous_Song = -1;
 
 void OutputSineWave(void){
   static uint8_t index = 0;        // counting index of output sequence
-  PWM0A_Duty(Wave[index]);         // PWM output approximates a sine wave.
+  //PWM0A_Duty(Wave[index]);         // PWM output approximates a sine wave.
   index = (index + 1)&0x1F;        // increment counter
 }
 
@@ -175,7 +174,7 @@ void PMWSine_Init(uint8_t song_Id){
 		song_Index = 0;
 		previous_Song = song_Id;
 	}
-  PWM0A_Init(250, 125);            // initialize PWM0A, 100kHz, 50% duty
+  //PWM0A_Init(250, 125);            // initialize PWM0A, 100kHz, 50% duty
 	switch(song_Id){ // Song selection managed here.
 		case 0: Timer0A_Init(&OutputSineWave, Notes[BEEP_BEEP_BEEP_BEEP[song_Index]]);
 			song_Index = (song_Index + 1) % BEEP_LENGTH; // Start over song after all notes played.
