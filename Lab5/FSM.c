@@ -41,8 +41,8 @@ int lastSongPos = -1;
 uint32_t MainScreen(uint32_t);
 uint32_t ChooseSong(uint32_t);
 
-char BeepingAlarm[17] = {' ', ' ', 'B', 'e', 'e', 'p', 'i', 'n', 'g', ' ', 'A', 'l', 'a', 'r', 'm', ' ', 0};
-char Siren[17] = {' ', ' ', 'S', 'i', 'r', 'e', 'n', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 0};
+char BeepingAlarm[17] = {' ', ' ', 'E', 'n', 'v', 'e', 'l', 'o', 'p', 'e', ' ', 'T', 'e', 's', 't', ' ', 0};
+char Siren[17] = {' ', ' ', 'L', 'o', 's', 't', ' ', 'W', 'o', 'o', 'd', ' ', ' ', ' ', ' ', ' ', 0};
 char ImperialMarch[17] = {' ', ' ', 'I', 'm', 'p', 'e', 'r', 'i', 'a', 'l', ' ', 'M', 'a', 'r', 'c', 'h', 0};
 char MorningMood[17] = {' ', ' ', 'M', 'o', 'r', 'n', 'i', 'n', 'g', ' ', 'M', 'o', 'o', 'd', ' ', ' ', 0};
 char NewBarkTown[17] = {' ', ' ', 'N', 'e', 'w', ' ', 'B', 'a', 'r', 'k', ' ', 'T', 'o', 'w', 'n', ' ', 0};
