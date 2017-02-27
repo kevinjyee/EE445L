@@ -51,3 +51,26 @@ void DAC_Out(uint16_t code){
 	while((SSI1_SR_R & 0x00000002) == 0){}; // SSI TX FIFO not full.
 	SSI1_DR_R = code;
 }
+
+
+//****************Delay**********************
+
+void DelayWait5ms(uint32_t n){uint32_t volatile time;
+  while(n){
+    time = 727240*2/182;  // 10msec
+    while(time){
+	  	time--;
+    }
+    n--;
+  }
+}
+//****************Simple_DAC_Test************
+void Simple_DAC_Test()
+{
+	uint32_t sampleNotes[8] = {0,64,128,256,512,1024,1536,2048};
+	for(int i =0; i < 8; i++)
+	{
+	DAC_Out(sampleNotes[i]);
+	DelayWait5ms(1);
+	}
+}

@@ -19,6 +19,7 @@
 #include "Sound.h"
 #define WAVETABLE_LENGTH					64
 #define	NUM_TEMPOS								10
+#define EnvOnOFF									1
 
 #define zero 0
 #define three 3
@@ -231,7 +232,12 @@ void OutputSopranoWave(void){
 		scalar2 = 1;
 		
 	}
-    DAC_Out(((Sine_Wave[I]*envelopes[E]/128 + Sine_Wave[J])*envelopes[K]/128));
+	if(EnvOnOFF){
+  DAC_Out(((Sine_Wave[I]*envelopes[E]/128 + Sine_Wave[J])*envelopes[K]/128));
+	}
+	else{
+		DAC_Out(Sine_Wave[I] + Sine_Wave[J]);
+	}
 	uint32_t sr = StartCritical();
 	I = (I + 1) % WAVETABLE_LENGTH;
 	
@@ -251,7 +257,12 @@ void OutputAltoWave(void){
 		scalar2 = 1;
 		
 	}
+	if(EnvOnOFF){
   DAC_Out(((Sine_Wave[I]*envelopes[E]/128 + Sine_Wave[J])*envelopes[K]/128));
+	}
+	else{
+		DAC_Out(Sine_Wave[I] + Sine_Wave[J]);
+	}
 	uint32_t sr = StartCritical();
 	J = (J + 1) % WAVETABLE_LENGTH;
 	EndCritical(sr);
@@ -305,7 +316,7 @@ void Play_Song(void){
 // Creates a dummy song.
 void Music_Init(void){
 	
-		Song testSong1 =  {0, "Envelope Test", BPM60, {C4_1, /*D4_1,E4_1,F4_1,G4_1,A4_1,B4_1,C5_1*/}, 1, {REST_1},1,0 };
+		Song testSong1 =  {0, "Envelope Test", BPM60, {C4_1, REST_ /*D4_1,E4_1,F4_1,G4_1,A4_1,B4_1,C5_1*/}, 1, {REST_1},1,0 };
 		Song testSong2 = {1, "Lost Woods",BPM120,{F4_8, A4_8, B4_4,F4_8, A4_8, B4_4,F4_8, A4_8, B4_8,E5_8,D5_4,B4_8,C5_8,B4_8,G4_8,E4_2,REST_8,D3_8,E4_8,G4_8,E4_2,REST_4,F4_8, A4_8, B4_4,F4_8, A4_8,B4_4,F4_8, A4_8, B4_8,E5_8,D5_4,B4_8,C5_8,E5_8,B4_8,G4_2,REST_8,B4_8,G4_8,D3_8,E4_2,REST_4},43,
 		//{F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C3_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C3_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C3_8},64};
 		{F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C2_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C2_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C2_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C2_8},64,1};
