@@ -18,6 +18,8 @@ extern volatile uint8_t I;
 extern volatile uint8_t J;
 extern volatile int currentSongPos;
 
+void Music_Init(void);
+
 // ***************** Play ****************
 // Plays music when called.
 // Inputs:  none

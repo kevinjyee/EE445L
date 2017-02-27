@@ -35,7 +35,7 @@ void DAC_Init(uint16_t data){
 	GPIO_PORTD_PCTL_R = (GPIO_PORTD_PCTL_R&0xFFFF0F00) + 0x00002022; // Write 2 to port to signify SSI.
 	GPIO_PORTD_AMSEL_R = 0;								// Disable analog functionality on Port D
 	SSI1_CR1_R = 0x00000000;							// Disable SSI, master mode
-	SSI1_CPSR_R = 0x08;										// fSSI = fBUS/(CPSDVSR  ( 1 + SCR) = fSSI = 50MHz/8 = 6MHz SSIClk
+	SSI1_CPSR_R = 0x02;										// fSSI = fBUS/(CPSDVSR  ( 1 + SCR) = fSSI = 50MHz/4 = 12MHz SSIClk
 	SSI1_CR0_R &= ~(0x0000FFF0);					// SCR = 0, SPH = 0, Freescale
 	SSI1_CR0_R |= SSI_CR0_SPO;						// SPO = 1 (flip clock bit)
 	SSI1_CR0_R |= 0x0F;										// DSS = 16-bit data
@@ -70,7 +70,7 @@ void Simple_DAC_Test()
 	uint32_t sampleNotes[8] = {0,64,128,256,512,1024,1536,2048};
 	for(int i =0; i < 8; i++)
 	{
-	DAC_Out(sampleNotes[i]);
-	DelayWait5ms(1);
+		DAC_Out(sampleNotes[i]);
+		DelayWait5ms(1);
 	}
 }

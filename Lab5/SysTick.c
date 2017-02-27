@@ -35,7 +35,7 @@
 #define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
 #define NVIC_ST_CTRL_ENABLE     0x00000001  // Counter mode
 #define NVIC_ST_RELOAD_M        0x00FFFFFF  // Counter load value
-#define SYSTICK_RELOAD	0x3D09 // Reload value for an interrupt frequency of 3.2kHz.
+#define SYSTICK_RELOAD	0xF42 // Reload value for an interrupt frequency of 6.4kHz.
 
 #define PF1       (*((volatile uint32_t *)0x40025008))
 #define PF2       (*((volatile uint32_t *)0x40025010))
@@ -66,7 +66,7 @@ void SysTick_Init(void(*task)(void), uint32_t tempo){
 	PortF_Init();
   NVIC_ST_CTRL_R = 0;                   // disable SysTick during setup
 	STPeriodicTask = task;          // user function
-	max_Tempo_Count = (60 * 100) / tempo; 
+	max_Tempo_Count = (60 * 100 * 2) / tempo;  // 60 BPM * 100 (to avoid flooring) * 2 (because SysTick runs at 64th note beat) / tempo.
 	tempo_Counter = 0;
   NVIC_ST_RELOAD_R = SYSTICK_RELOAD - 1;  // maximum reload value
   NVIC_ST_CURRENT_R = 0;                // any write to current clears it

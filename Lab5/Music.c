@@ -45,6 +45,8 @@ volatile uint8_t enableEnv = 0;
 volatile uint8_t scalar1 =1;
 volatile uint8_t scalar2 =1;
 extern volatile int currentSongPos;
+extern volatile int lastSongPos;
+extern volatile int currentMode;
 
   
 
@@ -64,6 +66,10 @@ const unsigned short SineUpdateDelay[NUM_NOTES] = {
 	3164,2986,2819,2660,2511,2370,2237,2112,1993,1881,1776,1676,1582,
 	1493,1409,1330,1256,1185,1119,1056,997,941,888,838,791,747,705,665,
 	628,593,559,528,498,470,444,419,395,0
+};
+
+enum mode{
+	SINE, FLUTE, BRASS
 };
 
 enum time_value{
@@ -95,7 +101,7 @@ typedef struct
 	enum tempo my_tempo;						// Sets tempo of song
   Note soprano_Notes[80];  // Soprano melody for song.
 	int num_Soprano_Notes;		// Number of soprano notes.
-	Note alto_Notes[80];			// Alto melody for song.
+	Note alto_Notes[103];			// Alto melody for song.
 	//Note alto_Notes[80];			// Alto melody for song.
 	int num_Alto_Notes;				// Number of alto notes.
 	int enable_envelope;
@@ -239,33 +245,7 @@ const uint16_t envelopes[128] = {
 	30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,
   9,8,7,6,5,4,3,2,1,};
 
-void OutputSopranoWave(void){
-	  //DAC_Out(Sine_Wave[I] + Sine_Wave[J]);
-	if(enableEnv>0)
-	{
-		scalar1 = 128/envelopes[E];
-		scalar2 = 128/envelopes[K];
-	}
-	else
-	{
-		scalar1 = 1;
-		scalar2 = 1;
-		
-	}
-	if(EnvOnOFF){
-		DAC_Out(((Sine_Wave[I]*envelopes[E]/128 + Sine_Wave[J])*envelopes[K]/128));
-	}
-	else{
-		DAC_Out(Sine_Wave[I] + Sine_Wave[J]);
-	}
-	uint32_t sr = StartCritical();
-	I = (I + 1) % WAVETABLE_LENGTH;
-	
-	EndCritical(sr);
-}
-
-void OutputAltoWave(void){
-	//DAC_Out(Sine_Wave[I] + Sine_Wave[J]);
+void Output_Wave(){
 		if(enableEnv>0)
 	{
 		scalar1 = 128/envelopes[E];
@@ -279,13 +259,45 @@ void OutputAltoWave(void){
 	}
 	if(EnvOnOFF){
 		switch(currentMode){
-		DAC_Out(((Sine_Wave[I]*envelopes[E]/128 + Sine_Wave[J])*envelopes[K]/128));
+			case SINE:
+					DAC_Out(((Sine_Wave[I]*envelopes[E]/128 + Sine_Wave[J])*envelopes[K]/128));
+				break;
+			case FLUTE:
+					DAC_Out(((Flute_Wave[I]*envelopes[E]/128 + Flute_Wave[J])*envelopes[K]/128));
+				break;
+			case BRASS:
+					DAC_Out(((Trumpet_Wave[I]*envelopes[E]/128 + Trumpet_Wave[J])*envelopes[K]/128));
+				break;
 		}
 	}
 	else{
-		DAC_Out(Sine_Wave[I] + Sine_Wave[J]);
+		switch(currentMode){
+			case SINE:
+					DAC_Out(Sine_Wave[I] + Sine_Wave[J]);
+				break;
+			case FLUTE:
+					DAC_Out(Flute_Wave[I] + Flute_Wave[J]);
+				break;
+			case BRASS:
+					DAC_Out(Trumpet_Wave[I] + Trumpet_Wave[J]);
+				break;
+		}
 	}
+}
+	
+void OutputSopranoWave(void){
+	  //DAC_Out(Sine_Wave[I] + Sine_Wave[J]);
 	uint32_t sr = StartCritical();
+	Output_Wave();
+	I = (I + 1) % WAVETABLE_LENGTH;
+	
+	EndCritical(sr);
+}
+
+void OutputAltoWave(void){
+	//DAC_Out(Sine_Wave[I] + Sine_Wave[J]);
+	uint32_t sr = StartCritical();
+	Output_Wave();
 	J = (J + 1) % WAVETABLE_LENGTH;
 	EndCritical(sr);
 }
@@ -299,14 +311,16 @@ void clear_Notes(void){
 }
 // ***************** Play_Song *****************
 void Play_Song(void){
-	Song current_Song = testSongs.songs[currentSongPos];
-	enableEnv = current_Song.enable_envelope;
+	Song current_Song = testSongs.songs[lastSongPos];
+	enableEnv = 0;
+	uint32_t sr;
 
 	current_Soprano_Note = current_Song.soprano_Notes[soprano_Note_Index]; // Get current soprano note.
 	if(current_Soprano_Beats == 0){ // If at a new note, load Timer0A with new soprano frequency.
+		sr = StartCritical();
 		E = 0;
+		EndCritical(sr);
 		Timer0A_Init(&OutputSopranoWave, SineUpdateDelay[current_Soprano_Note.note_pitch]);
-		//Timer1_Init(&OutputSopranoWave, SineUpdateDelay[current_Soprano_Note.note_pitch]);
 	} else if(current_Soprano_Beats == (time_value[current_Soprano_Note.note_time_value] - 1)){ // Update note index if moving to next note.
 		soprano_Note_Index = (soprano_Note_Index + 1) % current_Song.num_Soprano_Notes;
 	} else if(current_Soprano_Beats == (time_value[current_Soprano_Note.note_time_value] - 2)){
@@ -315,18 +329,22 @@ void Play_Song(void){
 	current_Soprano_Beats = (current_Soprano_Beats + 1) % time_value[current_Soprano_Note.note_time_value]; // Update beats
 	
 	current_Alto_Note = current_Song.alto_Notes[alto_Note_Index];
-		E = (E+1*(128/time_value[current_Soprano_Note.note_time_value])) % 128;
 	if(current_Alto_Beats == 0){ // If at new note, load Timer1A with new alto frequency.
-		Timer1_Init(&OutputAltoWave, SineUpdateDelay[current_Alto_Note.note_pitch]);
+		sr = StartCritical();
 		K=0;
-		//Timer0A_Init(&OutputAltoWave, SineUpdateDelay[current_Alto_Note.note_pitch]);
+		EndCritical(sr);
+		Timer1_Init(&OutputAltoWave, SineUpdateDelay[current_Alto_Note.note_pitch]);
 	} else if(current_Alto_Beats == (time_value[current_Alto_Note.note_time_value] - 1)){ // Update note index if moving to next note.
 		alto_Note_Index = (alto_Note_Index + 1) % current_Song.num_Alto_Notes;
 	} else if(current_Alto_Beats == (time_value[current_Alto_Note.note_time_value] - 2)){
 		Timer1_Init(&OutputAltoWave, SineUpdateDelay[REST]);
 	}
 	current_Alto_Beats = (current_Alto_Beats + 1) % time_value[current_Alto_Note.note_time_value];
-	K = (K+1*(128/time_value[current_Alto_Note.note_time_value])) % 128;
+	E = (E+(1*(128/time_value[current_Soprano_Note.note_time_value]))) % 128;
+	if(E == 0){
+		E = 1;
+	}
+	K = (K+(1*(128/time_value[current_Alto_Note.note_time_value]))) % 128;
 	
 }
 
@@ -338,11 +356,13 @@ void Play_Song(void){
 // Creates a dummy song.
 void Music_Init(void){
 	
-		Song testSong1 =  {0, "Envelope Test", BPM60, {C4_1, REST_4 /*D4_1,E4_1,F4_1,G4_1,A4_1,B4_1,C5_1*/}, 1, {REST_1},1,0 };
-		Song testSong2 = {1, "Lost Woods",BPM120,{F4_8, A4_8, B4_4,F4_8, A4_8, B4_4,F4_8, A4_8, B4_8,E5_8,D5_4,B4_8,C5_8,B4_8,G4_8,E4_2,REST_8,D3_8,E4_8,G4_8,E4_2,REST_4,F4_8, A4_8, B4_4,F4_8, A4_8,B4_4,F4_8, A4_8, B4_8,E5_8,D5_4,B4_8,C5_8,E5_8,B4_8,G4_2,REST_8,B4_8,G4_8,D3_8,E4_2,REST_4},43,
+		Note C4_4dot = {C4, QUARTER_DOT};
+		Note REST_2 = {REST, HALF};
+		Song testSong1 =  {0, "Envelope Test", BPM60, {C4_1 /*D4_1,E4_1,F4_1,G4_1,A4_1,B4_1,C5_1*/}, 1, {REST_1},1,0 };
+		Song testSong2 = {1, "Lost Woods",BPM60,{F4_8, A4_8, B4_4,F4_8, A4_8, B4_4,F4_8, A4_8, B4_8,E5_8,D5_4,B4_8,C5_8,B4_8,G4_8,E4_2,REST_8,D3_8,E4_8,G4_8,E4_2,REST_4,F4_8, A4_8, B4_4,F4_8, A4_8,B4_4,F4_8, A4_8, B4_8,E5_8,D5_4,B4_8,C5_8,E5_8,B4_8,G4_2,REST_8,B4_8,G4_8,D3_8,E4_2,REST_4},44,
 		//{F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C3_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C3_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C3_8},64};
 		{F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C2_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C2_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C2_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C2_8},64,1};
-		Song New_Bark_Town = {0, "New Bark Town", BPM120, {D4_8, E4_8, GF4_4, A4_4, G4_8, GF4_8, E4_8, G4_8, GF4_4dot, D4_8, A3_4, REST_8, G3_16, A3_16,
+		Song New_Bark_Town = {0, "New Bark Town", BPM60, {D4_8, E4_8, GF4_4, A4_4, G4_8, GF4_8, E4_8, G4_8, GF4_4dot, D4_8, A3_4, REST_8, G3_16, A3_16,
 		B3_4, D4_4, E4_8, D4_8, DF4_8, D4_8, E4_4dot, GF4_8, E4_4, REST_8, D4_16, E4_16, GF4_4, A4_4, BF4_8, A4_8, G4_8, BF4_8,
 		A4_4dot, DF5_8, D5_4, REST_8, E4_16, GF4_16, G4_4dot, A4_8, B4_2, A4_4dot, G4_16, GF4_16, A2_16, DF3_16, E3_16, G3_16, A3_16,
 		DF4_16, E4_16, A4_16, B4_4dot, A4_4dot, G4_4, E4_1, B4_4dot, A4_4dot, D5_4, DF5_1, B4_4dot, A4_4dot, G4_4, E4_1, B4_4dot, A4_4dot, D5_4, E5_2dot},
@@ -378,7 +398,7 @@ void Play(void){
 		Music_Init();
 		uninitialized = 0;
 	}
-	SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[currentSongPos].my_tempo]);
+	SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[lastSongPos].my_tempo]);
 	
 }
 
@@ -397,7 +417,14 @@ void Pause(void){
 // Inputs:  none
 // Outputs: none
 void Change_Song(){
-	SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[currentSongPos].my_tempo]);
+	if(uninitialized){
+		
+		Music_Init();
+		uninitialized = 0;
+	}
+	current_Soprano_Beats = 0; current_Alto_Beats = 0;
+	soprano_Note_Index = 0; alto_Note_Index = 0;
+	SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[lastSongPos].my_tempo]);
 }
 
 // ***************** Rewind ****************
@@ -405,8 +432,8 @@ void Change_Song(){
 // Inputs:  none
 // Outputs: none
 void Rewind(){
-	Pause();
+	//Pause();
 	current_Soprano_Beats = 0; current_Alto_Beats = 0;
 	soprano_Note_Index = 0; alto_Note_Index = 0;
-	SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[currentSongPos].my_tempo]);
+	SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[lastSongPos].my_tempo]);
 }
