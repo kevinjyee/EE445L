@@ -16,7 +16,7 @@
 #include "Timer1.h"
 #include "Music.h"
 #include "DAC.h"
-
+#include "Sound.h"
 #define WAVETABLE_LENGTH					64
 #define	NUM_TEMPOS								10
 
@@ -44,6 +44,9 @@ volatile uint8_t enableEnv = 0;
 volatile uint8_t scalar1 =1;
 volatile uint8_t scalar2 =1;
 extern volatile int currentSongPos;
+
+  
+
 
 enum pitch{
 	C1, DF1, D1, EF1, E1, F1, GF1, G1, AF1, A1, BF1, B1,
@@ -91,7 +94,7 @@ typedef struct
 	enum tempo my_tempo;						// Sets tempo of song
   Note soprano_Notes[80];  // Soprano melody for song.
 	int num_Soprano_Notes;		// Number of soprano notes.
-	Note alto_Notes[103];			// Alto melody for song.
+	Note alto_Notes[80];			// Alto melody for song.
 	//Note alto_Notes[80];			// Alto melody for song.
 	int num_Alto_Notes;				// Number of alto notes.
 	int enable_envelope;
@@ -102,8 +105,99 @@ typedef struct
 	Song songs[1];
 } Song_Choices; /* Playlist for Lab 5! */
 
+	Note  D4_8 = { D4,EIGHTH};
+  Note  E4_8 = { E4,EIGHTH};
+  Note  GF4_4 = { GF4,QUARTER};
+  Note  A4_4 = { A4,QUARTER};
+  Note  G4_8 = { G4,EIGHTH};
+  Note  GF4_8 = { GF4,EIGHTH};
+  Note  GF4_4dot = { GF4,QUARTER_DOT};
+  Note  A3_4 = { A3,QUARTER};
+  Note REST_8 = {REST,EIGHTH};
+  Note  G3_16 = { G3,SIXTEENTH};
+  Note  A3_16 = { A3,SIXTEENTH};
+  Note  B3_4 = { B3,QUARTER};
+  Note  D4_4 = { D4,QUARTER};
+  Note  DF4_8 = { DF4,EIGHTH};
+  Note  E4_4dot = { E4,QUARTER_DOT};
+  Note  E4_4 = { E4,QUARTER};
+  Note  D4_16 = { D4,SIXTEENTH};
+  Note  E4_16 = { E4,SIXTEENTH};
+  Note  BF4_8 = { BF4,EIGHTH};
+  Note  A4_8 = { A4,EIGHTH};
+  Note  A4_4dot = { A4,QUARTER_DOT};
+  Note  DF5_8 = { DF5,EIGHTH};
+  Note  D5_4 = { D5,QUARTER};
+  Note  GF4_16 = { GF4,SIXTEENTH};
+  Note  G4_4dot = { G4,QUARTER_DOT};
+  Note  B4_2 = { B4,HALF};
+  Note  G4_16 = { G4,SIXTEENTH};
+  Note  A2_16 = { A2,SIXTEENTH};
+  Note  DF3_16 = { DF3,SIXTEENTH};
+  Note  E3_16 = { E3,SIXTEENTH};
+  Note  DF4_16 = { DF4,SIXTEENTH};
+  Note  A4_16 = { A4,SIXTEENTH};
+  Note  B4_4dot = { B4,QUARTER_DOT};
+  Note  G4_4 = { G4,QUARTER};
+  Note  E4_1 = { E4,WHOLE};
+  Note  DF5_1 = { DF5,WHOLE};
+  Note  E5_2dot  = { E5,HALF_DOT};
+	Note REST_4 = {REST,QUARTER};
+  Note  D2_4 = { D2,QUARTER};
+  Note  D2_16 = { D2,SIXTEENTH};
+  Note  D2_8 = { D2,EIGHTH};
+  Note C3_8 = {C3,EIGHTH};
+  Note  G2_4 = { G2,QUARTER};
+  Note  G2_16 = { G2,SIXTEENTH};
+  Note  AF2_16 = { AF2,SIXTEENTH};
+  Note  AF2_4 = { AF2,QUARTER};
+  Note  A2_8 = { A2,EIGHTH};
+  Note  A2_4 = { A2,QUARTER};
+  Note  AF1_8 = { AF1,EIGHTH};
+  Note  AF1_4 = { AF1,QUARTER};
+  Note  A1_8 = { A1,EIGHTH};
+  Note  A1_4 = { A1,QUARTER};
+  Note  DF2_8 = { DF2,EIGHTH};
+  Note  G2_8 = { G2,EIGHTH};
+  Note  B2_8 = { B2,EIGHTH};
+  Note  D3_8 = { D3,EIGHTH};
+  Note  GF3_4 = { GF3,QUARTER};
+  Note  G3_4 = { G3,QUARTER};
+  Note  A3_8 = { A3,EIGHTH};
+  Note  E3_8 = { E3,EIGHTH};
+  Note  G3_8 = { G3,EIGHTH};
+	Note BF3_8 = {BF3, EIGHTH};
+	Note DF3_8 = {DF3, EIGHTH};
+	Note AF2_8 = {AF2, EIGHTH};
+	Note A1_4dot = {A1, QUARTER_DOT};
+  Note C4_1 = {C4,WHOLE};
+  Note  DF4_1 = { DF4,WHOLE};
+  Note  D4_1 = { D4,WHOLE};
+  Note  EF4_1 = { EF4,WHOLE};
+  Note  F4_1 = { F4,WHOLE};
+  Note  GF4_1 = { GF4,WHOLE};
+  Note  G4_1 = { G4,WHOLE};
+  Note  AF4_1 = { AF4,WHOLE};
+  Note  A4_1 = { A4,WHOLE};
+  Note  BF4_1 = { BF4,WHOLE};
+  Note  B4_1 = { B4,WHOLE};
+	Note C5_1 = {C5,WHOLE};
+	Note REST_1 = {REST,WHOLE};
+	Note  F4_8 = { F4,EIGHTH};
+  Note  B4_4 = { B4,QUARTER};
+  Note  B4_8 = { B4,EIGHTH};
+  Note  E5_8 = { E5,EIGHTH};
+  Note C5_8 = {C5,EIGHTH};
+  Note  E4_2 = { E4,HALF};
+
+  Note  G4_2 = { G4,HALF};
+	Note  F3_8 = { F3,EIGHTH};
+  Note C4_8 = {C4,EIGHTH};
+	Note  F2_8 = { F2,EIGHTH};
+	Note  E2_8 = { E2,EIGHTH};
+	Note C2_8 = {C2,EIGHTH};
+	
 volatile Song_Choices testSongs;
-static const Song New_Bark_Town;
 
 // 1024-amplitude sine-wave.
 const uint16_t Sine_Wave[WAVETABLE_LENGTH] = {
@@ -157,17 +251,25 @@ void OutputAltoWave(void){
 		scalar2 = 1;
 		
 	}
- DAC_Out(((Sine_Wave[I]*envelopes[E]/128 + Sine_Wave[J])*envelopes[K]/128));
+  DAC_Out(((Sine_Wave[I]*envelopes[E]/128 + Sine_Wave[J])*envelopes[K]/128));
 	uint32_t sr = StartCritical();
 	J = (J + 1) % WAVETABLE_LENGTH;
 	EndCritical(sr);
 }
 
+Note current_Soprano_Note;
+Note current_Alto_Note;
+
+
+void clear_Notes(void){
+
+}
 // ***************** Play_Song *****************
 void Play_Song(void){
 	Song current_Song = testSongs.songs[currentSongPos];
 	enableEnv = current_Song.enable_envelope;
-	Note current_Soprano_Note = current_Song.soprano_Notes[soprano_Note_Index]; // Get current soprano note.
+
+	current_Soprano_Note = current_Song.soprano_Notes[soprano_Note_Index]; // Get current soprano note.
 	if(current_Soprano_Beats == 0){ // If at a new note, load Timer0A with new soprano frequency.
 		E = 0;
 		Timer0A_Init(&OutputSopranoWave, SineUpdateDelay[current_Soprano_Note.note_pitch]);
@@ -178,7 +280,8 @@ void Play_Song(void){
 		Timer0A_Init(&OutputSopranoWave, SineUpdateDelay[REST]);
 	}
 	current_Soprano_Beats = (current_Soprano_Beats + 1) % time_value[current_Soprano_Note.note_time_value]; // Update beats
-	Note current_Alto_Note = current_Song.alto_Notes[alto_Note_Index];
+	
+	current_Alto_Note = current_Song.alto_Notes[alto_Note_Index];
 		E = (E+1*(128/time_value[current_Soprano_Note.note_time_value])) % 128;
 	if(current_Alto_Beats == 0){ // If at new note, load Timer1A with new alto frequency.
 		Timer1_Init(&OutputAltoWave, SineUpdateDelay[current_Alto_Note.note_pitch]);
@@ -194,77 +297,27 @@ void Play_Song(void){
 	
 }
 
+
+		Song testSong1;
+		Song testSong2;
+		Song New_Bark_Town;
 // ***************** Music_Init ****************
 // Creates a dummy song.
 void Music_Init(void){
-	  Note  D4_8 = { D4,EIGHTH};
-  Note  E4_8 = { E4,EIGHTH};
-  Note  GF4_4 = { GF4,QUARTER};
-  Note  A4_4 = { A4,QUARTER};
-  Note  G4_8 = { G4,EIGHTH};
-  Note  GF4_8 = { GF4,EIGHTH};
-  Note  GF4_4dot = { GF4,QUARTER_DOT};
-  Note  A3_4 = { A3,QUARTER};
-  Note REST_8 = {REST,EIGHTH};
-  Note  G3_16 = { G3,SIXTEENTH};
-  Note  A3_16 = { A3,SIXTEENTH};
-  Note  B3_4 = { B3,QUARTER};
-  Note  D4_4 = { D4,QUARTER};
-  Note  DF4_8 = { DF4,EIGHTH};
-  Note  E4_4dot = { E4,QUARTER_DOT};
-  Note  E4_4 = { E4,QUARTER};
-  Note  D4_16 = { D4,SIXTEENTH};
-  Note  E4_16 = { E4,SIXTEENTH};
-  Note  BF4_8 = { BF4,EIGHTH};
-  Note  A4_8 = { A4,EIGHTH};
-  Note  A4_4dot = { A4,QUARTER_DOT};
-  Note  DF5_8 = { DF5,EIGHTH};
-  Note  D5_4 = { D5,QUARTER};
-  Note  GF4_16 = { GF4,SIXTEENTH};
-  Note  G4_4dot = { G4,QUARTER_DOT};
-  Note  B4_2 = { B4,HALF};
-  Note  G4_16 = { G4,SIXTEENTH};
-  Note  A2_16 = { A2,SIXTEENTH};
-  Note  DF3_16 = { DF3,SIXTEENTH};
-  Note  E3_16 = { E3,SIXTEENTH};
-  Note  DF4_16 = { DF4,SIXTEENTH};
-  Note  A4_16 = { A4,SIXTEENTH};
-  Note  B4_4dot = { B4,QUARTER_DOT};
-  Note  G4_4 = { G4,QUARTER};
-  Note  E4_1 = { E4,WHOLE};
-  Note  DF5_1 = { DF5,WHOLE};
-  Note  E5_2dot  = { E5,HALF_DOT};
 	
-	  Note REST_4 = {REST,QUARTER};
-  Note  D2_4 = { D2,QUARTER};
-  Note  D2_16 = { D2,SIXTEENTH};
-  Note  D2_8 = { D2,EIGHTH};
-
-  Note C3_8 = {C3,EIGHTH};
-  Note  G2_4 = { G2,QUARTER};
-  Note  G2_16 = { G2,SIXTEENTH};
-  Note  AF2_16 = { AF2,SIXTEENTH};
-  Note  AF2_4 = { AF2,QUARTER};
-  Note  A2_8 = { A2,EIGHTH};
-  Note  A2_4 = { A2,QUARTER};
-  Note  AF1_8 = { AF1,EIGHTH};
-  Note  AF1_4 = { AF1,QUARTER};
-  Note  A1_8 = { A1,EIGHTH};
-  Note  A1_4 = { A1,QUARTER};
-  Note  DF2_8 = { DF2,EIGHTH};
-  Note  G2_8 = { G2,EIGHTH};
-  Note  B2_8 = { B2,EIGHTH};
-  Note  D3_8 = { D3,EIGHTH};
-  Note  GF3_4 = { GF3,QUARTER};
-  Note  G3_4 = { G3,QUARTER};
-  Note  A3_8 = { A3,EIGHTH};
-  Note  E3_8 = { E3,EIGHTH};
-  Note  G3_8 = { G3,EIGHTH};
-	Note BF3_8 = {BF3, EIGHTH};
-	Note DF3_8 = {DF3, EIGHTH};
-	Note AF2_8 = {AF2, EIGHTH};
-	Note A1_4dot = {A1, QUARTER_DOT};
-	
+		Song testSong1 =  {0, "Envelope Test", BPM60, {C4_1, /*D4_1,E4_1,F4_1,G4_1,A4_1,B4_1,C5_1*/}, 1, {REST_1},1,0 };
+		Song testSong2 = {1, "Lost Woods",BPM120,{F4_8, A4_8, B4_4,F4_8, A4_8, B4_4,F4_8, A4_8, B4_8,E5_8,D5_4,B4_8,C5_8,B4_8,G4_8,E4_2,REST_8,D3_8,E4_8,G4_8,E4_2,REST_4,F4_8, A4_8, B4_4,F4_8, A4_8,B4_4,F4_8, A4_8, B4_8,E5_8,D5_4,B4_8,C5_8,E5_8,B4_8,G4_2,REST_8,B4_8,G4_8,D3_8,E4_2,REST_4},43,
+		//{F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C3_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C3_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C3_8},64};
+		{F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C2_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C2_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C2_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C2_8},64,1};
+		Song New_Bark_Town = {0, "New Bark Town", BPM120, {D4_8, E4_8, GF4_4, A4_4, G4_8, GF4_8, E4_8, G4_8, GF4_4dot, D4_8, A3_4, REST_8, G3_16, A3_16,
+		B3_4, D4_4, E4_8, D4_8, DF4_8, D4_8, E4_4dot, GF4_8, E4_4, REST_8, D4_16, E4_16, GF4_4, A4_4, BF4_8, A4_8, G4_8, BF4_8,
+		A4_4dot, DF5_8, D5_4, REST_8, E4_16, GF4_16, G4_4dot, A4_8, B4_2, A4_4dot, G4_16, GF4_16, A2_16, DF3_16, E3_16, G3_16, A3_16,
+		DF4_16, E4_16, A4_16, B4_4dot, A4_4dot, G4_4, E4_1, B4_4dot, A4_4dot, D5_4, DF5_1, B4_4dot, A4_4dot, G4_4, E4_1, B4_4dot, A4_4dot, D5_4, E5_2dot},
+		68, {REST_4,D2_4,REST_8,D2_16,D2_16,D2_8,D2_4,BF3_8,D2_4,REST_8,D2_16,D2_16,D2_8,D2_4,C3_8,G2_4,REST_8,G2_16,G2_16, AF2_8,AF2_4,D2_8,A3_4,
+		REST_8,A3_16,A3_16,A2_8,A2_4,DF2_8,D2_4,REST_8,D2_16,D2_16,D2_8,D2_4,BF3_8,D2_4,REST_8,D2_16,D2_16,D2_8,D2_4,C3_8,G2_4, REST_8, G2_16, G2_16,
+		AF1_8, AF1_4, D2_8, A2_4, REST_8, A2_16, A2_16, A1_8, A1_4dot, G2_8, B2_8, D3_8, GF3_4, G3_4, D3_8,A3_8,DF3_8,E3_8,G3_4,A3_4,E3_8,G2_8,
+		B2_8, D3_8, GF3_4, G3_4, D3_8,A3_8,DF3_8,E3_8,G3_4,A3_4,E3_8}, 103,1};
+	/*
 	Song New_Bark_Town = {0, "New Bark Town", BPM60, {D4_8, E4_8, GF4_4, A4_4, G4_8, GF4_8, E4_8, G4_8, GF4_4dot, D4_8, A3_4, REST_8, G3_16, A3_16,
 		B3_4, D4_4, E4_8, D4_8, DF4_8, D4_8, E4_4dot, GF4_8, E4_4, REST_8, D4_16, E4_16, GF4_4, A4_4, BF4_8, A4_8, G4_8, BF4_8,
 		A4_4dot, DF5_8, D5_4, REST_8, E4_16, GF4_16, G4_4dot, A4_8, B4_2, A4_4dot, G4_16, GF4_16, A2_16, DF3_16, E3_16, G3_16, A3_16,
@@ -273,53 +326,15 @@ void Music_Init(void){
 				REST_8,A3_16,A3_16,A2_8,A2_4,DF2_8,D2_4,REST_8,D2_16,D2_16,D2_8,D2_4,BF3_8,D2_4,REST_8,D2_16,D2_16,D2_8,D2_4,C3_8,G2_4, REST_8, G2_16, G2_16,
 				AF1_8, AF1_4, D2_8, A2_4, REST_8, A2_16, A2_16, A1_8, A1_4dot, G2_8, B2_8, D3_8, GF3_4, G3_4, D3_8,A3_8,DF3_8,E3_8,G3_4,A3_4,E3_8,G2_8,
 				B2_8, D3_8, GF3_4, G3_4, D3_8,A3_8,DF3_8,E3_8,G3_4,A3_4,E3_8,G2_8, B2_8, D3_8, GF3_4, G3_4, D3_8,A3_8,DF3_8,E3_8,G3_4,A3_4,E3_8,G2_8, B2_8,
-				D3_8, GF3_4, G3_4, D3_8,A3_8,DF3_8,E3_8,G3_4,A3_8}, 103};
+				D3_8, GF3_4, G3_4, D3_8,A3_8,DF3_8,E3_8,G3_4,A3_8}, 103,1};*/
 
 		
-	//Song testSong1 =  {0, "TestSong1", BPM60, {REST_8, D5_4}, 2, {D5_4, D5_4}, 2};
-	testSongs.songs[0] = New_Bark_Town;
-  Note C4_1 = {C4,WHOLE};
-  Note  DF4_1 = { DF4,WHOLE};
-  Note  D4_1 = { D4,WHOLE};
-  Note  EF4_1 = { EF4,WHOLE};
-  Note  F4_1 = { F4,WHOLE};
-  Note  GF4_1 = { GF4,WHOLE};
-  Note  G4_1 = { G4,WHOLE};
-  Note  AF4_1 = { AF4,WHOLE};
-  Note  A4_1 = { A4,WHOLE};
-  Note  BF4_1 = { BF4,WHOLE};
-  Note  B4_1 = { B4,WHOLE};
-	Note C5_1 = {C5,WHOLE};
-	Note REST_1 = {REST,WHOLE};
-	
-
-
- 
-
-	Note  F4_8 = { F4,EIGHTH};
-  Note  B4_4 = { B4,QUARTER};
-  Note  B4_8 = { B4,EIGHTH};
-  Note  E5_8 = { E5,EIGHTH};
-  Note C5_8 = {C5,EIGHTH};
-  Note  E4_2 = { E4,HALF};
-
-  Note  G4_2 = { G4,HALF};
-	Note  F3_8 = { F3,EIGHTH};
-  Note C4_8 = {C4,EIGHTH};
-	
-	Note  F2_8 = { F2,EIGHTH};
-	Note  E2_8 = { E2,EIGHTH};
-	Note C2_8 = {C2,EIGHTH};
-	//Song testSong1 =  {0, "TestSong1", BPM60, {C4_1/*, D4_1,E4_1,F4_1,G4_1,A4_1,B4_1,C5_1*/}, 1, {REST_1},1 };
-	Song testSong1 =  {0, "Envelope Test", BPM60, {C4_1, /*D4_1,E4_1,F4_1,G4_1,A4_1,B4_1,C5_1*/}, 1, {G4_1},1,0 };
-	Song testSong2 = {1, "Lost Woods",BPM120,{F4_8, A4_8, B4_4,F4_8, A4_8, B4_4,F4_8, A4_8, B4_8,E5_8,D5_4,B4_8,C5_8,B4_8,G4_8,E4_2,REST_8,D3_8,E4_8,G4_8,E4_2,REST_4,F4_8, A4_8, B4_4,F4_8, A4_8,B4_4,F4_8, A4_8, B4_8,E5_8,D5_4,B4_8,C5_8,E5_8,B4_8,G4_2,REST_8,B4_8,G4_8,D3_8,E4_2,REST_4},43,
-	//{F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C3_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,F3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C3_8,E3_8,C4_8,C4_8,C4_8,E3_8,C4_8,C4_8,C3_8},64};
-	{F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C2_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C2_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,F2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C2_8,E2_8,C3_8,C3_8,C3_8,E2_8,C3_8,C3_8,C2_8},64,1};
+		
 		testSongs.songs[0] = testSong1;
 		testSongs.songs[1] = testSong2;
+		testSongs.songs[2] = New_Bark_Town;
+
 }
-
-
 // ***************** Play ****************
 // Plays music when called.
 // Inputs:  none

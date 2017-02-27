@@ -25,7 +25,7 @@
 #define PLAY 				1
 #define PAUSE 			0
 
-#define NUMSONGS    5
+#define NUMSONGS    3
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -43,11 +43,11 @@ uint32_t ChooseSong(uint32_t);
 
 char BeepingAlarm[17] = {' ', ' ', 'E', 'n', 'v', 'e', 'l', 'o', 'p', 'e', ' ', 'T', 'e', 's', 't', ' ', 0};
 char Siren[17] = {' ', ' ', 'L', 'o', 's', 't', ' ', 'W', 'o', 'o', 'd', ' ', ' ', ' ', ' ', ' ', 0};
-char ImperialMarch[17] = {' ', ' ', 'I', 'm', 'p', 'e', 'r', 'i', 'a', 'l', ' ', 'M', 'a', 'r', 'c', 'h', 0};
-char MorningMood[17] = {' ', ' ', 'M', 'o', 'r', 'n', 'i', 'n', 'g', ' ', 'M', 'o', 'o', 'd', ' ', ' ', 0};
+//char ImperialMarch[17] = {' ', ' ', 'I', 'm', 'p', 'e', 'r', 'i', 'a', 'l', ' ', 'M', 'a', 'r', 'c', 'h', 0};
+//char MorningMood[17] = {' ', ' ', 'M', 'o', 'r', 'n', 'i', 'n', 'g', ' ', 'M', 'o', 'o', 'd', ' ', ' ', 0};
 char NewBarkTown[17] = {' ', ' ', 'N', 'e', 'w', ' ', 'B', 'a', 'r', 'k', ' ', 'T', 'o', 'w', 'n', ' ', 0};
-char* song_Choice[5] = {		
-	BeepingAlarm, Siren, ImperialMarch, MorningMood, NewBarkTown
+char* song_Choice[3] = {		
+	BeepingAlarm, Siren,  NewBarkTown
 };
 
 void Next_State(uint32_t current_state, uint32_t keyInputs)

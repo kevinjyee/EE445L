@@ -95,28 +95,7 @@ int main(void){
 	uint32_t current_state = 0x00;	
   uint32_t input,lastinput = 0x00;
 	while(1){
-			uint32_t switchnum =Switch_In();
-			if(switchnum == 0x01)
-			{
-				ST7735_SetCursor(0,7);
-				ST7735_OutString("switch 1");
-			}
-			else if(switchnum == 0x02)
-			{
-				ST7735_SetCursor(0,7);
-				ST7735_OutString("switch 2");
-			}
-			else if(switchnum == 0x04)
-			{
-				ST7735_SetCursor(0,7);
-				ST7735_OutString("switch 3");
-				
-			}
-			else if (switchnum == 0x08)
-			{
-				ST7735_SetCursor(0,7);
-				ST7735_OutString("switch 4");
-			}
+	
 		if(Fifo_Get(&input))
 		{
 			current_state = Next_State(current_state, input);			
