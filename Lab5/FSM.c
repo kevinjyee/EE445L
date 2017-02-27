@@ -26,6 +26,7 @@
 #define PAUSE 			0
 
 #define NUMSONGS    3
+#define NUM_MODES		3
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -36,6 +37,7 @@ void WaitForInterrupt(void);  // low power mode
 int selectSwitchToggled = FALSE;
 extern char Play_Toggled;
 volatile int currentSongPos = 0;
+volatile int currentMode = 0;
 int lastSongPos = -1;
 
 uint32_t MainScreen(uint32_t);
@@ -85,8 +87,8 @@ uint32_t ChooseSong(uint32_t input)
 	switch(input)
 	{
 		case 0x01: 
-			//down switch
-			currentSongPos = (currentSongPos + 1)%NUMSONGS;
+			//MODE switch
+			currentMode = (currentMode - 1) & NUM_MODES;
 			break;
 		case 0x02:
 			//Up Switch
