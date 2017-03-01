@@ -1,0 +1,16 @@
+Forward Design Changes Report
+-----------------------------
+
+Report File:        E:\EE445L Labs\Lab6\Lab6_AlarmClock (PCB - Forward Design Changes Report).txt
+Report Written:     Tuesday, February 28, 2017
+Design Path:        E:\EE445L Labs\Lab6\Lab6_AlarmClock.pcb
+Design Title:       
+Created:            1/28/2013 11:01:41 PM
+Last Saved:         2/28/2017 3:43:03 PM
+Editing Time:       685 min
+Units:              mil (precision 0)
+
+Error: Unable to add component reference "J6" of component "USB_Mini-B_SM", package "SM" because Cannot find component "USB_Mini-B_SM"..
+
+
+End Of Report.

@@ -1,0 +1,61 @@
+Design Rule Check Report
+------------------------
+
+Report File:        E:\EE445L Labs\Lab6\Lab6_AlarmClock (PCB - Design Rule Check Report).txt
+Report Written:     Tuesday, February 28, 2017
+Design Path:        E:\EE445L Labs\Lab6\Lab6_AlarmClock.pcb
+Design Title:       
+Created:            1/28/2013 11:01:41 PM
+Last Saved:         2/28/2017 3:18:38 PM
+Editing Time:       664 min
+Units:              mil (precision 0)
+
+
+Results
+=======
+
+
+No errors found
+
+
+Settings
+========
+
+
+Spacings
+
+=========
+
+Tracks        Yes
+Pads and Vias Yes
+Shapes        Yes
+Text          Yes
+Board         Yes
+Drills        Yes
+Components    No
+
+
+Manufacturing
+
+==============
+
+Min Drill Hole Size  Yes
+Min Track Width      Yes
+Min Annular Ring     Yes
+Copper Text In Board Yes
+Mirrored Text        Yes
+Routing Areas        Yes
+Drill Breakout       Yes
+
+
+Nets
+
+=====
+
+Net Completion               No
+Dangling Tracks              No
+Net Track Length Differences No
+
+
+
+End Of Report.
