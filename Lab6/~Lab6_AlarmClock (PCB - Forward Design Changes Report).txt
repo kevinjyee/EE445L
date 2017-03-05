@@ -1,0 +1,25 @@
+Forward Design Changes Report
+-----------------------------
+
+Report File:        E:\EE445L Labs\Lab6\~Lab6_AlarmClock (PCB - Forward Design Changes Report).txt
+Report Written:     Sunday, March 05, 2017
+Design Path:        E:\EE445L Labs\Lab6\~Lab6_AlarmClock.pcb
+Design Title:       
+Created:            1/28/2013 11:01:41 PM
+Last Saved:         3/5/2017 2:10:26 PM
+Editing Time:       882 min
+Units:              mil (precision 0)
+
+Disconnected pin "SW1-3" from net "+3.3".
+Disconnected pin "SW2-3" from net "+3.3".
+Disconnected pin "SW3-3" from net "+3.3".
+
+Connected pin "U1-24" to net "PA7".
+Connected pin "U1-23" to net "PA6".
+Connected pin "U1-22" to net "PA5".
+Connected pin "J5-3" to net "PA7".
+Connected pin "J5-4" to net "PA6".
+Connected pin "J5-7" to net "PA5".
+
+
+End Of Report.

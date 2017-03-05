@@ -1,0 +1,25 @@
+Forward Design Changes Report
+-----------------------------
+
+Report File:        E:\EE445L Labs\Lab6\Lab7_TM4C123starter (PCB - Forward Design Changes Report).txt
+Report Written:     Sunday, March 05, 2017
+Design Path:        E:\EE445L Labs\Lab6\Lab7_TM4C123starter.pcb
+Design Title:       
+Created:            1/28/2013 11:01:41 PM
+Last Saved:         2/26/2017 8:53:34 PM
+Editing Time:       750 min
+Units:              mil (precision 0)
+
+Disconnected pin "J3-1" from net "GND".
+Disconnected pin "J3-2" from net "GND".
+Disconnected pin "J3-3" from net "GND".
+Disconnected pin "J3-4" from net "GND".
+Disconnected pin "J3-5" from net "GND".
+Disconnected pin "J3-6" from net "GND".
+Disconnected pin "J3-7" from net "GND".
+Disconnected pin "J3-8" from net "GND".
+
+Deleted component reference "J3".
+
+
+End Of Report.

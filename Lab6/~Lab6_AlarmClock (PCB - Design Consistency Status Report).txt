@@ -1,0 +1,18 @@
+Design Consistency Status Report
+--------------------------------
+
+Report File:        E:\EE445L Labs\Lab6\~Lab6_AlarmClock (PCB - Design Consistency Status Report).txt
+Report Written:     Sunday, March 05, 2017
+Design Path:        E:\EE445L Labs\Lab6\~Lab6_AlarmClock.pcb
+Design Title:       
+Created:            1/28/2013 11:01:41 PM
+Last Saved:         3/5/2017 2:10:26 PM
+Editing Time:       882 min
+Units:              mil (precision 0)
+
+
+Checking integrity of Schematic "E:\EE445L Labs\Lab6\~Lab6_AlarmClock.sch" with PCB "E:\EE445L Labs\Lab6\~Lab6_AlarmClock.pcb"
+==============================================================================================================================
+
+
+End Of Report.

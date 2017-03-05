@@ -2,12 +2,12 @@ Design Consistency Status Report
 --------------------------------
 
 Report File:        E:\EE445L Labs\Lab6\Lab6_AlarmClock (PCB - Design Consistency Status Report).txt
-Report Written:     Tuesday, February 28, 2017
+Report Written:     Sunday, March 05, 2017
 Design Path:        E:\EE445L Labs\Lab6\Lab6_AlarmClock.pcb
 Design Title:       
 Created:            1/28/2013 11:01:41 PM
-Last Saved:         2/28/2017 3:43:03 PM
-Editing Time:       685 min
+Last Saved:         2/28/2017 4:03:31 PM
+Editing Time:       702 min
 Units:              mil (precision 0)
 
 
