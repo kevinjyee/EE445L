@@ -1,0 +1,20 @@
+Stages of Final Project:
+1) Interfacing Accelerometer:
+	Learn how to collect data from accelerometer.
+	Milestones = 1) Successful data acquisition. 2) Tempo-setting of beeps. 3) Tempo-setting notes.
+2) Reading MIDI file:
+	Create a system for reading MIDI files.
+	Milestones = 1) Parsing MIDI data. 2) Storing MIDI data on board. 3) Creating music struct fr/ 		MIDI
+3) Sound:
+	Interface w/ DAC via SSI, play audio through headphone jack, maybe use audio amp.
+	Milestones = 1) Playing sound. 2) Playing WAV file. 3) Playing multiple WAV files simultaneously.
+4) LCD/Switches:
+	Create UI for song selection.
+	Milestones = 1) Navigable menu for songs. 2) Menu w/ server download options.
+5) Server/Wifi:
+	Make a server which stores MIDI files that can be downloaded to the TM4C123 via Wifi.
+	Milestones = 1) Restful server which stores MIDI files. 2) CC3100 Interface which allows download
+6) Final Product:
+	Attach final project to an arm band and integrate modules from stages 1-5.
+	Milestones = 1) Armband attached. 2) Smooth functioning of accelerometer, sound, LCD.
+		3) Ability to download new MIDI files via Wifi.
