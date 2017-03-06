@@ -1,0 +1,20 @@
+Component,Package,Value,Manuf,Manuf Part No,Distrib,Distrib Part No,Ref Name,Qty
+0.25Wresistor,DIP,4.7k,,,,,R3 R6 R7 R8 R9,5
+0.125Wresistor,DIL,,,,,,R2 R1 R4,3
+1N914,MISC,,,,,,D1,1
+2N2222,TO92,,,,,,Q1,1
+B3F-1050,DIP,,,,,,Reset SW1 SW2 SW3 SW4,5
+Ceramic,C,,,,,,C13 C14 C7 C8 C4 C6 C9 C3 C5 C10 C11,11
+Header2,SIP,,,,,,J2,1
+Header5,SIP,,,,,,J1,1
+LEDT1.75,SIP,,,,,,D2,1
+LogicAnalyzer,DIP,,,,,,J3,1
+LP2950CZ-3.3,TO220,,,,,,U2,1
+Speaker,DIP,,,,,,J4,1
+ST7735,LCD,,,,,,J5,1
+tantalum,C,,,,,,C12 C2 C1,3
+testpoint,SIP,,,,,,GND TP2 Battery,3
+TM4C123GH6PM,LQFP,,,,,,U1,1
+XTAL,NX5032,,,,,,Y1,1
+,,,,,,,,41
+PCB Artist Bill of Materials is provided for reference only and must be verified by the user.,,,,,,,,

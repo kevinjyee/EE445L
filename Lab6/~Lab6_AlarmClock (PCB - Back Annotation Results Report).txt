@@ -1,0 +1,22 @@
+Back Annotation Results Report
+------------------------------
+
+Report File:        E:\EE445L Labs\Lab6\~Lab6_AlarmClock (PCB - Back Annotation Results Report).txt
+Report Written:     Monday, March 06, 2017
+Design Path:        E:\EE445L Labs\Lab6\~Lab6_AlarmClock.pcb
+Design Title:       
+Created:            1/28/2013 11:01:41 PM
+Last Saved:         3/5/2017 3:45:50 PM
+Editing Time:       987 min
+Units:              mil (precision 0)
+
+Back Annotate renames from PCB "E:\EE445L Labs\Lab6\~Lab6_AlarmClock.pcb" to Schematic "E:\EE445L Labs\Lab6\~Lab6_AlarmClock.sch".
+
+Renamed Component from "SW4" to "Down".
+Renamed Component from "SW3" to "Up".
+Renamed Component from "SW2" to "Select".
+Renamed Component from "SW1" to "Menu".
+Renamed Component from "TP2" to "Test3V".
+
+
+End Of Report.

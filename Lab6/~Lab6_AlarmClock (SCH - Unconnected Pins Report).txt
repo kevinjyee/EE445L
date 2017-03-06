@@ -1,0 +1,54 @@
+Unconnected Pins Report
+-----------------------
+
+Report File:        E:\EE445L Labs\Lab6\~Lab6_AlarmClock (SCH - Unconnected Pins Report).txt
+Report Written:     Monday, March 06, 2017
+Design Path:        E:\EE445L Labs\Lab6\~Lab6_AlarmClock.sch
+Design Title:       
+Created:            
+Last Saved:         3/6/2017 7:09:36 AM
+Editing Time:       3908 min
+Units:              mil (precision 0)
+
+Component U1 Pin U1-21 (PA4)
+Component U1 Pin U1-18 (PA1)
+Component U1 Pin U1-17 (PA0)
+Component U1 Pin U1-4 (PB7)
+Component U1 Pin U1-57 (PB5)
+Component U1 Pin U1-58 (PB4)
+Component U1 Pin U1-48 (PB3)
+Component U1 Pin U1-47 (PB2)
+Component U1 Pin U1-46 (PB1)
+Component U1 Pin U1-45 (PB0)
+Component U1 Pin U1-13 (PC7)
+Component U1 Pin U1-14 (PC6)
+Component U1 Pin U1-15 (PC5)
+Component U1 Pin U1-16 (PC4)
+Component U1 Pin U1-10 (PD7)
+Component U1 Pin U1-53 (PD6)
+Component U1 Pin U1-44 (PD5)
+Component U1 Pin U1-43 (PD4)
+Component U1 Pin U1-60 (PE5)
+Component U1 Pin U1-59 (PE4)
+Component U1 Pin U1-5 (PF4)
+Component U1 Pin U1-31 (PF3)
+Component U1 Pin U1-30 (PF2)
+Component U1 Pin U1-29 (PF1)
+Component U1 Pin U1-28 (PF0)
+Component U1 Pin U1-36 (XOSC1)
+Component U1 Pin U1-33 (HIB*)
+Component Menu Pin Menu-1
+Component Menu Pin Menu-3
+Component J5 Pin J5-5 (CARD_CS)
+Component J5 Pin J5-9 (MISO)
+Component J5 Pin J5-10 (Light)
+Component Select Pin Select-1
+Component Select Pin Select-3
+Component Up Pin Up-1
+Component Up Pin Up-3
+Component Down Pin Down-1
+Component Down Pin Down-3
+
+Unconnected pins found : 38
+
+End Of Report.
