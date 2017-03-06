@@ -6,15 +6,11 @@ Report Written:     Monday, March 06, 2017
 Design Path:        E:\EE445L Labs\Lab6\~Lab6_AlarmClock.pcb
 Design Title:       
 Created:            1/28/2013 11:01:41 PM
-Last Saved:         3/6/2017 7:59:16 AM
-Editing Time:       1061 min
+Last Saved:         3/6/2017 8:32:08 AM
+Editing Time:       1092 min
 Units:              mil (precision 0)
 
-Disconnected pin "Q1-1" from net "Speaker-".
-Disconnected pin "Q1-3" from net "GND".
-
-Connected pin "Q1-3" to net "Speaker-".
-Connected pin "Q1-1" to net "GND".
+The designs are the same, so no design changes to forward.
 
 
 End Of Report.

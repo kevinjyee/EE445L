@@ -6,8 +6,8 @@ Report Written:     Monday, March 06, 2017
 Design Path:        E:\EE445L Labs\Lab6\~Lab6_AlarmClock.pcb
 Design Title:       
 Created:            1/28/2013 11:01:41 PM
-Last Saved:         3/6/2017 8:01:51 AM
-Editing Time:       1063 min
+Last Saved:         3/6/2017 8:32:08 AM
+Editing Time:       1092 min
 Units:              mil (precision 0)
 
 

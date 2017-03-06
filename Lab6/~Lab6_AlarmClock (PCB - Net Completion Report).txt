@@ -1,0 +1,15 @@
+Net Completion Report
+---------------------
+
+Report File:        E:\EE445L Labs\Lab6\~Lab6_AlarmClock (PCB - Net Completion Report).txt
+Report Written:     Monday, March 06, 2017
+Design Path:        E:\EE445L Labs\Lab6\~Lab6_AlarmClock.pcb
+Design Title:       
+Created:            1/28/2013 11:01:41 PM
+Last Saved:         3/6/2017 8:04:57 AM
+Editing Time:       1070 min
+Units:              mil (precision 0)
+
+
+No breaks found, all nets are fully routed.
+End Of Report.
