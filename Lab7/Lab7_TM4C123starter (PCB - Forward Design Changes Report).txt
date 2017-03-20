@@ -1,0 +1,25 @@
+Forward Design Changes Report
+-----------------------------
+
+Report File:        E:\EE445L Labs\Lab7\Lab7_TM4C123starter (PCB - Forward Design Changes Report).txt
+Report Written:     Monday, March 20, 2017
+Design Path:        E:\EE445L Labs\Lab7\Lab7_TM4C123starter.pcb
+Design Title:       
+Created:            1/29/2013 12:01:41 AM
+Last Saved:         3/20/2017 10:50:14 AM
+Editing Time:       763 min
+Units:              mil (precision 0)
+
+Added component reference "ESP8266" of component "ESP8266", package "USER".
+
+Connected pin "ESP8266-Gnd" to net "GND".
+Connected pin "ESP8266-TXO" to net "PB0".
+Connected pin "ESP8266-GPIO2" to net "+3.3".
+Connected pin "ESP8266-CHPD" to net "CHPD".
+Connected pin "ESP8266-GPIO0" to net "+3.3".
+Connected pin "ESP8266-RST" to net "PB2".
+Connected pin "ESP8266-RXI" to net "PB1".
+Connected pin "ESP8266-VCC" to net "+3.3".
+
+
+End Of Report.
