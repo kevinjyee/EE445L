@@ -1,0 +1,1 @@
+uint32_t MainScreen(uint32_t);
