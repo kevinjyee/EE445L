@@ -1,0 +1,5 @@
+1. Get 2, 10 pF pCB
+2. Print out Sch Design 
+3. Get more surf boards for our DACS 
+4. Get some header pins 
+5. Ask what test point pins we need (2 female header pins)
