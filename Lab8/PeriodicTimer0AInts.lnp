@@ -1,0 +1,21 @@
+--cpu Cortex-M4
+".\startup.o"
+".\timer0a.o"
+".\pll.o"
+".\dac.o"
+".\fifo.o"
+".\fifoqueue.o"
+".\lab5.o"
+".\lcd.o"
+".\music.o"
+".\st7735.o"
+".\switch.o"
+".\systick.o"
+".\timer3.o"
+".\timer1.o"
+".\fsm.o"
+".\mainmenu.o"
+".\songscreen.o"
+--ro-base 0x00000000 --entry 0x00000000 --rw-base 0x20000000 --entry Reset_Handler --first __Vectors --strict --summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\PeriodicTimer0AInts.map" -o .\PeriodicTimer0AInts.axf
