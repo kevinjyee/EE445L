@@ -5,3 +5,10 @@ Other things to consider: 1) Need to add second logic analyzer.
 			to use as debugging heartbeat.
 	2) Need to modularize hardware.
 	3) Remove hardware/add another DAC?
+	4) Instead of regular testpoints, Valvano suggests putting two-pin
+		headers for ground all around board for oscilloscope alligator
+		clips. This way you can avoid tricky clampings that might lead
+		to shorts.
+	5) Talk to Valvano about using a VSSOP-to-DIP mount for the DACs.
+	6) Talk to Valvano about potentially using wifi in project for extra
+		points.
