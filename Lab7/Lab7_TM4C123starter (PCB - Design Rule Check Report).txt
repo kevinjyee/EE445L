@@ -1,0 +1,61 @@
+Design Rule Check Report
+------------------------
+
+Report File:        E:\EE445L Labs\Lab7\Lab7_TM4C123starter (PCB - Design Rule Check Report).txt
+Report Written:     Friday, March 24, 2017
+Design Path:        E:\EE445L Labs\Lab7\Lab7_TM4C123starter.pcb
+Design Title:       
+Created:            1/29/2013 12:01:41 AM
+Last Saved:         3/24/2017 8:57:09 AM
+Editing Time:       1042 min
+Units:              mil (precision 0)
+
+
+Results
+=======
+
+
+No errors found
+
+
+Settings
+========
+
+
+Spacings
+
+=========
+
+Tracks        Yes
+Pads and Vias Yes
+Shapes        Yes
+Text          Yes
+Board         Yes
+Drills        Yes
+Components    No
+
+
+Manufacturing
+
+==============
+
+Min Drill Hole Size  Yes
+Min Track Width      Yes
+Min Annular Ring     Yes
+Copper Text In Board Yes
+Mirrored Text        Yes
+Routing Areas        Yes
+Drill Breakout       Yes
+
+
+Nets
+
+=====
+
+Net Completion               Yes
+Dangling Tracks              Yes
+Net Track Length Differences No
+
+
+
+End Of Report.
