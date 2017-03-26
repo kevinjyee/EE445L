@@ -1,0 +1,16 @@
+Forward Design Changes Report
+-----------------------------
+
+Report File:        E:\EE445L Labs\Lab7\Redo\Lab7_SoundTrackofMyLife (PCB - Forward Design Changes Report).txt
+Report Written:     Sunday, March 26, 2017
+Design Path:        E:\EE445L Labs\Lab7\Redo\Lab7_SoundTrackofMyLife.pcb
+Design Title:       
+Created:            1/29/2013 12:01:41 AM
+Last Saved:         3/26/2017 1:39:25 PM
+Editing Time:       1042 min
+Units:              mil (precision 0)
+
+Net N0031 renamed to PF1
+
+
+End Of Report.
