@@ -38,63 +38,6 @@ void Timer2Arm(void){
   TIMER2_CTL_R = 0x00000001;    // 10) enable timer2A
 }
 
-/*
-// ***************** Timer1A_Init ****************
-// Activate Timer1 interrupts to send user back to main menu after 10
-// 		seconds of inactivity.
-// Inputs:  None
-// Outputs: none
-void Timer1A_Init(void){
-  SYSCTL_RCGCTIMER_R |= 0x02;   // 0) activate TIMER1
-  //PeriodicTask = task;          // user function
-  TIMER1_CTL_R = 0x00000000;    // 1) disable TIMER1A during setup
-  TIMER1_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
-  TIMER1_TAMR_R = 0x00000002;   // 3) configure for periodic mode, default down-count settings
-  TIMER1_TAILR_R = RELOAD_10HZ;    // 4) reload value
-  TIMER1_TAPR_R = 0;            // 5) bus clock resolution
-  TIMER1_ICR_R = 0x00000001;    // 6) clear TIMER1A timeout flag
-  TIMER1_IMR_R = 0x00000001;    // 7) arm timeout interrupt
-  NVIC_PRI5_R = (NVIC_PRI5_R&0xFFFF00FF)|0x00010000; // 8) priority 6
-// interrupts enabled in the main program after all devices initialized
-// vector number 37, interrupt number 21
-  NVIC_EN0_R = 1<<21;           // 9) enable IRQ 21 in NVIC
-  TIMER1_CTL_R = 0x00000001;    // 10) enable TIMER1A
-}
-
-
-// ***************** Timer1A_Handler ****************
-// Count number of 10Hz interrupts. After counting 10s worth of time
-//	between button presses, put menu switch input into FIFO to send
-//	user back to main screen.
-// Inputs:  None
-// Outputs: none
-void Timer1A_Handler(void){
-  TIMER1_ICR_R = TIMER_ICR_TATOCINT;// acknowledge timer0A timeout
-	long i_bit = StartCritical();
-	timeout_Count = (timeout_Count + 1) % 100;
-	if(timeout_Count == 99){ //
-		Fifo_Put(0x08); //Register the falling edge only.
-	}
-	EndCritical(i_bit);
-}
-
-// ***************** Disable_Timer1 ****************
-// Disables Timer1 to stop screen timeout during an alarm.
-// Inputs:  none
-// Outputs: none
-void Disable_Timer1(void){
-	TIMER1_CTL_R = 0x00000000;
-}
-
-// ***************** Enable_Timer1 ****************
-// Enables Timer1 to start screen timeout counter.
-// Inputs:  none
-// Outputs: none
-void Enable_Timer1(void){
-	TIMER1_CTL_R = 0x00000001;   
-}
-*/
-
 // **************GPIOArm*********************
 // Initialize switch key inputs, called once 
 // Input: none 

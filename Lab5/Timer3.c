@@ -47,34 +47,42 @@ void Disable_Timer3(void){
 	TIMER3_CTL_R = 0x00000000;
 }
 
+void (*T3PeriodicTask)(void);   // user function
+
+void T3_No_Op(){
+}
+
 // ***************** Timer3_Init ****************
-// Activate Timer3 interrupts periodically
-// Inputs:  period in units (1/clockfreq)
+// Activate Timer3 interrupts to run user task periodically
+// Inputs:  task is a pointer to a user function
+//          period in units (1/clockfreq)
 // Outputs: none
-void Timer3_Init(unsigned long tempo){
+void Timer3_Init(void(*task)(void), uint32_t period){
   SYSCTL_RCGCTIMER_R |= 0x08;   // 0) activate TIMER3
+	if(period){
+		T3PeriodicTask = task;          // user function
+	} else{
+		T3PeriodicTask = &T3_No_Op;		// Rest if period == 0.
+	}
   TIMER3_CTL_R = 0x00000000;    // 1) disable TIMER3A during setup
   TIMER3_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
   TIMER3_TAMR_R = 0x00000002;   // 3) configure for periodic mode, default down-count settings
-  TIMER3_TAILR_R = RELOAD_100Hz - 1;    // 4) reload value
+  TIMER3_TAILR_R = period-1;    // 4) reload value
   TIMER3_TAPR_R = 0;            // 5) bus clock resolution
   TIMER3_ICR_R = 0x00000001;    // 6) clear TIMER3A timeout flag
   TIMER3_IMR_R = 0x00000001;    // 7) arm timeout interrupt
-  NVIC_PRI8_R = (NVIC_PRI8_R&0x00FFFFFF)|0x40000000; // 8) priority 2
+  NVIC_PRI8_R = (NVIC_PRI8_R&0x00FFFFFF)|0x80000000; // 8) priority 4
 // interrupts enabled in the main program after all devices initialized
 // vector number 51, interrupt number 35
   NVIC_EN1_R = 1<<(35-32);      // 9) enable IRQ 35 in NVIC
   TIMER3_CTL_R = 0x00000001;    // 10) enable TIMER3A
-	
-	tempo_Max_Count = (60 * 100) / (tempo * 4); // Timer3A counts every 100ms--tempo_Max_Count is number of 100ms to make one beat.
-	tempo_Counter2 = 0;
 }
 
-// Every time Timer3A interrupts, check for a change in song selection.
 void Timer3A_Handler(void){
-	if(tempo_Counter2 == 0){ // Every time tempo_Counter wraps around (one full beat), trigger PWM_Sine and play a new note.
-		
-	}
-	tempo_Counter2 = (tempo_Counter2 + 1) % tempo_Max_Count; // Increment tempo_Counter and wrap if hits tempo_Max_Count.
   TIMER3_ICR_R = TIMER_ICR_TATOCINT;// acknowledge TIMER3A timeout
+  (*T3PeriodicTask)();                // execute user task
+}
+
+void Timer3A_Halt(void){
+	TIMER3_CTL_R = 0x00000000; // Disable Timer1A.
 }

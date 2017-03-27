@@ -13,10 +13,17 @@ extern char Toggle_Play;
 // **************Next_State*********************
 // Given the current state and the current input, find the next state of the FSM.
 // Input: Current state and current switch input.
-// Output: Next state
-uint32_t Next_State(uint32_t,uint32_t);
+uint32_t Next_State(uint32_t current_state, uint32_t keyInputs);
 
 // **************currentSongPos*********************
 // The position of the song screen selection. Can be moved up and down via
 //		switch input.
 extern volatile int currentSongPos;
+
+// **************lastSongPos*********************
+// The position of the last played song. 
+extern volatile int lastSongPos;
+
+// **************currentMode*********************
+// The current selected mode (sine, flute, trumpet).
+extern volatile int currentMode;

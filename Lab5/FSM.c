@@ -45,32 +45,14 @@ uint32_t ChooseSong(uint32_t);
 
 char BeepingAlarm[17] = {' ', ' ', 'E', 'n', 'v', 'e', 'l', 'o', 'p', 'e', ' ', 'T', 'e', 's', 't', ' ', 0};
 char Siren[17] = {' ', ' ', 'L', 'o', 's', 't', ' ', 'W', 'o', 'o', 'd', ' ', ' ', ' ', ' ', ' ', 0};
-//char ImperialMarch[17] = {' ', ' ', 'I', 'm', 'p', 'e', 'r', 'i', 'a', 'l', ' ', 'M', 'a', 'r', 'c', 'h', 0};
-//char MorningMood[17] = {' ', ' ', 'M', 'o', 'r', 'n', 'i', 'n', 'g', ' ', 'M', 'o', 'o', 'd', ' ', ' ', 0};
 char NewBarkTown[17] = {' ', ' ', 'N', 'e', 'w', ' ', 'B', 'a', 'r', 'k', ' ', 'T', 'o', 'w', 'n', ' ', 0};
 char* song_Choice[3] = {		
 	BeepingAlarm, Siren,  NewBarkTown
 };
 
-void Next_State(uint32_t current_state, uint32_t keyInputs)
+uint32_t Next_State(uint32_t current_state, uint32_t keyInputs)
 {
-	/*
-	switch(current_state){
-		case 0x00:
-			return MainScreen(keyInputs);
-		case 0x01:
-			break;
-		case 0x02:
-			break;
-		case 0x03:
-			return ChooseSong(keyInputs);
-		case 0x04:
-			break;
-		default:
-			return ChooseSong(keyInputs);
-	}
-	*/
-	ChooseSong(keyInputs);
+	return ChooseSong(keyInputs);
 }
 
 

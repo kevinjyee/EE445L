@@ -42,6 +42,7 @@
 #include "Timer3.h"
 #include "Music.h"
 #include "DAC.h"
+#include "Heap.h"
 
 #define PA3							(*((volatile uint32_t *)0x40004020)) // Menu switch
 #define PA2             (*((volatile uint32_t *)0x40004010)) // Select switch
@@ -87,6 +88,7 @@ void init_All(){
 	Switch_Init();
 	ST7735_InitR(INITR_REDTAB);
 	DAC_Init(0);
+	Heap_Init();
 }
 
 int main(void){
@@ -126,7 +128,4 @@ int main(void){
 		}
   }
 }
-
-
-
 
