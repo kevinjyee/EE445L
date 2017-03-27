@@ -6,15 +6,19 @@ Report Written:     Sunday, March 26, 2017
 Design Path:        E:\EE445L Labs\Lab7\Redo\Lab7_SoundTrackofMyLife.pcb
 Design Title:       
 Created:            1/29/2013 12:01:41 AM
-Last Saved:         3/26/2017 1:39:25 PM
-Editing Time:       1042 min
+Last Saved:         3/26/2017 8:24:26 PM
+Editing Time:       1121 min
 Units:              mil (precision 0)
 
 
 Checking integrity of Schematic "E:\EE445L Labs\Lab7\Redo\Lab7_SoundTrackofMyLife.sch" with PCB "E:\EE445L Labs\Lab7\Redo\Lab7_SoundTrackofMyLife.pcb"
 ======================================================================================================================================================
 
-The designs are the same.
+The PCB and Schematic designs do not match.
+To bring them into line, you will need to make the following changes to the PCB design:
+
+Connect Pin U1-13 to Net "PC7"
+Connect Pin Accel-1 to Net "PC7"
 
 
 End Of Report.

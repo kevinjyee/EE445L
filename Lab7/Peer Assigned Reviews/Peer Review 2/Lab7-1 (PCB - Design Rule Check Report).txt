@@ -1,13 +1,13 @@
 Design Rule Check Report
 ------------------------
 
-Report File:        E:\EE445L Labs\Lab7\Redo\Lab7_SoundTrackofMyLife (PCB - Design Rule Check Report).txt
+Report File:        E:\EE445L Labs\Lab7\Peer Assigned Reviews\Peer Review 2\Lab7-1 (PCB - Design Rule Check Report).txt
 Report Written:     Sunday, March 26, 2017
-Design Path:        E:\EE445L Labs\Lab7\Redo\Lab7_SoundTrackofMyLife.pcb
+Design Path:        E:\EE445L Labs\Lab7\Peer Assigned Reviews\Peer Review 2\Lab7-1.pcb
 Design Title:       
 Created:            1/29/2013 12:01:41 AM
-Last Saved:         3/26/2017 9:16:56 PM
-Editing Time:       1137 min
+Last Saved:         3/24/2017 8:58:44 AM
+Editing Time:       965 min
 Units:              mil (precision 0)
 
 

@@ -1,0 +1,16 @@
+Forward Design Changes Report
+-----------------------------
+
+Report File:        E:\EE445L Labs\Lab7\Peer Assigned Reviews\Peer Review 2\Lab7-1 (PCB - Forward Design Changes Report).txt
+Report Written:     Sunday, March 26, 2017
+Design Path:        E:\EE445L Labs\Lab7\Peer Assigned Reviews\Peer Review 2\Lab7-1.pcb
+Design Title:       
+Created:            1/29/2013 12:01:41 AM
+Last Saved:         3/24/2017 8:58:44 AM
+Editing Time:       966 min
+Units:              mil (precision 0)
+
+The designs are the same, so no design changes to forward.
+
+
+End Of Report.
