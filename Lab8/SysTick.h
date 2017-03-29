@@ -35,4 +35,11 @@ void SysTick_Init(void(*task)(void), uint32_t period);
 // Increment time every time handler is called.
 void SysTick_Handler(void);
 
+// Stop SysTick in its tracks.
 void SysTick_Halt(void);
+
+// ***************** Change_Tempo ****************
+// Changes the tempo of whatever song is playing.
+// Inputs:  uint32_t speed, based on current walking speed of user.
+// Outputs: none
+void Change_Tempo(uint32_t speed);

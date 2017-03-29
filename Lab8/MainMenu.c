@@ -31,8 +31,14 @@ char* menu_Choice[3] = {
 	Songs, Health, Settings
 };
 
+
+// **************MainScreen*********************
+// Calling MainScreen displays menu options and the user interface
+//		with which one can navigate the Soundtrack device's options.
+// Input: Most recent switch input.
+// Output: Next state.
 uint32_t MainScreen(uint32_t input){
-	draw_Title(XTITLE,YTITLE,TITLEBORDER,"Menu");
+	Draw_Title(XTITLE,YTITLE,TITLEBORDER,"Menu");
 	//Determine Input and Action on MainScreen
 	switch(input)
 	{
@@ -55,6 +61,6 @@ uint32_t MainScreen(uint32_t input){
 			//Menu Button
 			return 0x00;
 	}
-	draw_Options(MainMenuPos,menu_Choice,NUMMENUITEMS,YITEMS);
+	Draw_Options(MainMenuPos,menu_Choice,NUMMENUITEMS,YITEMS);
 	return 0;
 }

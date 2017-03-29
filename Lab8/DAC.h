@@ -15,13 +15,19 @@
 #include "SysTick.h"
 
 // ***************** DAC_Init ****************
-// Initializes DAC output pin and all timers used to produce sound.
+// Initializes two DACs using SSI1 and SSI2.
 // Inputs:  none
 // Outputs: none
 void DAC_Init(uint16_t data);
 
-// ***************** DAC_Out ****************
-// Outputs a voltage value to the DAC
+// ***************** DAC_Out_0 ****************
+// Outputs a voltage value to DAC0.
 // Inputs:  none
 // Outputs: none
-void DAC_Out(uint16_t data);
+void DAC_Out_0(uint16_t data);
+
+// ***************** DAC_Out_1 ****************
+// Outputs a voltage value to DAC1.
+// Inputs:  none
+// Outputs: none
+void DAC_Out_1(uint16_t data);

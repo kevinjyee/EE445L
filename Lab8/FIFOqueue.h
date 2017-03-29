@@ -8,6 +8,7 @@
 #ifndef __queue_h__
 #define __queue_h__
 #include "inc/tm4c123gh6pm.h"
+#include "stdint.h"
 
 
 long StartCritical (void);    // previous I bit, disable interrupts

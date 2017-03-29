@@ -1,3 +1,12 @@
+// FSM.h
+// Runs on LM4F120/TM4C123
+// The state machine underlying the soundtrack project.
+//	Based on switch input, allows a user to navigate between
+//	several screens including a title screen,
+//	song selection screen, and options menu.
+// Stefan Bordovsky and Kevin Yee
+// February 16, 2016
+
 #include <stdint.h>
 #include <stdbool.h>
 #include "../inc/tm4c123gh6pm.h"
