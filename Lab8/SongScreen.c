@@ -12,6 +12,7 @@
 #include "Globals.h"
 #include "Song.h"
 #include "FSM.h"
+#include "SongScreen.h"
 
 #define XTITLE 5
 #define YTITLE 0
@@ -20,17 +21,11 @@
 
 
 void draw_SongScreen(){
-	ST7735_DrawString(XTITLE,YITEMS,"*",ST7735_BLACK);
+	ST7735_DrawString(XTITLE,YITEMS,"Song Name",ST7735_BLACK);
 	
 }
-
-// **************SongScreen*********************
-// Calling SongScreen displays menu options and the user interface
-//		with which one can navigate the Soundtrack device's songs.
-// Input: Most recent switch input.
-// Output: Next state.
-uint32_t SongScreen(uint32_t input){
-	Draw_Title(XTITLE,YTITLE,TITLEBORDER,"Now Playing");
+uint32_t SongScreen(uint32_t input,struct SongChoice currentSong){
+	draw_Title(XTITLE,YTITLE,TITLEBORDER,"Now Playing");
 	//Determine Input and Action on Song Screen
 	switch(input)
 	{
@@ -50,5 +45,5 @@ uint32_t SongScreen(uint32_t input){
 			return 0x00;
 	}
 	
-	return 0;
+return 0;
 }

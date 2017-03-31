@@ -1,0 +1,13 @@
+#include <stdint.h>
+#include <stdbool.h>
+#include "../inc/tm4c123gh6pm.h"
+#include "PLL.h"
+#include "ST7735.h"
+#include "SysTick.h"
+#include "PWMSine.h"
+#include "Switch.h"
+#include "FIFOQueue.h"
+#include "Lab5.h"
+#include "LCD.h"
+#include "Globals.h"
+#include "FSM.h"

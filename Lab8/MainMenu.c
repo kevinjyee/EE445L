@@ -13,13 +13,9 @@
 #include "FSM.h"
 
 
-#define XTITLE 5
-#define YTITLE 0
-#define TITLEBORDER 11
-#define YITEMS 2
 
-uint8_t NUMMENUITEMS = 3;
-uint8_t  MainMenuPos = 0;
+static uint8_t NUMMENUITEMS = 3;
+static uint8_t  MenuPos = 0;
 ////  screen is actually 129 by 161 pixels, x 0 to 128, y goes from 0 to 160
 
 
@@ -31,36 +27,35 @@ char* menu_Choice[3] = {
 	Songs, Health, Settings
 };
 
-
-// **************MainScreen*********************
-// Calling MainScreen displays menu options and the user interface
-//		with which one can navigate the Soundtrack device's options.
-// Input: Most recent switch input.
-// Output: Next state.
 uint32_t MainScreen(uint32_t input){
-	Draw_Title(XTITLE,YTITLE,TITLEBORDER,"Menu");
+	draw_Title(XTITLE,YTITLE,TITLEBORDER,"Menu");
 	//Determine Input and Action on MainScreen
 	switch(input)
 	{
-		case 0x01: 
+		case DOWN: 
 			//down switch
-			MainMenuPos = (MainMenuPos + 1)%NUMMENUITEMS;
+			MenuPos = (MenuPos + 1)%NUMMENUITEMS;
 			break;
-		case 0x02:
+		case UP:
 			//Up Switch
-			MainMenuPos = (MainMenuPos - 1);
-			if(MainMenuPos < 0 )
+			MenuPos = (MenuPos - 1);
+			if(MenuPos < 0 )
 			{
-				MainMenuPos = NUMMENUITEMS-1; 
+				MenuPos = NUMMENUITEMS-1; 
 			}
 			break;
-		case 0x04:
-			//Select Switch
-			//return processMenuItem(curentMenuPos);
-		case 0x08: 
-			//Menu Button
-			return 0x00;
+		case LEFT:
+			//Do Nothing
+			break;
+		case RIGHT:
+			//Do Nothing
+			break;
+		case MENU:
+			//Do Nothing
+			break;
+		case SELECT:
+			return MenuPos;
 	}
-	Draw_Options(MainMenuPos,menu_Choice,NUMMENUITEMS,YITEMS);
-	return 0;
+	draw_Options(MenuPos,menu_Choice,NUMMENUITEMS,YITEMS);
+	return 0x00;
 }

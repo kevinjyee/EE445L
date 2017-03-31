@@ -43,11 +43,9 @@
 #include "Music.h"
 #include "DAC.h"
 #include "TitleScreen.h"
+#include "Accelerometer.h"
 
-#define PA3							(*((volatile uint32_t *)0x40004020)) // Menu switch
-#define PA2             (*((volatile uint32_t *)0x40004010)) // Select switch
-#define PA1             (*((volatile uint32_t *)0x40004008)) // Up switch
-#define PA0							(*((volatile uint32_t *)0x40004004)) // Down switch
+
 #define SYSTICK_RELOAD	0x4C4B40 // Reload value for an interrupt frequency of 10Hz.
 
 #define TOGGLE_PLAY 1
@@ -87,11 +85,15 @@ void init_All(){
 	PLL_Init(Bus50MHz);                   // 50 MHz
 	//Switch_Init();
 	ST7735_InitR(INITR_REDTAB);
-	ST7735_DrawBitmap(0,159,TitleScreen2,128,160);
-	DelayWait2ms(10);
+  ST7735_DrawBitmap(0,159,TitleScreen2,128,160);
+	DelayWait2ms(2);
 	ST7735_FillScreen(ST7735_WHITE);
 //	DAC_Init(0);
+//	Accel_Init();
+//	ADC_Init321();
+  
 }
+
 
 int main(void){
   init_All();
@@ -113,4 +115,15 @@ int main(void){
 
 
 
+/*
+int main(void){
+	init_All();
+	
+	while(1)
+	{
+	Accel_Test();
+	}
+	
+}
+*/
 

@@ -61,15 +61,16 @@ uint32_t Next_State(uint32_t current_state, uint32_t keyInputs)
 		case 0x01:
 			return SongMenu(keyInputs);
 		case 0x02:
-			//return SetMultipleAlarm(keyInputs);
+			//return Pedometer
 		case 0x03:
-			//return ChooseSong(keyInputs);
+			//return SongScreen(keyInputs);
 		case 0x04:
 			//return SetAlarms(keyInputs);
 		default:
 			return MainScreen(keyInputs);
 	}
 }
+
 
 void draw_Title(int XTITLE, int YTITLE, int TITLEBORDER,char* title){
 	ST7735_SetCursor(0,0);
