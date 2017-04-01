@@ -11,11 +11,12 @@
 #include "LCD.h"
 #include "Globals.h"
 #include "FSM.h"
+#include "SongMenu.h"
 #include "SongScreen.h"
 
 	
 
-volatile int8_t  SongMenuPos = 0;
+extern volatile int8_t  SongMenuPos;
 ////  screen is actually 129 by 161 pixels, x 0 to 128, y goes from 0 to 160
 
 
@@ -23,21 +24,13 @@ char Track1[18] = {' ', ' ', 'S', 'o', 'n', 'g', ' ', '1', ' ', ' ', ' ', ' ', '
 char Track2[18] = {' ', ' ', 'S', 'o', 'n', 'g', ' ', '2', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ','>',0};
 char Track3[18] = {' ', ' ', 'S', 'o', 'n', 'g', ' ', '3', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '>',0};
 
-	typedef struct
-{
-	int ID;
-	char* SongName;
-	const uint16_t* Graphic;
-} SongChoice;
+static const uint16_t* dummy = {0x00};
 
-
-#define NUMSONGS 3
-	
-SongChoice SongsList[NUMSONGS];
-const uint16_t* dummy = {0x00};
 char* menu_Choices[3] = {		
 	Track1, Track2, Track3
 };
+
+extern SongChoice SongsList[NUMSONGS];
 
 uint32_t SongMenu(uint32_t input){
 	Draw_Title(XTITLE,YTITLE,TITLEBORDER,"Song Select");
@@ -65,6 +58,7 @@ uint32_t SongMenu(uint32_t input){
 		case MENU:
 			return 0x00; //return back to the main screen
 		case SELECT:
+			ST7735_FillScreen(ST7735_WHITE);
 			return SongScreen(input, SongsList[SongMenuPos].SongName,dummy);
 			break;
 	}

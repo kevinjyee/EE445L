@@ -11,3 +11,20 @@
 #include "LCD.h"
 #include "Globals.h"
 #include "FSM.h"
+#include "Accelerometer.h"
+
+void Draw_Steps()
+{
+	Accel_Test();
+	
+}
+uint32_t PedometerScreen(uint32_t input){
+	Draw_Title(XTITLE,YTITLE,TITLEBORDER,"Pedometer");
+	//Determine Input and Action on MainScreen
+	switch(input)
+	{
+	
+	}
+	Draw_Steps();
+	return rtPedometer;
+}

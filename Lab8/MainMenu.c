@@ -69,6 +69,7 @@ uint32_t MainScreen(uint32_t input){
 			//Do Nothing
 			break;
 		case SELECT:
+			ST7735_FillScreen(ST7735_WHITE);
 			return processMenuItem(MenuPos);
 	}
 	Draw_Options(MenuPos,menu_Choice,NUMMENUITEMS,YITEMS);

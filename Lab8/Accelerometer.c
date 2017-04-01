@@ -55,8 +55,8 @@ void Accel_Init(void) {
   ADC0_EMUX_R &= ~0x0F00;         // 11) seq2 is software trigger
   
 	
-	ADC0_SSMUX2_R = 0x023;         // 12) set channels for SS2
-  ADC0_SSCTL2_R = 0x0060;         // 13) no TS0 D0 IE0 END0 TS1 D1, yes IE2 END2 - 3 bit Accel input
+	ADC0_SSMUX2_R = 0x0123;         // 12) set channels for SS2
+  ADC0_SSCTL2_R = 0x0600;         // 13) no TS0 D0 IE0 END0 TS1 D1, yes IE2 END2 - 3 bit Accel input
   ADC0_IM_R &= ~0x0004;           // 14) disable SS2 interrupts
   ADC0_ACTSS_R |= 0x0004;         // 15) enable sample sequencer 2 allows for 4 inputs
 	
@@ -79,17 +79,17 @@ void ADC_In321(uint32_t data[3]){
   while((ADC0_RIS_R&0x04)==0){};   // 2) wait for conversion done
 	data[0] = ADC0_SSFIFO2_R&0xFFF;	
   data[1] = ADC0_SSFIFO2_R&0xFFF;  // 3A) read first result
- // data[2] = ADC0_SSFIFO2_R&0xFFF;  // 3B) read second result
+  data[2] = ADC0_SSFIFO2_R&0xFFF;  // 3B) read second result
   ADC0_ISC_R = 0x0004;             // 4) acknowledge completion
 }
 
 void Accel_Test() {
 		uint32_t accel[3] = {0,0,0};
     ADC_In321(accel);
-    ST7735_SetCursor(0,0);
-    ST7735_OutString("Accelrom X:     "); ST7735_SetCursor(12,4);  ST7735_OutUDec(accel[0]); ST7735_OutChar('\n');
-    ST7735_OutString("Accelrom Y:     "); ST7735_SetCursor(12,5);  ST7735_OutUDec(accel[1]); ST7735_OutChar('\n');
-   // ST7735_OutString("Accelrom Z:     "); ST7735_SetCursor(12,6);  ST7735_OutUDec(accel[2]); ST7735_OutChar('\n');
+		ST7735_SetTextColor(ST7735_BLACK);
+    ST7735_DrawStringBG(0,4,"Accelrom X:     ",ST7735_BLACK,ST7735_WHITE); ST7735_SetCursor(12,4);  ST7735_OutUDec(accel[0]); ST7735_OutChar('\n');
+    ST7735_DrawStringBG(0,5,"Accelrom Y:     ",ST7735_BLACK,ST7735_WHITE); ST7735_SetCursor(12,5);  ST7735_OutUDec(accel[1]); ST7735_OutChar('\n');
+    ST7735_DrawStringBG(0,6,"Accelrom Z:     ",ST7735_BLACK,ST7735_WHITE); ST7735_SetCursor(12,6);  ST7735_OutUDec(accel[2]); ST7735_OutChar('\n');
    
   
 }
