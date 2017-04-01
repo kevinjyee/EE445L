@@ -68,6 +68,18 @@ static void GPIOArm_PortA(void){
 }
 
 
+// **************GPIOArm*********************
+// Initialize switch key inputs, called once 
+// Input: none 
+// Output: none
+
+static void GPIOArm_PortE(void){
+  GPIO_PORTE_ICR_R = 0x08;      // (e) clear flags
+  GPIO_PORTE_IM_R |= 0x08;      // (f) arm interrupt on PA3-0 *** No IME bit as mentioned in Book ***
+  NVIC_PRI1_R = (NVIC_PRI1_R&0xFFFFFFF1F)|0x000000A0; //priority 5
+	NVIC_EN0_R = SYSCTL_RCGC2_GPIOE;
+}
+
 // **************Switch_Init*********************
 // Initialize switch key inputs, called once 
 // Input: none 
@@ -77,7 +89,8 @@ void PortF_Init(void){
 	while((SYSCTL_PRGPIO_R&0x10)==0){};
   GPIO_PORTF_DIR_R &=~ 0x1F;      // make PF4-0 in make the input pins
   GPIO_PORTF_AFSEL_R &= ~0x1F;   // disable alt funct on PF4-0
-	GPIO_PORTF_AMSEL_R &= ~0xFF;      // no analog on PF4-0
+	GPIO_PORTF_AMSEL_R &= ~0x1F;      // no analog on PF4-0
+	GPIO_PORTF_PDR_R |= 0x1F;
   GPIO_PORTF_PCTL_R &= ~0xFFFFFFFF; // regular function
   GPIO_PORTF_DEN_R |= 0x1F;      // enable digital I/O on PF4-0
 	GPIO_PORTF_IS_R &= ~0x1F;         // 8) edge-sensitive
@@ -130,6 +143,27 @@ void GPIOPortA_Handler(void)
 
 }
 
+
+// **************PortE_Handler********************
+// Input from Switch key inputs 
+// Input: none 
+// Output: 1 to 3 depending on keys
+// 0x01 is just Key0, 0x02 is just Key1, 0x04 is just Key2
+void GPIOPortE_Handler(void)
+{
+	GPIO_PORTE_IM_R &= ~0x01; // disarm interrupt on PA so we dont get double clicks
+
+	timeout_Count = 0;
+
+	if(LastA){    // 0x0F means it was previously released
+ 
+		Fifo_Put(BUTTONAPRESS); //Register the falling edge only.
+  }
+	Timer2Arm(); //arm the timer again to be ready for countdown
+
+}
+
+
 // **************PortF_Handler********************
 // Input from Switch key inputs 
 // Input: none 
@@ -152,10 +186,11 @@ void GPIOPortF_Handler(void)
 
 void Timer2A_Handler(void){
   TIMER2_IMR_R = 0x00000000;    // disarm timeout interrupt
-	LastA = (0x01 & GPIO_PORTA_DATA_R); //get inputs of switches from Port A 
+	LastA = (0x08 & GPIO_PORTE_DATA_R); //get inputs of switches from Port A (Port E in debugging mode)
 	LastF = (0x1F & GPIO_PORTF_DATA_R);		//get inputs of switches  // switch state
 	GPIOArm_PortF(); //Timer is done, so arm the handler to listen
-	GPIOArm_PortA();
+	GPIOArm_PortE();
+	//GPIOArm_PortA();
 }
 
 void Switch_Init(void){

@@ -42,6 +42,6 @@ void Draw_Options(uint8_t menupos,char* menu_Choice[],uint8_t NUMOPTIONS,int YBE
 // Draw title screen.
 // Input: Title origin coordinates, title border size, and title string.
 // Output: None
-void Draw_Title(int XTITLE, int YTITLE, int TITLEBORDER,char* title);
+void Draw_Title(int X, int Y, int T,char* title);
 
 #endif

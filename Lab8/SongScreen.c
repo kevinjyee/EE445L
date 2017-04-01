@@ -24,8 +24,8 @@ void draw_SongScreen(){
 	ST7735_DrawString(XTITLE,YITEMS,"Song Name",ST7735_BLACK);
 	
 }
-uint32_t SongScreen(uint32_t input,struct SongChoice currentSong){
-	draw_Title(XTITLE,YTITLE,TITLEBORDER,"Now Playing");
+uint32_t SongScreen(uint32_t input,char* SongName, const uint16_t* Graphic){
+	Draw_Title(XTITLE,YTITLE,TITLEBORDER,"Now Playing");
 	//Determine Input and Action on Song Screen
 	switch(input)
 	{

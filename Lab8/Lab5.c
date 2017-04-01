@@ -44,6 +44,7 @@
 #include "DAC.h"
 #include "TitleScreen.h"
 #include "Accelerometer.h"
+#include "SongMenu.h"
 
 
 #define SYSTICK_RELOAD	0x4C4B40 // Reload value for an interrupt frequency of 10Hz.
@@ -83,14 +84,14 @@ void DelayWait2ms(uint32_t n){uint32_t volatile time;
 */
 void init_All(){
 	PLL_Init(Bus50MHz);                   // 50 MHz
-	//Switch_Init();
+	Accel_Init();
+	Switch_Init();
 	ST7735_InitR(INITR_REDTAB);
   ST7735_DrawBitmap(0,159,TitleScreen2,128,160);
 	DelayWait2ms(2);
 	ST7735_FillScreen(ST7735_WHITE);
-//	DAC_Init(0);
-//	Accel_Init();
-//	ADC_Init321();
+	SongMenu_Init();
+
   
 }
 

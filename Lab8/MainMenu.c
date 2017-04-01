@@ -28,7 +28,7 @@ char* menu_Choice[3] = {
 };
 
 uint32_t MainScreen(uint32_t input){
-	draw_Title(XTITLE,YTITLE,TITLEBORDER,"Menu");
+	Draw_Title(XTITLE,YTITLE,TITLEBORDER,"Menu");
 	//Determine Input and Action on MainScreen
 	switch(input)
 	{
@@ -56,6 +56,6 @@ uint32_t MainScreen(uint32_t input){
 		case SELECT:
 			return MenuPos;
 	}
-	draw_Options(MenuPos,menu_Choice,NUMMENUITEMS,YITEMS);
+	Draw_Options(MenuPos,menu_Choice,NUMMENUITEMS,YITEMS);
 	return 0x00;
 }

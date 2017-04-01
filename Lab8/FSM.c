@@ -72,14 +72,14 @@ uint32_t Next_State(uint32_t current_state, uint32_t keyInputs)
 }
 
 
-void draw_Title(int XTITLE, int YTITLE, int TITLEBORDER,char* title){
+void Draw_Title(int XTITLE, int YTITLE, int TITLEBORDER,char* title){
 	ST7735_SetCursor(0,0);
 	ST7735_DrawString(XTITLE,YTITLE,title,ST7735_BLACK);
 	ST7735_DrawFastHLine(0,TITLEBORDER,128,ST7735_BLACK);
 	
 }
 
-void draw_Options(uint8_t menupos,char* menu_Choice[],uint8_t NUMOPTIONS,int YBEGINLIST)
+void Draw_Options(uint8_t menupos,char* menu_Choice[],uint8_t NUMOPTIONS,int YBEGINLIST)
 {
 	for(int i =0; i < NUMOPTIONS; i++){
 		if(menupos == i){

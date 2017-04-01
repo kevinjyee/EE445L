@@ -23,16 +23,24 @@ char Track1[18] = {' ', ' ', 'S', 'o', 'n', 'g', ' ', '1', ' ', ' ', ' ', ' ', '
 char Track2[18] = {' ', ' ', 'S', 'o', 'n', 'g', ' ', '2', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ','>',0};
 char Track3[18] = {' ', ' ', 'S', 'o', 'n', 'g', ' ', '3', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '>',0};
 
-	#define NUMSONGS 3
+	typedef struct
+{
+	int ID;
+	char* SongName;
+	const uint16_t* Graphic;
+} SongChoice;
+
+
+#define NUMSONGS 3
 	
 SongChoice SongsList[NUMSONGS];
-
+const uint16_t* dummy = {0x00};
 char* menu_Choices[3] = {		
 	Track1, Track2, Track3
 };
 
 uint32_t SongMenu(uint32_t input){
-	draw_Title(XTITLE,YTITLE,TITLEBORDER,"Song Select");
+	Draw_Title(XTITLE,YTITLE,TITLEBORDER,"Song Select");
 	//Determine Input and Action on MainScreen
 	switch(input)
 	{
@@ -57,10 +65,10 @@ uint32_t SongMenu(uint32_t input){
 		case MENU:
 			return 0x00; //return back to the main screen
 		case SELECT:
-			return SongScreen(input,SongsList[SongMenuPos]);
+			return SongScreen(input, SongsList[SongMenuPos].SongName,dummy);
 			break;
 	}
-	draw_Options(SongMenuPos,menu_Choices,NUMSONGS,YITEMS);
+	Draw_Options(SongMenuPos,menu_Choices,NUMSONGS,YITEMS);
 	return 0;
 }
 
@@ -69,7 +77,7 @@ void SongMenu_Init(){
 	{
 		SongsList[i].ID=i;
 		SongsList[i].SongName=menu_Choices[i];
-		//Assigne Graphics Later
+	//initialize as wel
 		
 		
 	}
