@@ -1,11 +1,5 @@
 
 
-typedef struct
-{
-	int ID;
-	char* SongName;
-	uint16_t* Graphic;
-} SongChoice;
 
 
 

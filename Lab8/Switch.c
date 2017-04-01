@@ -91,6 +91,7 @@ void PortA_Init(void){
   GPIO_PORTA_DIR_R &=~ 0x01;      // make PF4-0 in make the input pins
   GPIO_PORTA_AFSEL_R &= ~0x01;   // disable alt funct on PA0
 	GPIO_PORTA_AMSEL_R &= ~0x01;      // no analog on PA0
+	GPIO_PORTA_PDR_R |= 0x01;				//Pull Down Resistor
   GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R&0xFFF0FFFF)+0x00000000; //Port 0 Regulat function. Everything else LCD
   GPIO_PORTA_DEN_R |= 0x01;      // enable digital I/O on PA0
 	GPIO_PORTA_IS_R &= ~0x01;         // 8) edge-sensitive
@@ -160,5 +161,6 @@ void Timer2A_Handler(void){
 void Switch_Init(void){
 	Fifo_Init(); 
 	PortF_Init();
+	//PortAInit(); only initilialize Port A on actual board
 	Timer2Arm();
 }
