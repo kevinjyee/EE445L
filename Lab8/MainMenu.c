@@ -14,8 +14,8 @@
 
 
 
-static uint8_t NUMMENUITEMS = 3;
-static uint8_t  MenuPos = 0;
+static int8_t NUMMENUITEMS = 3;
+static int8_t  MenuPos = 0;
 ////  screen is actually 129 by 161 pixels, x 0 to 128, y goes from 0 to 160
 
 
@@ -26,6 +26,21 @@ char Settings[18] = {' ', ' ', 'S', 'e', 't', 't', 'i', 'n', 'g', 's', ' ', ' ',
 char* menu_Choice[3] = {		
 	Songs, Health, Settings
 };
+
+uint32_t processMenuItem(int menupos)
+{
+	switch(menupos)
+	{
+		case 0:
+			return rtSongMenu;
+		case 1:
+			return rtPedometer;
+		case 2:
+			break;
+			//Settings
+	}
+	return 0x00;
+}
 
 uint32_t MainScreen(uint32_t input){
 	Draw_Title(XTITLE,YTITLE,TITLEBORDER,"Menu");
@@ -54,8 +69,8 @@ uint32_t MainScreen(uint32_t input){
 			//Do Nothing
 			break;
 		case SELECT:
-			return MenuPos;
+			return processMenuItem(MenuPos);
 	}
 	Draw_Options(MenuPos,menu_Choice,NUMMENUITEMS,YITEMS);
-	return 0x00;
+	return rtMainScreen;
 }

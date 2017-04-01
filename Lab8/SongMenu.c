@@ -15,7 +15,7 @@
 
 	
 
-volatile uint8_t  SongMenuPos = 0;
+volatile int8_t  SongMenuPos = 0;
 ////  screen is actually 129 by 161 pixels, x 0 to 128, y goes from 0 to 160
 
 
@@ -69,7 +69,7 @@ uint32_t SongMenu(uint32_t input){
 			break;
 	}
 	Draw_Options(SongMenuPos,menu_Choices,NUMSONGS,YITEMS);
-	return 0;
+	return rtSongMenu;
 }
 
 void SongMenu_Init(){

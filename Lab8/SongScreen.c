@@ -20,8 +20,8 @@
 #define YITEMS 2
 
 
-void draw_SongScreen(){
-	ST7735_DrawString(XTITLE,YITEMS,"Song Name",ST7735_BLACK);
+void draw_SongScreen(char* songname){
+	ST7735_DrawString(XTITLE,YITEMS,songname,ST7735_BLACK);
 	
 }
 uint32_t SongScreen(uint32_t input,char* SongName, const uint16_t* Graphic){
@@ -29,21 +29,22 @@ uint32_t SongScreen(uint32_t input,char* SongName, const uint16_t* Graphic){
 	//Determine Input and Action on Song Screen
 	switch(input)
 	{
-		case 0x01: 
+		case DOWN:
 			//down switch Volume Up
 			break;
-		case 0x02:
+		case UP:
 			//Up Switch
 			//Volume Down
 			
 			break;
-		case 0x04:
+		case SELECT:
 			//Select Switch
 			//return processMenuItem(curentMenuPos);
-		case 0x08: 
+		case MENU:
 			//Menu Button
 			return 0x00;
 	}
+	draw_SongScreen(SongName);
 	
-return 0;
+return rtSongScreen;
 }

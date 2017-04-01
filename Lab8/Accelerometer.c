@@ -42,7 +42,7 @@ void Accel_Init(void) {
   GPIO_PORTE_DEN_R |= 0x08;      // enable digital I/O on PE3
 	GPIO_PORTE_PCTL_R = GPIO_PORTE_PCTL_R&0xFFFFF000;
   GPIO_PORTE_AMSEL_R |= 0x07;     // enable analog functionality on PE 2,1,0  
-	
+	GPIO_PORTE_AMSEL_R &= ~0x08;			//diable for PE3
 	//Block of Code for Debugging Main Switch
 	GPIO_PORTE_PDR_R |= 0x08; //Switch 3 
 	GPIO_PORTE_IS_R &= ~0x08;

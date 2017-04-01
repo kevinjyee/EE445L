@@ -87,7 +87,7 @@ void Draw_Options(uint8_t menupos,char* menu_Choice[],uint8_t NUMOPTIONS,int YBE
 			ST7735_DrawStringBG(0,YBEGINLIST+i,menu_Choice[i],ST7735_WHITE,ST7735_BLUE);
 		}
 		else{
-			ST7735_DrawString(0,YBEGINLIST+i,menu_Choice[i],ST7735_BLACK);
+			ST7735_DrawStringBG(0,YBEGINLIST+i,menu_Choice[i],ST7735_BLACK,ST7735_WHITE);
 		}
 	}
 }

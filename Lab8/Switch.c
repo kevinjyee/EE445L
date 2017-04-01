@@ -8,8 +8,8 @@ long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
 
- volatile unsigned long LastA;      // previous input for port A
-volatile unsigned long LastF;      // previous input for port F 
+ volatile unsigned long LastA = 0;      // previous input for port A
+volatile unsigned long LastF = 0;      // previous input for port F 
 
 uint16_t timeout_Count = 0;
 uint32_t Switch_In(void);
@@ -51,22 +51,13 @@ static void GPIOArm_PortF(void){
   GPIO_PORTF_ICR_R = 0x1F;      // (e) clear flags
   GPIO_PORTF_IM_R |= 0x1F;      // (f) arm interrupt on PA3-0 *** No IME bit as mentioned in Book ***
   NVIC_PRI1_R = (NVIC_PRI1_R&0xFFFFFFF1F)|0x000000A0; //priority 5
-	NVIC_EN0_R = SYSCTL_RCGC2_GPIOF;
+	  NVIC_EN0_R = 0x40000000;
+	EnableInterrupts();
 }
 
 
-// **************GPIOArm*********************
-// Initialize switch key inputs, called once 
-// Input: none 
-// Output: none
 
-static void GPIOArm_PortA(void){
-  GPIO_PORTA_ICR_R = 0x01;      // (e) clear flags
-  GPIO_PORTA_IM_R |= 0x01;      // (f) arm interrupt on PA3-0 *** No IME bit as mentioned in Book ***
-  NVIC_PRI1_R = (NVIC_PRI1_R&0xFFFFFFF1F)|0x000000A0; //priority 5
-	NVIC_EN0_R = SYSCTL_RCGC2_GPIOA;
-}
-
+/*
 
 // **************GPIOArm*********************
 // Initialize switch key inputs, called once 
@@ -80,24 +71,29 @@ static void GPIOArm_PortE(void){
 	NVIC_EN0_R = SYSCTL_RCGC2_GPIOE;
 }
 
+*/
 // **************Switch_Init*********************
 // Initialize switch key inputs, called once 
 // Input: none 
 // Output: none
 void PortF_Init(void){
 	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOF; // activate port F
-	while((SYSCTL_PRGPIO_R&0x10)==0){};
+	while((SYSCTL_PRGPIO_R&0x20)==0){};
   GPIO_PORTF_DIR_R &=~ 0x1F;      // make PF4-0 in make the input pins
   GPIO_PORTF_AFSEL_R &= ~0x1F;   // disable alt funct on PF4-0
 	GPIO_PORTF_AMSEL_R &= ~0x1F;      // no analog on PF4-0
-	GPIO_PORTF_PDR_R |= 0x1F;
+	GPIO_PORTF_DEN_R |= 0x1F;      // enable digital I/O on PF4-0
   GPIO_PORTF_PCTL_R &= ~0xFFFFFFFF; // regular function
-  GPIO_PORTF_DEN_R |= 0x1F;      // enable digital I/O on PF4-0
+
+	GPIO_PORTF_PDR_R |= 0x1F;
+		
+		
 	GPIO_PORTF_IS_R &= ~0x1F;         // 8) edge-sensitive
   GPIO_PORTF_IBE_R |= 0x1F;        // 9) both edges
 	
 }
 
+/*
 void PortA_Init(void){
 	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOA; // activate port A
 	while((SYSCTL_PRGPIO_R&0x01)==0){};
@@ -110,7 +106,7 @@ void PortA_Init(void){
 	GPIO_PORTA_IS_R &= ~0x01;         // 8) edge-sensitive
   GPIO_PORTA_IBE_R |= 0x01;        // 9) both edges
 }
-
+*/
 
 // **************Switch_In*********************
 // Input from Switch key inputs 
@@ -129,6 +125,7 @@ uint32_t Switch_In(void){
 // Input: none 
 // Output: 1 to 3 depending on keys
 // 0x01 is just Key0, 0x02 is just Key1, 0x04 is just Key2
+/*
 void GPIOPortA_Handler(void)
 {
 	GPIO_PORTA_IM_R &= ~0x01; // disarm interrupt on PA so we dont get double clicks
@@ -142,8 +139,9 @@ void GPIOPortA_Handler(void)
 	Timer2Arm(); //arm the timer again to be ready for countdown
 
 }
+*/
 
-
+/*
 // **************PortE_Handler********************
 // Input from Switch key inputs 
 // Input: none 
@@ -151,9 +149,7 @@ void GPIOPortA_Handler(void)
 // 0x01 is just Key0, 0x02 is just Key1, 0x04 is just Key2
 void GPIOPortE_Handler(void)
 {
-	GPIO_PORTE_IM_R &= ~0x01; // disarm interrupt on PA so we dont get double clicks
-
-	timeout_Count = 0;
+	GPIO_PORTE_IM_R &= ~0x08; // disarm interrupt on PE so we dont get double clicks
 
 	if(LastA){    // 0x0F means it was previously released
  
@@ -162,19 +158,16 @@ void GPIOPortE_Handler(void)
 	Timer2Arm(); //arm the timer again to be ready for countdown
 
 }
-
+*/
 
 // **************PortF_Handler********************
 // Input from Switch key inputs 
 // Input: none 
 // Output: 1 to 3 depending on keys
 // 0x01 is just Key0, 0x02 is just Key1, 0x04 is just Key2
-void GPIOPortF_Handler(void)
-{
-	GPIO_PORTF_IM_R &= ~0x0F; // disarm interrupt on PA so we dont get double clicks
-	long i_bit = StartCritical();
-	timeout_Count = 0;
-	EndCritical(i_bit);
+void GPIOPortF_Handler(void){
+	GPIO_PORTF_IM_R &= ~0x1F; // disarm interrupt on PA so we dont get double clicks
+
 	if(LastF){    // 0x0F means it was previously released
  
 		Fifo_Put(LastF); //Register the falling edge only.
@@ -186,10 +179,10 @@ void GPIOPortF_Handler(void)
 
 void Timer2A_Handler(void){
   TIMER2_IMR_R = 0x00000000;    // disarm timeout interrupt
-	LastA = (0x08 & GPIO_PORTE_DATA_R); //get inputs of switches from Port A (Port E in debugging mode)
+	//LastA = (0x08 & GPIO_PORTE_DATA_R); //get inputs of switches from Port A (Port E in debugging mode)
 	LastF = (0x1F & GPIO_PORTF_DATA_R);		//get inputs of switches  // switch state
 	GPIOArm_PortF(); //Timer is done, so arm the handler to listen
-	GPIOArm_PortE();
+//	GPIOArm_PortE();
 	//GPIOArm_PortA();
 }
 

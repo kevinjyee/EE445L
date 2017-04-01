@@ -84,24 +84,54 @@ void DelayWait2ms(uint32_t n){uint32_t volatile time;
 */
 void init_All(){
 	PLL_Init(Bus50MHz);                   // 50 MHz
-	Accel_Init();
 	Switch_Init();
+	Accel_Init();
 	ST7735_InitR(INITR_REDTAB);
   ST7735_DrawBitmap(0,159,TitleScreen2,128,160);
-	DelayWait2ms(2);
+	DelayWait2ms(10);
 	ST7735_FillScreen(ST7735_WHITE);
+
 	SongMenu_Init();
 
   
 }
 
+void Buttons_Test(){
+	if(Switch_In() == 0x01)
+	{
+		
+		ST7735_OutString("Down");
+	}
+	if(Switch_In() == 0x02)
+	{
+		
+		ST7735_OutString("Up");
+	}
+	if(Switch_In() == 0x04)
+	{
+		
+		ST7735_OutString("Left");
+	}
+	if(Switch_In() == 0x08)
+	{
+		
+		ST7735_OutString("Right");
+	}
+	if(Switch_In() == 0x10)
+	{
+		
+		ST7735_OutString("Select");
+	}
+	
+}
 
 int main(void){
   init_All();
-	//EnableInterrupts();
+	EnableInterrupts();
 	uint32_t current_state = 0x00;	
   uint32_t input,lastinput = 0x00;
 	while(1){
+		Buttons_Test();
 		if(Fifo_Get(&input))
 		{
 			current_state = Next_State(current_state, input);			

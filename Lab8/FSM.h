@@ -23,8 +23,15 @@
 #define UP 0x02
 #define LEFT 0x04
 #define RIGHT 0x08
-#define MENU 0x10
-#define SELECT 0x20
+#define SELECT 0x10
+#define MENU 0x20
+
+#define rtMainScreen 0x00
+#define rtSongMenu 0x01
+#define rtPedometer 0x02
+#define rtSongScreen 0x03
+
+
 
 // **************Next_State*********************
 // Given the current state and the current input, find the next state of the FSM.
