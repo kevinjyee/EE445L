@@ -4,6 +4,8 @@
 
 void (*T4PeriodicTask)(void);   // user function
 
+extern volatile int Timer4Time;
+
 // ***************** Timer4_Init ****************
 // Inputs:  period in units (1/clockfreq)
 // Outputs: none
@@ -29,4 +31,5 @@ void Timer4_Init(void(*task)(void),unsigned long period){
 void Timer4A_Handler(void){
   TIMER4_ICR_R = TIMER_ICR_TATOCINT;                  // acknowledge TIMER4A timeout
 	(*T4PeriodicTask)();   
+	Timer4Time+=1;
 }

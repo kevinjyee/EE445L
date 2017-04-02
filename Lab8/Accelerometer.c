@@ -17,7 +17,8 @@
 #include "DAC.h"
 #include "Timer4.h"
 #include "Accelerometer.h"
-
+#include "Timer5.h"
+#include "fixed.h"
 
 /*
 PE0: X-Accel
@@ -36,14 +37,41 @@ uint32_t xavg;
 uint32_t yavg;
 uint32_t zavg;
 
-uint32_t zthreshold1 = 1720;
+uint32_t zthreshold1 = 1825;
 uint32_t zthreshold2 = 1900;
 
 uint32_t accel_buffer[3] = {0,0,0};
 
-int steps,flag =0;
+extern volatile int prevsteps;
+extern volatile int steps;
+volatile int stepsper2sec =0;
+volatile int Timer5Time =0;
+volatile int Timer4Time =0;
+volatile int last_time =0;
+volatile int total_time =0;
+volatile int BPMsteps =0;
+volatile int BPM =0;
+int flag =0;
 
 void Calibrate(){};
+	
+void BPM_Calc()
+{
+	int current_time = Timer4Time;
+	int time_delta =0;
+	if(last_time != 0)
+	{
+		time_delta = (current_time - last_time)/10;
+		total_time += time_delta;
+	}
+	if(total_time > 0)
+	{
+		BPM = ((BPMsteps-1)*1000)/(total_time * 60);
+		BPM /= 1000;
+	}
+	last_time = current_time;
+	
+}
 
 void Calculate_Steps(){
 	//Calculate Steps Algorithm pulled from Instructables.com
@@ -52,15 +80,16 @@ void Calculate_Steps(){
 	uint32_t xaccl[100] = {0};
 	uint32_t yaccl[100] = {0};
 	uint32_t zaccl[100] = {0};
-	
+	uint32_t zavebuff[100] = {0};
 	
 	for(int i =0; i < 100; i++)
 	{
 		  ADC_In321(accel_buffer);
+		
+		//Code doens't actually do anything - expected to work better with footsteps
 			xval[i] = accel_buffer[XACCEL];
 			yval[i] = accel_buffer[YACCEL];
 			zval[i] = accel_buffer[ZACCEL];
-		
 			totalvector[i] = sqrt(((xaccl[i]-xavg)* (xaccl[i]-xavg))+ ((yaccl[i] - yavg)*(yaccl[i] - yavg)) + ((zval[i] - zavg)*(zval[i] - zavg)));
 			if(i >= 1)
 			{
@@ -70,16 +99,19 @@ void Calculate_Steps(){
 				if ((zavg < zthreshold1 &&flag ==0))
 				{
 				steps=steps+1;
+				BPMsteps = BPMsteps +1;
+				BPM_Calc();
 				flag=1;
  
 				}
 				if ((zavg > zthreshold2 && flag ==1)){flag=0;}
 			}
-			
 				
-	}
+		}
 	
 }
+
+
 
 void GPIO_Init(){
 		volatile uint32_t delay;
@@ -127,6 +159,7 @@ void Accel_Init(void) {
 	GPIO_Init();
 	ADCin_Init();
 	Timer4_Init(&Calculate_Steps,TIMER4_RELOAD);
+	Timer5_Init(320000000);//Every 2 seconds
 	//Reserve PA0 to debug init code in the final PCB
 	
 }
@@ -159,6 +192,8 @@ void Accel_Test() {
     ST7735_DrawStringBG(0,5,"Accelrom Y:     ",ST7735_BLACK,ST7735_WHITE); ST7735_SetCursor(12,5);  ST7735_OutUDec(accel[1]); ST7735_OutChar('\n');
     ST7735_DrawStringBG(0,6,"Accelrom Z:     ",ST7735_BLACK,ST7735_WHITE); ST7735_SetCursor(12,6);  ST7735_OutUDec(accel[2]); ST7735_OutChar('\n');
 		ST7735_DrawStringBG(0,7,"NumberStep:     ",ST7735_BLACK,ST7735_WHITE); ST7735_SetCursor(12,7);  ST7735_OutUDec(steps); ST7735_OutChar('\n');
+		ST7735_DrawStringBG(0,8,"Stepsper4s:     ",ST7735_BLACK,ST7735_WHITE); ST7735_SetCursor(12,8);  ST7735_uBinOut8(stepsper2sec); ST7735_OutChar('\n');
+		ST7735_DrawStringBG(0,9,"Beatpermin:     ",ST7735_BLACK,ST7735_WHITE); ST7735_SetCursor(12,9);  ST7735_OutUDec(BPM); ST7735_OutChar('\n');
   
 }
 
