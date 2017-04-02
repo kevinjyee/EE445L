@@ -508,7 +508,7 @@ void Music_Init(void){
 	
 		NoteNode* Lost_Woods_Soprano_Notes = create_LinkedList_From_Array((Note**) LWSoprano, 44);
 		NoteNode* Lost_Woods_Alto_Notes = create_LinkedList_From_Array((Note**) LWAlto, 64);
-		Song Lost_Woods = {1, "Lost Woods", BPM60, Lost_Woods_Soprano_Notes, Lost_Woods_Soprano_Notes, Lost_Woods_Alto_Notes, Lost_Woods_Alto_Notes,NULL,NULL,NULL,NULL, 0};
+		Song Lost_Woods = {1, "Lost Woods", BPM60, Lost_Woods_Soprano_Notes, Lost_Woods_Soprano_Notes, Lost_Woods_Alto_Notes, Lost_Woods_Alto_Notes,Lost_Woods_Alto_Notes,Lost_Woods_Alto_Notes,NULL,NULL, 0};
 	
 		NoteNode* NBT_Soprano_Notes = create_LinkedList_From_Array((Note**) NBTSoprano, 68);
 		NoteNode* NBT_Alto_Notes = create_LinkedList_From_Array((Note**) NBTAlto, 103);
