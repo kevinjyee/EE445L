@@ -43,16 +43,15 @@
 #include "Music.h"
 #include "DAC.h"
 #include "TitleScreen.h"
+#include "Accelerometer.h"
+#include "SongMenu.h"
 
-#define PA3							(*((volatile uint32_t *)0x40004020)) // Menu switch
-#define PA2             (*((volatile uint32_t *)0x40004010)) // Select switch
-#define PA1             (*((volatile uint32_t *)0x40004008)) // Up switch
-#define PA0							(*((volatile uint32_t *)0x40004004)) // Down switch
+
 #define SYSTICK_RELOAD	0x4C4B40 // Reload value for an interrupt frequency of 10Hz.
 
-#define TOGGLE_PLAY 1
-#define CHANGE_SONG 2
-#define REWIND 			3
+#define TOGGLE_PLAY 0x40
+#define CHANGE_SONG 0x80
+#define REWIND 			0xF0
 
 #define PLAY 				1
 #define PAUSE 			0
@@ -85,20 +84,53 @@ void DelayWait2ms(uint32_t n){uint32_t volatile time;
 */
 void init_All(){
 	PLL_Init(Bus50MHz);                   // 50 MHz
-	//Switch_Init();
+	Switch_Init();
+	Accel_Init();
 	ST7735_InitR(INITR_REDTAB);
-	ST7735_DrawBitmap(0,159,TitleScreen2,128,160);
+  ST7735_DrawBitmap(0,159,TitleScreen2,128,160);
 	DelayWait2ms(10);
 	ST7735_FillScreen(ST7735_WHITE);
-//	DAC_Init(0);
+	SongMenu_Init();
+	DAC_Init(0);
+  
+}
+
+void Buttons_Test(){
+	if(Switch_In() == 0x01)
+	{
+		
+		ST7735_OutString("Down");
+	}
+	if(Switch_In() == 0x02)
+	{
+		
+		ST7735_OutString("Up");
+	}
+	if(Switch_In() == 0x04)
+	{
+		
+		ST7735_OutString("Left");
+	}
+	if(Switch_In() == 0x08)
+	{
+		
+		ST7735_OutString("Right");
+	}
+	if(Switch_In() == 0x10)
+	{
+		
+		ST7735_OutString("Select");
+	}
+	
 }
 
 int main(void){
   init_All();
-	//EnableInterrupts();
+	EnableInterrupts();
 	uint32_t current_state = 0x00;	
   uint32_t input,lastinput = 0x00;
 	while(1){
+		Buttons_Test();
 		if(Fifo_Get(&input))
 		{
 			current_state = Next_State(current_state, input);			
@@ -108,9 +140,22 @@ int main(void){
 		{
 			current_state = Next_State(current_state,0x00);	
 		}
+		
+		}
   }
+
+
+
+
+/*
+int main(void){
+	init_All();
+	
+	while(1)
+	{
+	Accel_Test();
+	}
+	
 }
-
-
-
+*/
 

@@ -7,7 +7,7 @@
 #include "PWMSine.h"
 #include "Switch.h"
 #include "FIFOQueue.h"
-#include "Lab5.h"
+#include "Lab8.h"
 #include "LCD.h"
 #include "Globals.h"
 #include "FSM.h"
@@ -23,7 +23,9 @@ uint32_t PedometerScreen(uint32_t input){
 	//Determine Input and Action on MainScreen
 	switch(input)
 	{
-	
+		case LEFT:
+			ST7735_FillScreen(ST7735_WHITE);
+			return 0x00;
 	}
 	Draw_Steps();
 	return rtPedometer;

@@ -16,12 +16,13 @@
 #include "PWMSine.h"
 #include "Switch.h"
 #include "FIFOQueue.h"
-#include "Lab5.h"
+#include "Lab8.h"
 #include "LCD.h"
 #include "MainMenu.h"
 #include "SongMenu.h"
 #include "SongScreen.h"
 #include "PedometerScreen.h"
+#include "Music.h"
 
 #define PA3						(*((volatile uint32_t *)0x40004020)) // Menu switch
 #define PA2           (*((volatile uint32_t *)0x40004010)) // Select switch
@@ -49,10 +50,9 @@ void WaitForInterrupt(void);  // low power mode
 
 int selectSwitchToggled = FALSE;
 extern char Play_Toggled;
-volatile int currentSongPos = 0;
 volatile int currentMode = 0;
-volatile int lastSongPos = -1;
-volatile int8_t SongMenuPos =0;
+volatile int currentSongPos = 0;
+
 
 SongChoice SongsList[NUMSONGS];
 
@@ -67,7 +67,7 @@ uint32_t Next_State(uint32_t current_state, uint32_t keyInputs)
 		case 0x02:
 			return PedometerScreen(keyInputs);
 		case 0x03:
-			return SongScreen(keyInputs, SongsList[SongMenuPos].SongName,dummy);
+			return SongScreen(keyInputs, SongsList[currentSongPos].SongName,dummy);
 		case 0x04:
 			//return SetAlarms(keyInputs);
 		default:

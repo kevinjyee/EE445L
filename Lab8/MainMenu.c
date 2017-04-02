@@ -7,11 +7,11 @@
 #include "PWMSine.h"
 #include "Switch.h"
 #include "FIFOQueue.h"
-#include "Lab5.h"
+#include "Lab8.h"
 #include "LCD.h"
 #include "Globals.h"
 #include "FSM.h"
-
+#include "Music.h"
 
 
 static int8_t NUMMENUITEMS = 3;

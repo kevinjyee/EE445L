@@ -58,19 +58,16 @@ static void GPIOArm_PortF(void){
 
 
 /*
-
 // **************GPIOArm*********************
 // Initialize switch key inputs, called once 
 // Input: none 
 // Output: none
-
 static void GPIOArm_PortE(void){
   GPIO_PORTE_ICR_R = 0x08;      // (e) clear flags
   GPIO_PORTE_IM_R |= 0x08;      // (f) arm interrupt on PA3-0 *** No IME bit as mentioned in Book ***
   NVIC_PRI1_R = (NVIC_PRI1_R&0xFFFFFFF1F)|0x000000A0; //priority 5
 	NVIC_EN0_R = SYSCTL_RCGC2_GPIOE;
 }
-
 */
 // **************Switch_Init*********************
 // Initialize switch key inputs, called once 
@@ -137,7 +134,6 @@ void GPIOPortA_Handler(void)
 		Fifo_Put(BUTTONAPRESS); //Register the falling edge only.
   }
 	Timer2Arm(); //arm the timer again to be ready for countdown
-
 }
 */
 
@@ -150,13 +146,11 @@ void GPIOPortA_Handler(void)
 void GPIOPortE_Handler(void)
 {
 	GPIO_PORTE_IM_R &= ~0x08; // disarm interrupt on PE so we dont get double clicks
-
 	if(LastA){    // 0x0F means it was previously released
  
 		Fifo_Put(BUTTONAPRESS); //Register the falling edge only.
   }
 	Timer2Arm(); //arm the timer again to be ready for countdown
-
 }
 */
 

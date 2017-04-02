@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdbool.h>
+#include <math.h>
 #include "../inc/tm4c123gh6pm.h"
 #include "PLL.h"
 #include "ST7735.h"
@@ -14,7 +15,8 @@
 #include "Timer3.h"
 #include "Music.h"
 #include "DAC.h"
-
+#include "Timer4.h"
+#include "Accelerometer.h"
 
 
 /*
@@ -23,11 +25,64 @@ PE1: Y-Accel
 PE2: Z-Accel
 */
 
+#define TIMER4_RELOAD	0x4C4B40 // Reload value for an interrupt frequency of 10Hz. 5000000
 
+uint32_t threshhold= 3524;
+uint32_t xval[100] = {0};
+uint32_t yval[100] = {0};
+uint32_t zval[100] = {0};
 
-void Accel_Init(void) {
+uint32_t xavg;
+uint32_t yavg;
+uint32_t zavg;
+
+uint32_t zthreshold1 = 1720;
+uint32_t zthreshold2 = 1900;
+
+uint32_t accel_buffer[3] = {0,0,0};
+
+int steps,flag =0;
+
+void Calibrate(){};
+
+void Calculate_Steps(){
+	//Calculate Steps Algorithm pulled from Instructables.com
+	uint32_t totalvector[100] = {0};
+	uint32_t totalaverage[100] = {0};
+	uint32_t xaccl[100] = {0};
+	uint32_t yaccl[100] = {0};
+	uint32_t zaccl[100] = {0};
 	
-	volatile uint32_t delay;
+	
+	for(int i =0; i < 100; i++)
+	{
+		  ADC_In321(accel_buffer);
+			xval[i] = accel_buffer[XACCEL];
+			yval[i] = accel_buffer[YACCEL];
+			zval[i] = accel_buffer[ZACCEL];
+		
+			totalvector[i] = sqrt(((xaccl[i]-xavg)* (xaccl[i]-xavg))+ ((yaccl[i] - yavg)*(yaccl[i] - yavg)) + ((zval[i] - zavg)*(zval[i] - zavg)));
+			if(i >= 1)
+			{
+				zavg = (zval[i] + zval[i-1])/2;
+				
+				totalaverage[i] = (totalvector[i] + totalvector[i-1]) / 2 ;
+				if ((zavg < zthreshold1 &&flag ==0))
+				{
+				steps=steps+1;
+				flag=1;
+ 
+				}
+				if ((zavg > zthreshold2 && flag ==1)){flag=0;}
+			}
+			
+				
+	}
+	
+}
+
+void GPIO_Init(){
+		volatile uint32_t delay;
 	SYSCTL_RCGCADC_R |= 0x00000001; // 1) activate ADC0
   SYSCTL_RCGCGPIO_R |= SYSCTL_RCGCGPIO_R4; // 1) activate clock for Port E
   delay = SYSCTL_RCGCGPIO_R;      // 2) allow time for clock to stabilize
@@ -47,7 +102,12 @@ void Accel_Init(void) {
 	GPIO_PORTE_PDR_R |= 0x08; //Switch 3 
 	GPIO_PORTE_IS_R &= ~0x08;
 	GPIO_PORTE_IBE_R |= 0x08;
+}
+
+
+void ADCin_Init(){
 	
+		
 	ADC0_PC_R &= ~0xF;              // 8) clear max sample rate field
   ADC0_PC_R |= 0x1;               //    configure for 125K samples/sec
   ADC0_SSPRI_R = 0x3210;          // 9) Sequencer 3 is lowest priority
@@ -60,7 +120,15 @@ void Accel_Init(void) {
   ADC0_IM_R &= ~0x0004;           // 14) disable SS2 interrupts
   ADC0_ACTSS_R |= 0x0004;         // 15) enable sample sequencer 2 allows for 4 inputs
 	
+}
+
+
+void Accel_Init(void) {
+	GPIO_Init();
+	ADCin_Init();
+	Timer4_Init(&Calculate_Steps,TIMER4_RELOAD);
 	//Reserve PA0 to debug init code in the final PCB
+	
 }
 
 //------------ADC_In321------------
@@ -90,7 +158,7 @@ void Accel_Test() {
     ST7735_DrawStringBG(0,4,"Accelrom X:     ",ST7735_BLACK,ST7735_WHITE); ST7735_SetCursor(12,4);  ST7735_OutUDec(accel[0]); ST7735_OutChar('\n');
     ST7735_DrawStringBG(0,5,"Accelrom Y:     ",ST7735_BLACK,ST7735_WHITE); ST7735_SetCursor(12,5);  ST7735_OutUDec(accel[1]); ST7735_OutChar('\n');
     ST7735_DrawStringBG(0,6,"Accelrom Z:     ",ST7735_BLACK,ST7735_WHITE); ST7735_SetCursor(12,6);  ST7735_OutUDec(accel[2]); ST7735_OutChar('\n');
-   
+		ST7735_DrawStringBG(0,7,"NumberStep:     ",ST7735_BLACK,ST7735_WHITE); ST7735_SetCursor(12,7);  ST7735_OutUDec(steps); ST7735_OutChar('\n');
   
 }
 

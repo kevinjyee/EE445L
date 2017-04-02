@@ -7,16 +7,15 @@
 #include "PWMSine.h"
 #include "Switch.h"
 #include "FIFOQueue.h"
-#include "Lab5.h"
+#include "Lab8.h"
 #include "LCD.h"
 #include "Globals.h"
 #include "FSM.h"
 #include "SongMenu.h"
 #include "SongScreen.h"
-
+#include "Music.h"
 	
 
-extern volatile int8_t  SongMenuPos;
 ////  screen is actually 129 by 161 pixels, x 0 to 128, y goes from 0 to 160
 
 
@@ -39,30 +38,31 @@ uint32_t SongMenu(uint32_t input){
 	{
 		case DOWN: 
 			//down switch
-			SongMenuPos = (SongMenuPos + 1)%NUMSONGS;
+			currentSongPos = (currentSongPos + 1)%NUMSONGS;
 			break;
 		case UP:
 			//Up Switch
-			SongMenuPos = (SongMenuPos - 1);
-			if(SongMenuPos < 0 )
+			currentSongPos = (currentSongPos - 1);
+			if(currentSongPos < 0 )
 			{
-				SongMenuPos = NUMSONGS-1; 
+				currentSongPos = NUMSONGS-1; 
 			}
 			break;
-		case LEFT:
+		//case LEFT:
 			//Do Nothing
-			break;
+			//break;
 		case RIGHT:
 			//Do Nothing
 			break;
-		case MENU:
+		case LEFT:
+			ST7735_FillScreen(ST7735_WHITE);
 			return 0x00; //return back to the main screen
 		case SELECT:
 			ST7735_FillScreen(ST7735_WHITE);
-			return SongScreen(input, SongsList[SongMenuPos].SongName,dummy);
+			return SongScreen(input, SongsList[currentSongPos].SongName,dummy);
 			break;
 	}
-	Draw_Options(SongMenuPos,menu_Choices,NUMSONGS,YITEMS);
+	Draw_Options(currentSongPos,menu_Choices,NUMSONGS,YITEMS);
 	return rtSongMenu;
 }
 

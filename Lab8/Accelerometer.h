@@ -1,3 +1,7 @@
+#define XACCEL 0
+#define YACCEL 1
+#define ZACCEL 2
+
 void ADC_Init321(void);
 
 void Accel_Init(void);
