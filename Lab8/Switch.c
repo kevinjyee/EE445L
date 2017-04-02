@@ -8,13 +8,15 @@ long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
 
-
-extern volatile unsigned long LastE;      // previous input for port A 
+ volatile unsigned long LastA = 0;      // previous input for port A
+volatile unsigned long LastF = 0;      // previous input for port F 
 
 uint16_t timeout_Count = 0;
 uint32_t Switch_In(void);
 
+
 #define RELOAD_10HZ	0x4C4B40 // Reload value for an interrupt frequency of 10Hz.
+#define BUTTONAPRESS 0x20
 
 // ***************** Timer2_ARM ****************
 // Activate Timer2 interrupts to run user task periodically
@@ -38,93 +40,73 @@ void Timer2Arm(void){
   TIMER2_CTL_R = 0x00000001;    // 10) enable timer2A
 }
 
-/*
-// ***************** Timer1A_Init ****************
-// Activate Timer1 interrupts to send user back to main menu after 10
-// 		seconds of inactivity.
-// Inputs:  None
-// Outputs: none
-void Timer1A_Init(void){
-  SYSCTL_RCGCTIMER_R |= 0x02;   // 0) activate TIMER1
-  //PeriodicTask = task;          // user function
-  TIMER1_CTL_R = 0x00000000;    // 1) disable TIMER1A during setup
-  TIMER1_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
-  TIMER1_TAMR_R = 0x00000002;   // 3) configure for periodic mode, default down-count settings
-  TIMER1_TAILR_R = RELOAD_10HZ;    // 4) reload value
-  TIMER1_TAPR_R = 0;            // 5) bus clock resolution
-  TIMER1_ICR_R = 0x00000001;    // 6) clear TIMER1A timeout flag
-  TIMER1_IMR_R = 0x00000001;    // 7) arm timeout interrupt
-  NVIC_PRI5_R = (NVIC_PRI5_R&0xFFFF00FF)|0x00010000; // 8) priority 6
-// interrupts enabled in the main program after all devices initialized
-// vector number 37, interrupt number 21
-  NVIC_EN0_R = 1<<21;           // 9) enable IRQ 21 in NVIC
-  TIMER1_CTL_R = 0x00000001;    // 10) enable TIMER1A
-}
 
-
-// ***************** Timer1A_Handler ****************
-// Count number of 10Hz interrupts. After counting 10s worth of time
-//	between button presses, put menu switch input into FIFO to send
-//	user back to main screen.
-// Inputs:  None
-// Outputs: none
-void Timer1A_Handler(void){
-  TIMER1_ICR_R = TIMER_ICR_TATOCINT;// acknowledge timer0A timeout
-	long i_bit = StartCritical();
-	timeout_Count = (timeout_Count + 1) % 100;
-	if(timeout_Count == 99){ //
-		Fifo_Put(0x08); //Register the falling edge only.
-	}
-	EndCritical(i_bit);
-}
-
-// ***************** Disable_Timer1 ****************
-// Disables Timer1 to stop screen timeout during an alarm.
-// Inputs:  none
-// Outputs: none
-void Disable_Timer1(void){
-	TIMER1_CTL_R = 0x00000000;
-}
-
-// ***************** Enable_Timer1 ****************
-// Enables Timer1 to start screen timeout counter.
-// Inputs:  none
-// Outputs: none
-void Enable_Timer1(void){
-	TIMER1_CTL_R = 0x00000001;   
-}
-*/
 
 // **************GPIOArm*********************
 // Initialize switch key inputs, called once 
 // Input: none 
 // Output: none
 
-static void GPIOArm(void){
-  GPIO_PORTE_ICR_R = 0x0F;      // (e) clear flags
-  GPIO_PORTE_IM_R |= 0x0F;      // (f) arm interrupt on PA3-0 *** No IME bit as mentioned in Book ***
+static void GPIOArm_PortF(void){
+  GPIO_PORTF_ICR_R = 0x1F;      // (e) clear flags
+  GPIO_PORTF_IM_R |= 0x1F;      // (f) arm interrupt on PA3-0 *** No IME bit as mentioned in Book ***
+  NVIC_PRI1_R = (NVIC_PRI1_R&0xFFFFFFF1F)|0x000000A0; //priority 5
+	  NVIC_EN0_R = 0x40000000;
+	EnableInterrupts();
+}
+
+
+
+/*
+
+// **************GPIOArm*********************
+// Initialize switch key inputs, called once 
+// Input: none 
+// Output: none
+
+static void GPIOArm_PortE(void){
+  GPIO_PORTE_ICR_R = 0x08;      // (e) clear flags
+  GPIO_PORTE_IM_R |= 0x08;      // (f) arm interrupt on PA3-0 *** No IME bit as mentioned in Book ***
   NVIC_PRI1_R = (NVIC_PRI1_R&0xFFFFFFF1F)|0x000000A0; //priority 5
 	NVIC_EN0_R = SYSCTL_RCGC2_GPIOE;
 }
 
-
-
+*/
 // **************Switch_Init*********************
 // Initialize switch key inputs, called once 
 // Input: none 
 // Output: none
-void Switch_Input_Init(void){
-	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOE; // activate port E
-	while((SYSCTL_PRGPIO_R&0x10)==0){};
-  GPIO_PORTE_DIR_R &=~ 0x0F;      // make PE3-0 in make the input pins
-  GPIO_PORTE_AFSEL_R &= ~0x0F;   // disable alt funct on PA3-0
-	GPIO_PORTE_AMSEL_R &= ~0x0F;      // no analog on PA3-0
-  GPIO_PORTE_PCTL_R &= ~0xFFFFFFFF; // regular function
-  GPIO_PORTE_DEN_R |= 0x0F;      // enable digital I/O on PA3-0
-	GPIO_PORTE_IS_R &= ~0x0F;         // 8) edge-sensitive
-  GPIO_PORTE_IBE_R |= 0x0F;        // 9) both edges
+void PortF_Init(void){
+	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOF; // activate port F
+	while((SYSCTL_PRGPIO_R&0x20)==0){};
+  GPIO_PORTF_DIR_R &=~ 0x1F;      // make PF4-0 in make the input pins
+  GPIO_PORTF_AFSEL_R &= ~0x1F;   // disable alt funct on PF4-0
+	GPIO_PORTF_AMSEL_R &= ~0x1F;      // no analog on PF4-0
+	GPIO_PORTF_DEN_R |= 0x1F;      // enable digital I/O on PF4-0
+  GPIO_PORTF_PCTL_R &= ~0xFFFFFFFF; // regular function
+
+	GPIO_PORTF_PDR_R |= 0x1F;
+		
+		
+	GPIO_PORTF_IS_R &= ~0x1F;         // 8) edge-sensitive
+  GPIO_PORTF_IBE_R |= 0x1F;        // 9) both edges
 	
 }
+
+/*
+void PortA_Init(void){
+	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOA; // activate port A
+	while((SYSCTL_PRGPIO_R&0x01)==0){};
+  GPIO_PORTA_DIR_R &=~ 0x01;      // make PF4-0 in make the input pins
+  GPIO_PORTA_AFSEL_R &= ~0x01;   // disable alt funct on PA0
+	GPIO_PORTA_AMSEL_R &= ~0x01;      // no analog on PA0
+	GPIO_PORTA_PDR_R |= 0x01;				//Pull Down Resistor
+  GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R&0xFFF0FFFF)+0x00000000; //Port 0 Regulat function. Everything else LCD
+  GPIO_PORTA_DEN_R |= 0x01;      // enable digital I/O on PA0
+	GPIO_PORTA_IS_R &= ~0x01;         // 8) edge-sensitive
+  GPIO_PORTA_IBE_R |= 0x01;        // 9) both edges
+}
+*/
 
 // **************Switch_In*********************
 // Input from Switch key inputs 
@@ -133,20 +115,62 @@ void Switch_Input_Init(void){
 // 0x01 is just Key0, 0x02 is just Key1, 0x04 is just Key2
 uint32_t Switch_In(void){
 	uint32_t inputs;
-	inputs = (0x0F & GPIO_PORTE_DATA_R);		//get inputs of switches
+	inputs = (0x1F & GPIO_PORTF_DATA_R);		//get inputs of switches
   return inputs;
 }
 
 
-void GPIOPortE_Handler(void)
+// **************PortA_Handler********************
+// Input from Switch key inputs 
+// Input: none 
+// Output: 1 to 3 depending on keys
+// 0x01 is just Key0, 0x02 is just Key1, 0x04 is just Key2
+/*
+void GPIOPortA_Handler(void)
 {
-	GPIO_PORTE_IM_R &= ~0x0F; // disarm interrupt on PA so we dont get double clicks
+	GPIO_PORTA_IM_R &= ~0x01; // disarm interrupt on PA so we dont get double clicks
 	long i_bit = StartCritical();
 	timeout_Count = 0;
 	EndCritical(i_bit);
-	if(LastE){    // 0x0F means it was previously released
+	if(LastA){    // 0x0F means it was previously released
  
-		Fifo_Put(LastE); //Register the falling edge only.
+		Fifo_Put(BUTTONAPRESS); //Register the falling edge only.
+  }
+	Timer2Arm(); //arm the timer again to be ready for countdown
+
+}
+*/
+
+/*
+// **************PortE_Handler********************
+// Input from Switch key inputs 
+// Input: none 
+// Output: 1 to 3 depending on keys
+// 0x01 is just Key0, 0x02 is just Key1, 0x04 is just Key2
+void GPIOPortE_Handler(void)
+{
+	GPIO_PORTE_IM_R &= ~0x08; // disarm interrupt on PE so we dont get double clicks
+
+	if(LastA){    // 0x0F means it was previously released
+ 
+		Fifo_Put(BUTTONAPRESS); //Register the falling edge only.
+  }
+	Timer2Arm(); //arm the timer again to be ready for countdown
+
+}
+*/
+
+// **************PortF_Handler********************
+// Input from Switch key inputs 
+// Input: none 
+// Output: 1 to 3 depending on keys
+// 0x01 is just Key0, 0x02 is just Key1, 0x04 is just Key2
+void GPIOPortF_Handler(void){
+	GPIO_PORTF_IM_R &= ~0x1F; // disarm interrupt on PA so we dont get double clicks
+
+	if(LastF){    // 0x0F means it was previously released
+ 
+		Fifo_Put(LastF); //Register the falling edge only.
   }
 	Timer2Arm(); //arm the timer again to be ready for countdown
 
@@ -155,13 +179,16 @@ void GPIOPortE_Handler(void)
 
 void Timer2A_Handler(void){
   TIMER2_IMR_R = 0x00000000;    // disarm timeout interrupt
-	LastE = Switch_In();  // switch state
-	GPIOArm(); //Timer is done, so arm the handler to listen
+	//LastA = (0x08 & GPIO_PORTE_DATA_R); //get inputs of switches from Port A (Port E in debugging mode)
+	LastF = (0x1F & GPIO_PORTF_DATA_R);		//get inputs of switches  // switch state
+	GPIOArm_PortF(); //Timer is done, so arm the handler to listen
+//	GPIOArm_PortE();
+	//GPIOArm_PortA();
 }
 
 void Switch_Init(void){
 	Fifo_Init(); 
-	Switch_Input_Init();
+	PortF_Init();
+	//PortAInit(); only initilialize Port A on actual board
 	Timer2Arm();
-	//Timer1A_Init();
 }

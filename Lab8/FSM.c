@@ -20,6 +20,8 @@
 #include "LCD.h"
 #include "MainMenu.h"
 #include "SongMenu.h"
+#include "SongScreen.h"
+#include "PedometerScreen.h"
 
 #define PA3						(*((volatile uint32_t *)0x40004020)) // Menu switch
 #define PA2           (*((volatile uint32_t *)0x40004010)) // Select switch
@@ -50,9 +52,11 @@ extern char Play_Toggled;
 volatile int currentSongPos = 0;
 volatile int currentMode = 0;
 volatile int lastSongPos = -1;
+volatile int8_t SongMenuPos =0;
 
+SongChoice SongsList[NUMSONGS];
 
-
+static const uint16_t* dummy = {0x00};
 uint32_t Next_State(uint32_t current_state, uint32_t keyInputs)
 {
 	switch(current_state){
@@ -61,9 +65,9 @@ uint32_t Next_State(uint32_t current_state, uint32_t keyInputs)
 		case 0x01:
 			return SongMenu(keyInputs);
 		case 0x02:
-			//return SetMultipleAlarm(keyInputs);
+			return PedometerScreen(keyInputs);
 		case 0x03:
-			//return ChooseSong(keyInputs);
+			return SongScreen(keyInputs, SongsList[SongMenuPos].SongName,dummy);
 		case 0x04:
 			//return SetAlarms(keyInputs);
 		default:
@@ -71,14 +75,15 @@ uint32_t Next_State(uint32_t current_state, uint32_t keyInputs)
 	}
 }
 
-void draw_Title(int XTITLE, int YTITLE, int TITLEBORDER,char* title){
+
+void Draw_Title(int XTITLE, int YTITLE, int TITLEBORDER,char* title){
 	ST7735_SetCursor(0,0);
 	ST7735_DrawString(XTITLE,YTITLE,title,ST7735_BLACK);
 	ST7735_DrawFastHLine(0,TITLEBORDER,128,ST7735_BLACK);
 	
 }
 
-void draw_Options(uint8_t menupos,char* menu_Choice[],uint8_t NUMOPTIONS,int YBEGINLIST)
+void Draw_Options(uint8_t menupos,char* menu_Choice[],uint8_t NUMOPTIONS,int YBEGINLIST)
 {
 	for(int i =0; i < NUMOPTIONS; i++){
 		if(menupos == i){
@@ -86,8 +91,11 @@ void draw_Options(uint8_t menupos,char* menu_Choice[],uint8_t NUMOPTIONS,int YBE
 			ST7735_DrawStringBG(0,YBEGINLIST+i,menu_Choice[i],ST7735_WHITE,ST7735_BLUE);
 		}
 		else{
-			ST7735_DrawString(0,YBEGINLIST+i,menu_Choice[i],ST7735_BLACK);
+			ST7735_DrawStringBG(0,YBEGINLIST+i,menu_Choice[i],ST7735_BLACK,ST7735_WHITE);
 		}
 	}
 }
+
+
+
 
