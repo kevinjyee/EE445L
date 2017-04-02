@@ -92,6 +92,7 @@ void init_All(){
 	ST7735_FillScreen(ST7735_WHITE);
 	SongMenu_Init();
 	DAC_Init(0);
+	Heap_Init();
   
 }
 

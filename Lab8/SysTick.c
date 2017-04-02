@@ -73,3 +73,17 @@ void SysTick_Handler(void){
 void SysTick_Halt(void){
 	NVIC_ST_CTRL_R = 0;
 }
+
+// ***************** Change_Tempo ****************
+// Changes the tempo of whatever song is playing.
+// Inputs:  uint8_t tempo, based on current walking speed of user.
+// Outputs: none
+void Change_Tempo(uint8_t tempo){
+	NVIC_ST_CTRL_R = 0;                   // disable SysTick during setup
+	max_Tempo_Count = (60 * 100 * 2) / tempo;  // 60 BPM * 100 (to avoid flooring) * 2 (because SysTick runs at 64th note beat) / tempo.
+  NVIC_ST_RELOAD_R = SYSTICK_RELOAD - 1;  // maximum reload value
+  NVIC_ST_CURRENT_R = 0;                // any write to current clears it
+                                        // enable SysTick with core clock
+	NVIC_SYS_PRI3_R = (NVIC_SYS_PRI3_R&0x00FFFFFF) | 0x40000000; // Priority 2
+  NVIC_ST_CTRL_R = 0x00000007; 					// ENABLE WITH CORE CLOCK AND INTERRUPTS
+}

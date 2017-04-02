@@ -40,6 +40,8 @@ void Disable_Timer3(void);
 // Activate Timer3 interrupts periodically
 // Inputs:  period in units (1/clockfreq)
 // Outputs: none
-void Timer3_Init(unsigned long period);
+void Timer3_Init(void(*task)(void), uint32_t period);
+
+void Timer3A_Halt(void);
 
 #endif // __TIMER2INTS_H__

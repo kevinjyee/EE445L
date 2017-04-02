@@ -40,6 +40,6 @@ void SysTick_Halt(void);
 
 // ***************** Change_Tempo ****************
 // Changes the tempo of whatever song is playing.
-// Inputs:  uint32_t speed, based on current walking speed of user.
+// Inputs:  uint8_t tempo, based on current walking speed of user.
 // Outputs: none
-void Change_Tempo(uint32_t speed);
+void Change_Tempo(uint8_t tempo);
