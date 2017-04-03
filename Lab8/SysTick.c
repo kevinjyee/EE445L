@@ -30,6 +30,9 @@
 #include <stdint.h>
 #include "../inc/tm4c123gh6pm.h"
 #include "SysTick.h"
+#include "Timer1.h"
+#include "Timer3.h"
+#include "Timer0A.h"
 #define NVIC_ST_CTRL_COUNT      0x00010000  // Count flag
 #define NVIC_ST_CTRL_CLK_SRC    0x00000004  // Clock Source
 #define NVIC_ST_CTRL_INTEN      0x00000002  // Interrupt enable
@@ -42,6 +45,8 @@ void (*STPeriodicTask)(void);   // user function
 
 uint32_t tempo_Counter;		// A counter used to time each beat.
 uint32_t max_Tempo_Count;	// When tempo_Counter reaches this number, reset and move to next beat.
+uint32_t beats_Passed = 0; 		// A counter for the number of elapsed beats.
+uint32_t following_Steps; // A boolean indicating if tracking step movement to play notes.
 
 
 
@@ -56,6 +61,8 @@ void SysTick_Init(void(*task)(void), uint32_t tempo){
   NVIC_ST_CURRENT_R = 0;                // any write to current clears it
                                         // enable SysTick with core clock
 	NVIC_SYS_PRI3_R = (NVIC_SYS_PRI3_R&0x00FFFFFF) | 0x40000000; // Priority 2
+	beats_Passed = 0;
+	following_Steps = 0;
   NVIC_ST_CTRL_R = 0x00000007; 					// ENABLE WITH CORE CLOCK AND INTERRUPTS
 }
 
@@ -64,6 +71,18 @@ void SysTick_Handler(void){
 	if(!tempo_Counter){
 
 		(*STPeriodicTask)();                // execute user task
+		/*
+		if(beats_Passed){
+		beats_Passed++;
+	}
+	if(beats_Passed == 32){
+		SysTick_Halt();
+		Timer0A_Halt();
+	  Timer1A_Halt();
+	  Timer3A_Halt();
+		beats_Passed = 0;
+	}
+	*/
 		// Something here
 	}
 	tempo_Counter = (tempo_Counter + 1) % max_Tempo_Count;
@@ -86,4 +105,17 @@ void Change_Tempo(uint8_t tempo){
                                         // enable SysTick with core clock
 	NVIC_SYS_PRI3_R = (NVIC_SYS_PRI3_R&0x00FFFFFF) | 0x40000000; // Priority 2
   NVIC_ST_CTRL_R = 0x00000007; 					// ENABLE WITH CORE CLOCK AND INTERRUPTS
+}
+
+// ***************** Orchestrate_Steps ****************
+// Plays a quarter note worth of music after a step.
+// Inputs:  None
+// Outputs: None
+void Orchestrate_Steps(){
+	SysTick_Halt();
+	Timer0A_Halt();
+	Timer1A_Halt();
+	Timer3A_Halt();
+	beats_Passed = 1;
+	NVIC_ST_CTRL_R = 0x00000007; 					// ENABLE WITH CORE CLOCK AND INTERRUPTS
 }

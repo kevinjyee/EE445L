@@ -43,3 +43,9 @@ void SysTick_Halt(void);
 // Inputs:  uint8_t tempo, based on current walking speed of user.
 // Outputs: none
 void Change_Tempo(uint8_t tempo);
+
+// ***************** Orchestrate_Steps ****************
+// Plays a quarter note worth of music after a step.
+// Inputs:  None
+// Outputs: None
+void Orchestrate_Steps();

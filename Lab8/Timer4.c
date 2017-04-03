@@ -20,8 +20,8 @@ void Timer4_Init(void(*task)(void),unsigned long period){
   TIMER4_TAPR_R = 0;                                  // 5) bus clock resolution
   TIMER4_ICR_R = 0x00000001;                          // 6) clear TIMER4A timeout flag
   TIMER4_IMR_R = 0x00000001;                          // 7) arm timeout interrupt
-	NVIC_PRI17_R &= 0xFF00FFFF;                         // 8) priority 1 
-	NVIC_PRI17_R |= 0x00200000;                         // 8) priority 1 
+	NVIC_PRI17_R &= 0xFF00FFFF;                         // 8) priority 7 
+		NVIC_PRI17_R |= 0x00FF0000;                         // 8) priority 7 TODO: Make it so we're only touching the three priority bits :/
 	NVIC_EN2_R = 1<<(70-(32*2));       									// enable IRQ 70 in NVIC
 	TIMER4_CTL_R = 0x00000001;         									// enable TIMER4A
 }

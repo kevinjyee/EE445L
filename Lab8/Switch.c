@@ -1,6 +1,11 @@
 #include <stdint.h>
 #include "inc//tm4c123gh6pm.h"
 #include "FIFOqueue.h"
+#include "inc/hw_types.h"
+
+#include "inc/hw_gpio.h"
+
+#include "inc/hw_memmap.h"
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -55,6 +60,14 @@ static void GPIOArm_PortF(void){
 	EnableInterrupts();
 }
 
+// **************unlock_PF0*********************
+// Unlock PF0 for use as GPIO.
+// Input: none 
+// Output: none
+void unlock_PF0(){
+	HWREG(GPIO_PORTF_BASE+GPIO_O_LOCK) = GPIO_LOCK_KEY;
+	HWREG(GPIO_PORTF_BASE+GPIO_O_CR) |= 0x01;
+}
 
 
 /*
@@ -76,6 +89,8 @@ static void GPIOArm_PortE(void){
 void PortF_Init(void){
 	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOF; // activate port F
 	while((SYSCTL_PRGPIO_R&0x20)==0){};
+	
+	unlock_PF0();
   GPIO_PORTF_DIR_R &=~ 0x1F;      // make PF4-0 in make the input pins
   GPIO_PORTF_AFSEL_R &= ~0x1F;   // disable alt funct on PF4-0
 	GPIO_PORTF_AMSEL_R &= ~0x1F;      // no analog on PF4-0

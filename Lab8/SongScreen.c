@@ -45,7 +45,7 @@ void draw_SongScreen(char* songname){
 
 void draw_Graphics(){
 	ST7735_DrawString(XTITLE+1,YITEMS+1,"-",ST7735_BLACK);
-	for(int i =1; i <+ MAXVOLUME; i ++)
+	for(int i =1; i <= MAXVOLUME; i ++)
 	{
 		if(i<songVolume)
 		{
