@@ -20,6 +20,12 @@
 // Outputs: none
 void DAC_Init(uint16_t data);
 
+// ***************** DAC_Out ****************
+// Outputs a voltage value to the DAC
+// Inputs:  none
+// Outputs: none
+void DAC_Out(uint16_t code);
+
 // ***************** DAC_Out_0 ****************
 // Outputs a voltage value to DAC0.
 // Inputs:  none

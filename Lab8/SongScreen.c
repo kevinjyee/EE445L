@@ -53,10 +53,10 @@ void draw_Graphics(){
 		}
 		else
 		{
-			ST7735_DrawString(XTITLE+1+i,YITEMS+1," ",ST7735_BLACK);
+			ST7735_DrawStringBG(XTITLE+1+i,YITEMS+1,"_",ST7735_WHITE, ST7735_WHITE);
 		}
 	}
-	ST7735_DrawString(XTITLE+1+MAXVOLUME,YITEMS+1,"+",ST7735_BLACK);
+	ST7735_DrawString(XTITLE+1+MAXVOLUME + 1,YITEMS+1,"+",ST7735_BLACK);
 	
 	ST7735_DrawBitmap(10,135,rewindbutton24bit,24,24);
 	if(!musicplaying)

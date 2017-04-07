@@ -23,6 +23,7 @@
 #define WAVETABLE_LENGTH					64
 #define	NUM_TEMPOS								10
 #define EnvOnOFF									0
+#define MAX_VOLUME								7
 
 #define zero 0
 #define three 3
@@ -55,6 +56,9 @@ volatile uint8_t scalar2 =1; // Scalar used for alto enveloping.
 extern volatile int currentSongPos; // Global for position in current song list.
 extern volatile int lastSongPos; // GLobal for last song playing.
 extern volatile int currentMode; // Global for waveform type.
+
+extern volatile int Playing;
+extern volatile int songVolume;
 
   
 
@@ -376,13 +380,13 @@ void Output_Wave(){
 	else{
 		switch(currentMode){ // Without enveloping.
 			case SINE:
-					DAC_Out(Sine_Wave_10_bit[I] + Sine_Wave_10_bit[J] + Sine_Wave_10_bit[M]);
+					DAC_Out((Sine_Wave_10_bit[I] + Sine_Wave_10_bit[J] + Sine_Wave_10_bit[M]) * songVolume / MAX_VOLUME);
 				break;
 			case FLUTE:
-					DAC_Out(Flute_Wave_10_bit[I] + Flute_Wave_10_bit[J] + Flute_Wave_10_bit[M]);
+					DAC_Out((Flute_Wave_10_bit[I] + Flute_Wave_10_bit[J] + Flute_Wave_10_bit[M] * songVolume / MAX_VOLUME));
 				break;
 			case BRASS:
-					DAC_Out(Trumpet_Wave_10_bit[I] + Trumpet_Wave_10_bit[J] + Trumpet_Wave_10_bit[M]);
+					DAC_Out((Trumpet_Wave_10_bit[I] + Trumpet_Wave_10_bit[J] + Trumpet_Wave_10_bit[M] * songVolume / MAX_VOLUME));
 				break;
 		}
 	}
@@ -533,6 +537,7 @@ void Play(void){
 		uninitialized = 0;
 	}
 	SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[lastSongPos].my_tempo]); // Initialize tempo counter.
+	Playing = 1;
 	
 }
 
@@ -541,6 +546,7 @@ void Play(void){
 // Inputs:  none
 // Outputs: none
 void Pause(void){
+	Playing = 0;
 	SysTick_Halt();
 	Timer0A_Halt();
 	Timer1A_Halt();
@@ -572,4 +578,5 @@ void Rewind(){
 		currentSong->alto_Notes = currentSong->first_Alto_Note;
 		currentSong->third_Notes = currentSong->first_Third_Note;
 		SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[lastSongPos].my_tempo]);
+		Playing = 1;
 }

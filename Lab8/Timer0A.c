@@ -72,6 +72,10 @@ void Timer0A_Init(void(*task)(void), uint32_t period){uint32_t sr;
   EndCritical(sr);
 }
 
+// ***************** Timer0A_Handler ****************
+// Executes a task periodically.
+// Inputs:  none
+// Outputs: none
 void Timer0A_Handler(void){
   TIMER0_ICR_R = TIMER_ICR_TATOCINT;// acknowledge timer0A timeout
   //uint32_t sr = StartCritical();
@@ -79,6 +83,10 @@ void Timer0A_Handler(void){
 	//EndCritical(sr);
 }
 
+// ***************** Timer0A_Halt ****************
+// Stops Timer0A counting down.
+// Inputs:  none
+// Outputs: none
 void Timer0A_Halt(void){
 	TIMER0_CTL_R = 0x00000000; // Disable TIMER0A.
 }

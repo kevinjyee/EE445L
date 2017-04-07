@@ -25,6 +25,8 @@
 #ifndef __TIMER0AINTS_H__ // do not include more than once
 #define __TIMER0AINTS_H__
 
+#include "stdint.h"
+
 // ***************** Timer0A_Init ****************
 // Activate Timer0A interrupts to run user task periodically
 // Inputs:  task is a pointer to a user function
@@ -32,6 +34,10 @@
 // Outputs: none
 void Timer0A_Init(void(*task)(void), uint32_t period);
 
+// ***************** Timer0A_Halt ****************
+// Stops Timer0A counting down.
+// Inputs:  none
+// Outputs: none
 void Timer0A_Halt(void);
 
 #endif // __TIMER0AINTS_H__

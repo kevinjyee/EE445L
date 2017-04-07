@@ -42,6 +42,7 @@
 #include "Timer3.h"
 #include "Music.h"
 #include "DAC.h"
+#include "Heap.h"
 #include "TitleScreen.h"
 #include "Accelerometer.h"
 #include "SongMenu.h"

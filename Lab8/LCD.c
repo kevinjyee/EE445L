@@ -9,8 +9,6 @@
 #include "../inc/tm4c123gh6pm.h"
 #include "ST7735.h"
 #include "LCD.h"
-#include "Display.h"
-#include "LCD.h"
 #include "FSM.h"
 #include "Fifoqueue.h"
 

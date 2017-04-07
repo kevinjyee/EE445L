@@ -39,7 +39,10 @@ void DAC_Init(uint16_t data){
 	SSI1_CR0_R &= ~(0x0000FFF0);					// SCR = 0, SPH = 0, Freescale
 	SSI1_CR0_R |= SSI_CR0_SPO;						// SPO = 1 (flip clock bit)
 	SSI1_CR0_R |= 0x0F;										// DSS = 16-bit data
-	SSI1_DR_R = data;											// Load data into TX FIFO
+	//SSI1_DR_R = data;											// Load data into TX FIFO
+
+	SSI1_DR_R = (data & 0x0FFF) + (3 << 14); // Update DAC value for output A and update output B from buffer.
+		
 	SSI1_CR1_R |= 0x00000002;							// Enable SSI
 }
 
@@ -49,7 +52,9 @@ void DAC_Init(uint16_t data){
 // Outputs: none
 void DAC_Out(uint16_t code){
 	while((SSI1_SR_R & 0x00000002) == 0){}; // SSI TX FIFO not full.
-	SSI1_DR_R = code;
+	//SSI1_DR_R = code;
+
+	SSI1_DR_R = (code & 0x0FFF) + (3 << 14); // Write value for output B to buffer.
 }
 
 

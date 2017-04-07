@@ -52,6 +52,7 @@ volatile int total_time =0;
 volatile int BPMsteps =0;
 volatile int BPM =0;
 int flag =0;
+volatile int Playing = 0;
 
 void Calibrate(){};
 	
@@ -61,13 +62,20 @@ void BPM_Calc()
 	int time_delta =0;
 	if(last_time != 0)
 	{
-		time_delta = (current_time - last_time)/10;
+		time_delta = (current_time - last_time);
 		total_time += time_delta;
 	}
 	if(total_time > 0)
 	{
-		BPM = ((BPMsteps-1)*1000)/(total_time * 60);
-		BPM /= 1000;
+		BPM = ((BPMsteps)*1000)/(total_time * 3);
+		if(Playing){
+			Change_Tempo(BPM);
+		}
+		//BPM /= 1000;
+	}
+	if(total_time > 100){
+		total_time = 0;
+		BPMsteps = 0;
 	}
 	last_time = current_time;
 	
