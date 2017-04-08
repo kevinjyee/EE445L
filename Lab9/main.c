@@ -93,13 +93,12 @@ int main(void){ int32_t data;
   ADC0_InitSWTriggerSeq3_Ch9();
 	ST7735_InitR(INITR_REDTAB);
 	ST7735_XYplotInit(4096,0);
-	//Timer1_Init(&sample_ADC, FS_RELOAD);
+	//ADC_Sample_Test();
+	measure_Temperature();
   while(1){
-  
-		//ADC_Sample_Test();
-		measure_Temperature();
-	
-}
+		ST7735_printData(ADC_MAILBOX);
+		ST7735_plotData(ADC_MAILBOX);
+	}
 
 	
 }
