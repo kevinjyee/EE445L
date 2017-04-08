@@ -31,6 +31,18 @@
 #include "uart.h"
 #include "PLL.h"
 #include "Timer1.h"
+#include "ST7735.h"
+#include "fixed.h"
+#include "LCD.h"
+/*
+uint16_t ADCdatasample[53]={0,23,80,138,197,257,317,379,441,504,568,
+     633,699,766,834,902,972,1043,1114,1187,1260,
+     1335,1411,1487,1565,1644,1724,1805,1888,1971,2056,
+     2142,2229,2317,2406,2497,2589,2682,2777,2873,2970,
+     3068,3168,3270,3372,3476,3582,3689,3797,3907,4019,4095,4096};
+		*/ 		 
+		 //uint16_t ADCdatasample[53]={2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000};
+uint16_t ADCdatasample[53]={4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,};
 
 uint16_t samples[SAMPLE_SIZE];
 volatile uint32_t numSamples = 0;
@@ -38,6 +50,7 @@ volatile uint32_t numSamples = 0;
 void sample_ADC(){
 	uint16_t data;
 	data = ADC0_InSeq3();
+  samples[numSamples] = ADC0_InSeq3();
 	numSamples++;
 	if(numSamples == 100){
 		Timer1A_Halt();
@@ -54,14 +67,28 @@ int main(void){ int32_t data;
   PLL_Init(Bus80MHz);   // 80 MHz
   UART_Init();              // initialize UART device
   ADC0_InitSWTriggerSeq3_Ch9();
+	ST7735_InitR(INITR_REDTAB);
+	ST7735_XYplotInit(4096,0);
 	clear_Samples();
 	Timer1_Init(&sample_ADC, FS_RELOAD);
-  while(numSamples < 100){
-  }
+  while(1){
+  
 	for(int i = 0; i < SAMPLE_SIZE; i++){
 		UART_OutString("\n\rADC data =");
     UART_OutUDec(samples[i]);
+		ST7735_printData(samples[i]);
+		ST7735_plotData(samples[i]);
 	}
+	
+		if(numSamples ==100)
+	{
+		numSamples = 0;
+		Timer1A_Enable();
+	}
+	
+}
+
+	
 }
 
 

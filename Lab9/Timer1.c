@@ -65,3 +65,9 @@ void Timer1A_Handler(void){
 void Timer1A_Halt(void){
 	TIMER1_CTL_R = 0x00000000; // Disable Timer1A.
 }
+
+void Timer1A_Enable(void)
+{
+	 NVIC_EN0_R = 1<<21;           // 9) enable IRQ 21 in NVIC
+	TIMER1_CTL_R = 0x00000001;    // 10) enable TIMER0A unless period = 0;
+}

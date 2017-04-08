@@ -34,4 +34,5 @@ void Timer1_Init(void(*task)(void), uint32_t period);
 
 void Timer1A_Halt(void);
 
+void Timer1A_Enable(void);
 #endif // __TIMER2INTS_H__
