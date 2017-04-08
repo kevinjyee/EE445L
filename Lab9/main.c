@@ -46,8 +46,9 @@ uint16_t ADCdatasample[53]={4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096,	4096
 
 uint16_t samples[SAMPLE_SIZE];
 volatile uint32_t numSamples = 0;
+volatile uint16_t ADC_MAILBOX = 0;
 
-void sample_ADC(){
+void ADC_Sample_Test(){
 	uint16_t data;
 	data = ADC0_InSeq3();
   samples[numSamples] = ADC0_InSeq3();
@@ -57,10 +58,33 @@ void sample_ADC(){
 	}
 }
 
+void sample_ADC(){
+	ADC_MAILBOX = ADC0_InSeq3();
+}
+
 void clear_Samples(){
 	for(int i = 0; i < SAMPLE_SIZE; i++){
 		samples[i] = 0;
 	}
+}
+
+void test_ADC(){
+	clear_Samples();
+	Timer1_Init(&sample_ADC, FS_RELOAD);
+	while(1){
+		if(numSamples == 100){
+			for(int i = 0; i < SAMPLE_SIZE; i++){
+				UART_OutString("\n\rADC data =");
+				UART_OutUDec(samples[i]);
+				ST7735_printData(samples[i]);
+				ST7735_plotData(samples[i]);
+			}
+		}
+	}
+}
+
+void measure_Temperature(){
+	Timer1_Init(&sample_ADC, FS_RELOAD);
 }
 
 int main(void){ int32_t data;
@@ -69,22 +93,11 @@ int main(void){ int32_t data;
   ADC0_InitSWTriggerSeq3_Ch9();
 	ST7735_InitR(INITR_REDTAB);
 	ST7735_XYplotInit(4096,0);
-	clear_Samples();
-	Timer1_Init(&sample_ADC, FS_RELOAD);
+	//Timer1_Init(&sample_ADC, FS_RELOAD);
   while(1){
   
-	for(int i = 0; i < SAMPLE_SIZE; i++){
-		UART_OutString("\n\rADC data =");
-    UART_OutUDec(samples[i]);
-		ST7735_printData(samples[i]);
-		ST7735_plotData(samples[i]);
-	}
-	
-		if(numSamples ==100)
-	{
-		numSamples = 0;
-		Timer1A_Enable();
-	}
+		//ADC_Sample_Test();
+		measure_Temperature();
 	
 }
 
