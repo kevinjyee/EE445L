@@ -21,5 +21,7 @@ void Tach_Init(void);
 // ***************** Tach_In ****************
 // Reads input from the tachometer.
 // Inputs:  none
-// Outputs: uint16_t data value read via ADC.
-uint16_t Tach_In(void);
+// Outputs: uint16_t data value read via Input Capture
+uint16_t Tach_Read(void);
+
+

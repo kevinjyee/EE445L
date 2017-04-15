@@ -29,6 +29,9 @@
 #include "tach.h"
 #include "switch.h"
 #include "motor.h"
+#include "ST7735.h"
+#include "FIFO.h"
+#include "UART.h"
 
 #define NVIC_EN0_INT19          0x00080000  // Interrupt 19 enable
 #define PF2                     (*((volatile uint32_t *)0x40025010))
@@ -45,6 +48,14 @@
 #define TIMER_TAILR_TAILRL_M    0x0000FFFF  // GPTM TimerA Interval Load
                                             // Register Low
 
+
+#define SW1	0x04 //PE2
+#define SW2 0x08 //PE3
+
+#define PWM_PERIOD 		40000
+#define CONVERSION_CONSTANT 2000
+
+
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 long StartCritical (void);    // previous I bit, disable interrupts
@@ -52,15 +63,72 @@ void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
 
 extern volatile uint32_t LastE;
+volatile uint32_t current_duty = PWM_PERIOD/2;
 
-//debug code
-int main(void){           
-  PLL_Init(Bus80MHz);              // 80 MHz clock
+
+volatile uint16_t offset = 5;
+
+uint16_t minRPS = 0;
+uint16_t maxRPS = 40;
+volatile uint16_t pwmcurrentRPS = 20;
+volatile uint16_t tachcurrentRPS = 20;
+
+void Init_All(void)
+{
+	PLL_Init(Bus80MHz);              // 80 MHz clock
+	ST7735_InitR(INITR_REDTAB);
 	Switch_Init();
 	Motor_Init();
-  Tach_Init();            // initialize 24-bit timer0A in capture mode
+ Tach_Init();            // initialize 32-bit timer0A in capture mode
+	UART_Init();
   EnableInterrupts();
+}
+
+
+/*
+Note to self: 50% duty cycle corressponds to 20 RPS 
+*/
+
+void modify_Speed(void)
+{
+	uint32_t input = 0x00;
+	if(Fifo_Get(&input))
+	{
+		if(input == SW1)
+		{
+			if(pwmcurrentRPS <= maxRPS)
+			{
+				pwmcurrentRPS += offset;
+			}
+		}
+		else if(input == SW2)
+		{
+			if(pwmcurrentRPS >= minRPS)
+			{
+				pwmcurrentRPS -= offset;
+			}
+		}
+	Set_Motor_Speed(pwmcurrentRPS * CONVERSION_CONSTANT); //Convert to DUTY CYCLE
+	}
+}
+
+
+void Debug()
+{
+	UART_OutString("PWM_Speed: ");
+	UART_OutUDec(pwmcurrentRPS);
+	UART_OutString("\n");
+	
+	UART_OutString("Tach_Speed: ");
+	UART_OutUDec(tachcurrentRPS);
+	UART_OutString("\n");
+}
+
+int main(void){           
+	Init_All();
   while(1){
-    WaitForInterrupt();
-  }
+		modify_Speed();
+		tachcurrentRPS = Tach_Read();
+		Debug();
+	}
 }

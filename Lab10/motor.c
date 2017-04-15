@@ -14,12 +14,16 @@
 #include "PWM.h"
 #include "motor.h"
 
+#define INITIAL_PERIOD 40000
+
+volatile uint16_t CURRENT_DUTY = INITIAL_PERIOD/2;
+
 //------------Motor_Init------------
 // Initialize motor by initializing PWM.
 // Input: none
 // Output: none
 void Motor_Init(){
-	PWM0A_Init(0, 0);         // initialize PWM0, 1000 Hz, 0% duty
+	PWM0A_Init(INITIAL_PERIOD, INITIAL_PERIOD/2);          // initialize PWM0, 1000 Hz, 50% duty
 }
 
 //------------Set_Motor_Speed--------
@@ -27,7 +31,9 @@ void Motor_Init(){
 // Input: Motor speed which corresponds to a PWM duty cycle.
 // Output: None.
 void Set_Motor_Speed(uint16_t speed){
-	PWM0A_Duty(speed);
+	//TODO: Move this to a timer handler to adjust speed
+	//PWM0A_Duty(speed);
+	CURRENT_DUTY = speed;
 }
 
 //------------Stop_Motor-------------
@@ -43,3 +49,5 @@ void Stop_Motor(){
 // Inputs:  none
 // Outputs: none
 void Motor_Test(void);
+
+

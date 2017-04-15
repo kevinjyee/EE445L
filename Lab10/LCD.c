@@ -15,63 +15,6 @@
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 
-static uint16_t NUM_CAL = 53;
-
-/*
-extern uint16_t const ADCdata[];
-extern uint16_t const Tdata[];
-
-static uint16_t getTemp(uint16_t data)
-{
-	
-	int low =0;
-	int high = NUM_CAL;
-	
-	
-	
-	while(low <= high)
-	{
-		int mid = (low+high)/2;
-		if(data >= ADCdata[mid] && data <= ADCdata[mid +1])
-		{
-	
-			
-			// point slope formula
-			uint16_t y2y1 = Tdata[mid] - Tdata[mid + 1];
-
-			uint16_t x2x1 = ADCdata[mid+1] - ADCdata[mid];
-		
-		
-			uint32_t slope = y2y1 * 10000/x2x1;
-			uint32_t temp = (((data - ADCdata[mid]) * slope) / 10000) + Tdata[mid+1];
-		
-			
-
-			return temp;
-			
-		}
-		else if(data > ADCdata[mid])
-			{
-				
-				low = mid+1;
-				
-			}
-			else if(data < ADCdata[mid])
-			{
-				high = mid-1;
-				
-			}
-			else if (data == ADCdata[mid])
-			{
-				return Tdata[mid];
-			}
-		
-	}
-	
-	return 0;
-}
-*/
-
 
 static int32_t MinX, MaxX, MinY, MaxY;
 
@@ -84,7 +27,7 @@ void ST7735_XYplotInit(int32_t minY, int32_t maxY){
 	
 	ST7735_FillScreen(0);
 	ST7735_SetCursor(0,0);
-	ST7735_OutString("Lab 9: Thermometer");
+	ST7735_OutString("Lab 10: Thermometer");
 	ST7735_SetCursor(0,1);
 	ST7735_OutString("Range 10 to 40 C");
 	ST7735_PlotClear(MinY, MaxY); 

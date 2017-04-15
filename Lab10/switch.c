@@ -61,6 +61,7 @@ void Switch_Input_Init(void){
   GPIO_PORTE_AFSEL_R &= ~0x0C;   // disable alt funct on PA3-0
 	GPIO_PORTE_AMSEL_R &= ~0x0C;      // no analog on PA3-0
   GPIO_PORTE_PCTL_R &= ~0x0000000C; // regular function
+	GPIO_PORTE_PDR_R |= 0x0C;
   GPIO_PORTE_DEN_R |= 0x0C;      // enable digital I/O on PA3-0
 	GPIO_PORTE_IS_R &= ~0x0C;         // 8) edge-sensitive
   GPIO_PORTE_IBE_R |= 0x0C;        // 9) both edges
@@ -108,5 +109,4 @@ void Switch_Init(void){
 	Fifo_Init(); 
 	Switch_Input_Init();
 	Timer2Arm();
-	//Timer1A_Init();
 }
