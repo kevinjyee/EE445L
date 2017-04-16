@@ -32,7 +32,7 @@ void Clear_Screen();
 													32-bit fixed-point data, resolution= 0.01
 	Outputs: none
 *******************************************/
-void Print_Data(uint32_t intended_speed, uint32_t measured_speed);
+//void Print_Data(uint32_t intended_speed, uint32_t measured_speed);
 
 /**************Plot_Data******************
 	Plots the latest motor speed and tachometer measurements.
@@ -42,7 +42,13 @@ void Print_Data(uint32_t intended_speed, uint32_t measured_speed);
 													32-bit fixed-point data, resolution= 0.01
 	Outputs: none
 *******************************************/
-void Plot_Data(uint32_t intended_speed, uint32_t measured_speed);
+//void Plot_Data(uint32_t intended_speed, uint32_t measured_speed);
 
 
 void ST7735_XYplotInit(int32_t minY, int32_t maxY);
+
+
+void ST7735_printData(uint16_t pwmdata,uint16_t tachdata);
+
+
+void ST7735_plotData(uint16_t pwmdata,uint16_t tachdata);

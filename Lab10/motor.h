@@ -35,3 +35,6 @@ void Stop_Motor(void);
 // Inputs:  none
 // Outputs: none
 void Motor_Test(void);
+
+
+int32_t Read_Duty(void);

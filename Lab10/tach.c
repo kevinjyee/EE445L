@@ -101,8 +101,14 @@ void Tach_Init(void){
 void Timer0B_Handler(void){
   PF2 = PF2^0x04;  // toggle PF2
   PF2 = PF2^0x04;  // toggle PF2
-  TIMER0_ICR_R = TIMER_ICR_CBECINT;// acknowledge timer0B capture match
+  TIMER0_ICR_R = TIMER_ICR_CBECINT;// acknowledge timer0B capture 
+	if(First > TIMER0_TBR_R)
+	{
   Period = (First - TIMER0_TBR_R)&0xFFFFFF;// 24 bits, 12.5ns resolution
+	}
+	else{
+		Period = (TIMER0_TBR_R-First)&0xFFFFFF;
+	}
   First = TIMER0_TBR_R;            // setup for next
   Done = 1;
   PF2 = PF2^0x04;  // toggle PF2
@@ -114,12 +120,13 @@ uint16_t Tach_Read(void)
 	//TODO: Check this, this might be wrong
 	if(Done == 1 && 0xFFFFFF > Period )
 	{
-		Done = 0;
+		
+		//Done = 0;
 		Last = Period;
 		return Period;
 		
 	}
 	else{
-		return Last;
+		return 0;
 	}
 }

@@ -53,21 +53,14 @@ void Timer3_Init(uint32_t period){
 // Input: none
 // Output: none
 void Motor_Init(){
-	PWM0A_Init(INITIAL_PERIOD, INITIAL_PERIOD/2);          // initialize PWM0, 1000 Hz, 50% duty
-	//Set_Motor_Speed(INITIAL_PERIOD/2);
+	PWM0A_Init(INITIAL_PERIOD, 20000);          // initialize PWM0, 1000 Hz, 50% duty
+	Set_Motor_Speed(20000);
 	Timer3_Init(8000000);
 }
 
-//------------Set_Motor_Speed--------
-// Set the speed of the DC motor. Can be used to start the motor.
-// Input: Motor speed which corresponds to a PWM duty cycle.
-// Output: None.
-void Set_Motor_Speed(uint16_t speed){
-	//TODO: Move this to a timer handler to adjust speed
 
-		PWMSPEED = speed;
-	//PWM0A_Duty(speed);
-}
+	
+
 
 //------------Stop_Motor-------------
 // Stop the DC motor.
@@ -84,7 +77,7 @@ void Stop_Motor(){
 void Motor_Test(void);
 
 
-void Debug2(pwmcurrentRPS,tachcurrentRPS,duty)
+void Debug2(pwmcurrentRPS,tachcurrentRPS,duty,measuredperiod)
 {
 	UART_OutString("PWM_Speed: ");
 	UART_OutUDec(pwmcurrentRPS);
@@ -97,12 +90,16 @@ void Debug2(pwmcurrentRPS,tachcurrentRPS,duty)
 	UART_OutString("Duty Cycle: ");
 	UART_OutUDec(duty);
 	UART_OutString("\n");
+	
+	UART_OutString("Period: ");
+	UART_OutUDec(measuredperiod);
+	UART_OutString("\n");
 }
 
 uint32_t MeasuredPeriod;
 uint32_t TACHSpeed;
 int32_t Error;
-int32_t Duty=1500;
+int32_t Duty=0;
 
 
 
@@ -112,10 +109,11 @@ Page 330 of Book
 void Timer3A_Handler(void){
   TIMER3_ICR_R = TIMER_ICR_TATOCINT;// acknowledge TIMER3A timeout
 	MeasuredPeriod = Tach_Read();
-	TACHSpeed = 800000000/MeasuredPeriod; //0.1 RPS;
-	Error = TACHSpeed - PWMSPEED;
+	TACHSpeed = 80000000/MeasuredPeriod; //0.1 RPS;
+
+	Error =  PWMSPEED/10 - TACHSpeed;
   Duty = Duty + (3 * Error)/64; //discrete integral
-	Debug2(PWMSPEED,TACHSpeed,Duty);
+	Debug2(PWMSPEED/10,TACHSpeed,Duty,MeasuredPeriod);
 	if(Duty < 40){
 		Duty = 40;
 	}
@@ -123,5 +121,23 @@ void Timer3A_Handler(void){
 		Duty = 39960;
 	}
 	//TODO: Modify Duty cycle from here
-	//PWM0A_Duty(Duty);
+	
+}
+
+int32_t Read_Duty(void)
+{
+	return Duty;
+}
+
+
+//------------Set_Motor_Speed--------
+// Set the speed of the DC motor. Can be used to start the motor.
+// Input: Motor speed which corresponds to a PWM duty cycle.
+// Output: None.
+void Set_Motor_Speed(uint16_t speed){
+	//TODO: Move this to a timer handler to adjust speed
+		
+		Duty = speed*100;
+		PWMSPEED = speed;
+	  PWM0A_Duty(Duty);
 }

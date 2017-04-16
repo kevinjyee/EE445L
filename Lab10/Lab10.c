@@ -33,6 +33,7 @@
 #include "FIFO.h"
 #include "UART.h"
 #include "LCD.h"
+#include "PWM.h"
 
 #define NVIC_EN0_INT19          0x00080000  // Interrupt 19 enable
 #define PF2                     (*((volatile uint32_t *)0x40025010))
@@ -111,6 +112,7 @@ uint16_t modify_Speed(void)
 			}
 		}
 	Set_Motor_Speed(pwmcurrentRPS); 
+	PWM0A_Duty((pwmcurrentRPS*100)-1);
 	}
 	return pwmcurrentRPS;
 }
@@ -131,11 +133,13 @@ int main(void){
 	Init_All();
   while(1){
 		pwmcurrentRPS = modify_Speed();
-		tachcurrentRPS = Tach_Read();
+		tachcurrentRPS = 8000000000/Tach_Read();
+		int32_t dutycycle = Read_Duty();
+		PWM0A_Duty(dutycycle);
 		//Debug(pwmcurrentRPS,tachcurrentRPS);
 		
 		//Black box of uncertainty
-		Plot_Data(pwmcurrentRPS,tachcurrentRPS);
-		Print_Data(pwmcurrentRPS, tachcurrentRPS);
+		ST7735_plotData(pwmcurrentRPS,tachcurrentRPS);
+		ST7735_printData(pwmcurrentRPS, tachcurrentRPS);
 	}
 }
