@@ -15,7 +15,7 @@
 #include "motor.h"
 #include "tach.h"
 #include "../inc/tm4c123gh6pm.h"
-
+#include "UART.h"
 
 
 void DisableInterrupts(void); // Disable interrupts
@@ -27,7 +27,7 @@ void WaitForInterrupt(void);  // low power mode
 
 #define INITIAL_PERIOD 40000
 
-volatile uint16_t PWMSPEED = INITIAL_PERIOD/2;
+volatile uint16_t PWMSPEED = 200;
 
 
 void Timer3_Init(uint32_t period){
@@ -54,7 +54,8 @@ void Timer3_Init(uint32_t period){
 // Output: none
 void Motor_Init(){
 	PWM0A_Init(INITIAL_PERIOD, INITIAL_PERIOD/2);          // initialize PWM0, 1000 Hz, 50% duty
-	Timer3_Init(800000);
+	//Set_Motor_Speed(INITIAL_PERIOD/2);
+	Timer3_Init(8000000);
 }
 
 //------------Set_Motor_Speed--------
@@ -83,22 +84,44 @@ void Stop_Motor(){
 void Motor_Test(void);
 
 
+void Debug2(pwmcurrentRPS,tachcurrentRPS,duty)
+{
+	UART_OutString("PWM_Speed: ");
+	UART_OutUDec(pwmcurrentRPS);
+	UART_OutString("\n");
+	
+	UART_OutString("Tach_Speed: ");
+	UART_OutUDec(tachcurrentRPS);
+	UART_OutString("\n");
+	
+	UART_OutString("Duty Cycle: ");
+	UART_OutUDec(duty);
+	UART_OutString("\n");
+}
+
 uint32_t MeasuredPeriod;
 uint32_t TACHSpeed;
 int32_t Error;
-int32_t Duty;
+int32_t Duty=1500;
 
+
+
+/*
+Page 330 of Book
+*/
 void Timer3A_Handler(void){
   TIMER3_ICR_R = TIMER_ICR_TATOCINT;// acknowledge TIMER3A timeout
 	MeasuredPeriod = Tach_Read();
-	TACHSpeed = MeasuredPeriod/100; //0.1 RPS;
+	TACHSpeed = 800000000/MeasuredPeriod; //0.1 RPS;
 	Error = TACHSpeed - PWMSPEED;
   Duty = Duty + (3 * Error)/64; //discrete integral
+	Debug2(PWMSPEED,TACHSpeed,Duty);
 	if(Duty < 40){
 		Duty = 40;
 	}
 	if(Duty > 39960){
 		Duty = 39960;
 	}
+	//TODO: Modify Duty cycle from here
 	//PWM0A_Duty(Duty);
 }

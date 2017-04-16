@@ -176,6 +176,45 @@ void ST7735_uDecOut2(uint16_t n)
 	
 	}
 	
+	
+		
+	/****************ST7735_sDecOut1***************
+ converts fixed point number to LCD
+ format signed 16-bit with resolution 0.01
+ range 0.00 to 45.00
+ Inputs:  unsigned 16-bit integer part of fixed-point number
+ Outputs: none
+ send exactly 6 characters to the LCD 
+Parameter LCD display
+ 12345    " *.***"
+  2345    "23.45"  
+  3100    "31.00" 
+ */ 
+void ST7735_uDecOut1(uint16_t n)
+	{
+		int MAX = 4500; //max upper bound
+		int MIN = 0; //min upper bound
+	
+		int MAX_DIGITS = 6; //Maximum digit of fixed point number 
+		int DECIMAL_POSITION = 4; //Position of Decimal Point to be placed
+		char buffer [6] = {' '}; //Initialize array to empty string 
+		int numDigit;
+		
+		
+		//check if within bounds
+		if(n > MAX || n < MIN)
+		{
+			 ST7735_OutString("**.**");
+			 return;
+		}	
+		numDigit = num_Digits(n); //count number of digits
+		change_To_Output(n, MAX_DIGITS, DECIMAL_POSITION, buffer, numDigit,TRUE);
+		
+		ST7735_OutString(buffer);
+		
+	
+	}
+	
 	/**************ST7735_uBinOut8***************
  unsigned 32-bit binary fixed-point with a resolution of 1/256. 
  The full-scale range is from 0 to 999.99. 

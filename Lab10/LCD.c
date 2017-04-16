@@ -152,28 +152,28 @@ void clear_Screen()
 }
 
 
-// TODO: This stuff.
-void ST7735_printData(uint16_t data)
+
+void ST7735_printData(uint16_t pwmdata,uint16_t tachdata)
 {
-	//uint16_t temp = getTemp(data);
+
 	ST7735_SetCursor(0, 2);
-	ST7735_OutString("Temperature:");
-	//ST7735_uDecOut2();
-	ST7735_OutString("C ");
+	ST7735_OutString("PWM: ");
+	ST7735_uDecOut1(pwmdata);
+	ST7735_OutString(" RPS");
+	ST7735_OutString(" Tach: ");
+	ST7735_uDecOut1(tachdata);
+	ST7735_OutString(" RPS");
 	
 }
 
-// TODO: This stuff too.
-void ST7735_plotData(uint16_t data)
+
+void ST7735_plotData(uint16_t pwmdata,uint16_t tachdata)
 {
 
-		//uint16_t temp = getTemp(data);
-	  //int32_t y = 32+(127*((MaxY - temp))  / (MaxY - MinY));
-		UART_OutString("y plot point: ");
-		//UART_OutUDec(temp);
-		//ST7735_PlotPoint(temp);
-		ST7735_PlotNextErase();
-	
+	ST7735_SetTextColor(ST7735_BLUE);
+	ST7735_PlotPoint(pwmdata);
+	ST7735_SetTextColor(ST7735_RED);
+	ST7735_PlotPoint(tachdata);
 }
 
 

@@ -43,3 +43,6 @@ void Print_Data(uint32_t intended_speed, uint32_t measured_speed);
 	Outputs: none
 *******************************************/
 void Plot_Data(uint32_t intended_speed, uint32_t measured_speed);
+
+
+void ST7735_XYplotInit(int32_t minY, int32_t maxY);

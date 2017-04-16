@@ -32,6 +32,7 @@
 #include "ST7735.h"
 #include "FIFO.h"
 #include "UART.h"
+#include "LCD.h"
 
 #define NVIC_EN0_INT19          0x00080000  // Interrupt 19 enable
 #define PF2                     (*((volatile uint32_t *)0x40025010))
@@ -79,8 +80,9 @@ void Init_All(void)
 	ST7735_InitR(INITR_REDTAB);
 	Switch_Init();
 	Motor_Init();
- Tach_Init();            // initialize 32-bit timer0A in capture mode
+  Tach_Init();            // initialize 32-bit timer0A in capture mode
 	UART_Init();
+	ST7735_XYplotInit(0,400);
   EnableInterrupts();
 }
 
@@ -108,7 +110,7 @@ uint16_t modify_Speed(void)
 				pwmcurrentRPS -= offset;
 			}
 		}
-	Set_Motor_Speed(pwmcurrentRPS*CONVERSION_CONSTANT-1); 
+	Set_Motor_Speed(pwmcurrentRPS); 
 	}
 	return pwmcurrentRPS;
 }
@@ -131,5 +133,9 @@ int main(void){
 		pwmcurrentRPS = modify_Speed();
 		tachcurrentRPS = Tach_Read();
 		//Debug(pwmcurrentRPS,tachcurrentRPS);
+		
+		//Black box of uncertainty
+		Plot_Data(pwmcurrentRPS,tachcurrentRPS);
+		Print_Data(pwmcurrentRPS, tachcurrentRPS);
 	}
 }

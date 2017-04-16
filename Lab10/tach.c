@@ -94,7 +94,7 @@ void Tach_Init(void){
   TIMER0_CTL_R |= TIMER_CTL_TBEN;  // enable timer0A 16-b, +edge timing, interrupts
                                    // Timer0A=priority 2
  
- NVIC_PRI5_R = (NVIC_PRI5_R&0xFFFFFF00)|0x00000040; // bits 5-7
+ NVIC_PRI5_R = (NVIC_PRI5_R&0xFFFFFF00)|0x00000000; // bits 5-7
   NVIC_EN0_R |= NVIC_EN0_INT20;    // enable interrupt 20 in NVIC
 	EnableInterrupts();
 }
@@ -108,15 +108,18 @@ void Timer0B_Handler(void){
   PF2 = PF2^0x04;  // toggle PF2
 }
 
+uint32_t Last =0;
 uint16_t Tach_Read(void)
 {
+	
 	if(Done == 1 && 0xFFFFFF > Period )
 	{
 		Done = 0;
+		Last = Period;
 		return Period;
 		
 	}
 	else{
-		return 0;
+		return Last;
 	}
 }
