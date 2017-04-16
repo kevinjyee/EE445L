@@ -108,7 +108,7 @@ uint16_t modify_Speed(void)
 				pwmcurrentRPS -= offset;
 			}
 		}
-	Set_Motor_Speed(pwmcurrentRPS ); 
+	Set_Motor_Speed(pwmcurrentRPS*CONVERSION_CONSTANT-1); 
 	}
 	return pwmcurrentRPS;
 }
@@ -129,7 +129,7 @@ int main(void){
 	Init_All();
   while(1){
 		pwmcurrentRPS = modify_Speed();
-		tachcurrentRPS = 80000000/Tach_Read();
-		Debug(pwmcurrentRPS,tachcurrentRPS);
+		tachcurrentRPS = Tach_Read();
+		//Debug(pwmcurrentRPS,tachcurrentRPS);
 	}
 }

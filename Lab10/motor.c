@@ -54,7 +54,7 @@ void Timer3_Init(uint32_t period){
 // Output: none
 void Motor_Init(){
 	PWM0A_Init(INITIAL_PERIOD, INITIAL_PERIOD/2);          // initialize PWM0, 1000 Hz, 50% duty
-	//Timer3_Init(400000);
+	Timer3_Init(800000);
 }
 
 //------------Set_Motor_Speed--------
@@ -65,6 +65,7 @@ void Set_Motor_Speed(uint16_t speed){
 	//TODO: Move this to a timer handler to adjust speed
 
 		PWMSPEED = speed;
+	//PWM0A_Duty(speed);
 }
 
 //------------Stop_Motor-------------
@@ -90,7 +91,7 @@ int32_t Duty;
 void Timer3A_Handler(void){
   TIMER3_ICR_R = TIMER_ICR_TATOCINT;// acknowledge TIMER3A timeout
 	MeasuredPeriod = Tach_Read();
-	TACHSpeed = 800000000/MeasuredPeriod; //0.1 RPS;
+	TACHSpeed = MeasuredPeriod/100; //0.1 RPS;
 	Error = TACHSpeed - PWMSPEED;
   Duty = Duty + (3 * Error)/64; //discrete integral
 	if(Duty < 40){
@@ -99,5 +100,5 @@ void Timer3A_Handler(void){
 	if(Duty > 39960){
 		Duty = 39960;
 	}
-	PWM0A_Duty(Duty);
+	//PWM0A_Duty(Duty);
 }
