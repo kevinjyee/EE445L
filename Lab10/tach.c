@@ -9,7 +9,6 @@
    "Embedded Systems: Real Time Interfacing to Arm Cortex M Microcontrollers",
    ISBN: 978-1463590154, Jonathan Valvano, copyright (c) 2015
    Example 7.2, Program 7.2
-
  Copyright 2015 by Jonathan W. Valvano, valvano@mail.utexas.edu
     You may use, edit, run or distribute this file
     as long as the above copyright notice remains
@@ -43,7 +42,9 @@
                                             // Register Low
 #define NVIC_EN0_INT20          0x00100000  // Interrupt 20 enable
 
-#define CONVERSION_CONSTANT 2000
+#define CONVERSION_CONSTANT 100
+
+#define INITIAL_PERIOD 40000
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -100,7 +101,7 @@ void Tach_Init(void){
 void Timer0B_Handler(void){
   PF2 = PF2^0x04;  // toggle PF2
   PF2 = PF2^0x04;  // toggle PF2
-  TIMER0_ICR_R = TIMER_ICR_CBECINT;// acknowledge timer0A capture match
+  TIMER0_ICR_R = TIMER_ICR_CBECINT;// acknowledge timer0B capture match
   Period = (First - TIMER0_TBR_R)&0xFFFFFF;// 24 bits, 12.5ns resolution
   First = TIMER0_TBR_R;            // setup for next
   Done = 1;
@@ -109,10 +110,10 @@ void Timer0B_Handler(void){
 
 uint16_t Tach_Read(void)
 {
-	if(Done == 1)
+	if(Done == 1 && 0xFFFFFF > Period )
 	{
 		Done = 0;
-		return Period/CONVERSION_CONSTANT;
+		return Period;
 		
 	}
 	else{

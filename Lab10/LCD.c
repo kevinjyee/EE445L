@@ -27,9 +27,9 @@ void ST7735_XYplotInit(int32_t minY, int32_t maxY){
 	
 	ST7735_FillScreen(0);
 	ST7735_SetCursor(0,0);
-	ST7735_OutString("Lab 10: Thermometer");
+	ST7735_OutString("Lab 10: DC Motor Control");
 	ST7735_SetCursor(0,1);
-	ST7735_OutString("Range 10 to 40 C");
+	ST7735_OutString("+SW1 -SW2");
 	ST7735_PlotClear(MinY, MaxY); 
 }
 

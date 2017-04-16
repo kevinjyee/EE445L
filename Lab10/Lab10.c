@@ -49,11 +49,11 @@
                                             // Register Low
 
 
-#define SW1	0x04 //PE2
-#define SW2 0x08 //PE3
+#define SW1	0x01 //PE2
+#define SW2 0x02 //PE3
 
 #define PWM_PERIOD 		40000
-#define CONVERSION_CONSTANT 2000
+#define CONVERSION_CONSTANT 100
 
 
 void DisableInterrupts(void); // Disable interrupts
@@ -66,12 +66,12 @@ extern volatile uint32_t LastE;
 volatile uint32_t current_duty = PWM_PERIOD/2;
 
 
-volatile uint16_t offset = 5;
+volatile uint16_t offset = 50;
 
 uint16_t minRPS = 0;
-uint16_t maxRPS = 40;
-volatile uint16_t pwmcurrentRPS = 20;
-volatile uint16_t tachcurrentRPS = 20;
+uint16_t maxRPS = 400;
+volatile uint16_t pwmcurrentRPS = 200;
+volatile uint16_t tachcurrentRPS = 200;
 
 void Init_All(void)
 {
@@ -89,7 +89,7 @@ void Init_All(void)
 Note to self: 50% duty cycle corressponds to 20 RPS 
 */
 
-void modify_Speed(void)
+uint16_t modify_Speed(void)
 {
 	uint32_t input = 0x00;
 	if(Fifo_Get(&input))
@@ -108,12 +108,13 @@ void modify_Speed(void)
 				pwmcurrentRPS -= offset;
 			}
 		}
-	Set_Motor_Speed(pwmcurrentRPS * CONVERSION_CONSTANT); //Convert to DUTY CYCLE
+	Set_Motor_Speed(pwmcurrentRPS ); 
 	}
+	return pwmcurrentRPS;
 }
 
 
-void Debug()
+void Debug(pwmcurrentRPS,tachcurrentRPS)
 {
 	UART_OutString("PWM_Speed: ");
 	UART_OutUDec(pwmcurrentRPS);
@@ -127,8 +128,8 @@ void Debug()
 int main(void){           
 	Init_All();
   while(1){
-		modify_Speed();
-		tachcurrentRPS = Tach_Read();
-		Debug();
+		pwmcurrentRPS = modify_Speed();
+		tachcurrentRPS = 80000000/Tach_Read();
+		Debug(pwmcurrentRPS,tachcurrentRPS);
 	}
 }
