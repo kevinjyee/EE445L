@@ -111,7 +111,7 @@ void Timer0B_Handler(void){
 uint32_t Last =0;
 uint16_t Tach_Read(void)
 {
-	
+	//TODO: Check this, this might be wrong
 	if(Done == 1 && 0xFFFFFF > Period )
 	{
 		Done = 0;
