@@ -55,7 +55,7 @@ void Timer3_Init(uint32_t period){
 void Motor_Init(){
 	PWM0A_Init(INITIAL_PERIOD, 20000);          // initialize PWM0, 1000 Hz, 50% duty
 	Set_Motor_Speed(20000);
-	Timer3_Init(8000000);
+	Timer3_Init(80000000);
 }
 
 
@@ -96,11 +96,25 @@ void Debug2(pwmcurrentRPS,tachcurrentRPS,duty,measuredperiod)
 	UART_OutString("\n");
 }
 
+
+
+
 uint32_t MeasuredPeriod;
 uint32_t TACHSpeed;
 int32_t Error;
 int32_t Duty=0;
-
+#define TACH_ARR_SIZE 64
+uint32_t tach_avg_arr[TACH_ARR_SIZE];
+int i =0;
+void average_array(void)
+{
+	while(i < TACH_ARR_SIZE)
+	{
+		
+		
+	}
+	
+}
 
 
 /*
@@ -109,11 +123,11 @@ Page 330 of Book
 void Timer3A_Handler(void){
   TIMER3_ICR_R = TIMER_ICR_TATOCINT;// acknowledge TIMER3A timeout
 	MeasuredPeriod = Tach_Read();
-	TACHSpeed = 80000000/MeasuredPeriod; //0.1 RPS;
+	TACHSpeed = 200000000/MeasuredPeriod; //0.1 RPS;
 
-	Error =  PWMSPEED/10 - TACHSpeed;
+	Error =  PWMSPEED - TACHSpeed;
   Duty = Duty + (3 * Error)/64; //discrete integral
-	Debug2(PWMSPEED/10,TACHSpeed,Duty,MeasuredPeriod);
+	Debug2(PWMSPEED,TACHSpeed,Duty,MeasuredPeriod);
 	if(Duty < 40){
 		Duty = 40;
 	}
@@ -137,7 +151,8 @@ int32_t Read_Duty(void)
 void Set_Motor_Speed(uint16_t speed){
 	//TODO: Move this to a timer handler to adjust speed
 		
-		Duty = speed*100;
+		Duty = speed*100*4;
 		PWMSPEED = speed;
 	  PWM0A_Duty(Duty);
 }
+

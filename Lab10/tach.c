@@ -102,13 +102,10 @@ void Timer0B_Handler(void){
   PF2 = PF2^0x04;  // toggle PF2
   PF2 = PF2^0x04;  // toggle PF2
   TIMER0_ICR_R = TIMER_ICR_CBECINT;// acknowledge timer0B capture 
-	if(First > TIMER0_TBR_R)
-	{
+
   Period = (First - TIMER0_TBR_R)&0xFFFFFF;// 24 bits, 12.5ns resolution
-	}
-	else{
-		Period = (TIMER0_TBR_R-First)&0xFFFFFF;
-	}
+	
+
   First = TIMER0_TBR_R;            // setup for next
   Done = 1;
   PF2 = PF2^0x04;  // toggle PF2

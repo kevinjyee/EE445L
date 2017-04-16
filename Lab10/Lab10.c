@@ -112,7 +112,7 @@ uint16_t modify_Speed(void)
 			}
 		}
 	Set_Motor_Speed(pwmcurrentRPS); 
-	PWM0A_Duty((pwmcurrentRPS*100)-1);
+	
 	}
 	return pwmcurrentRPS;
 }
@@ -120,7 +120,7 @@ uint16_t modify_Speed(void)
 
 void Debug(pwmcurrentRPS,tachcurrentRPS)
 {
-	UART_OutString("PWM_Speed: ");
+	UART_OutString("Desired: ");
 	UART_OutUDec(pwmcurrentRPS);
 	UART_OutString("\n");
 	
@@ -133,7 +133,7 @@ int main(void){
 	Init_All();
   while(1){
 		pwmcurrentRPS = modify_Speed();
-		tachcurrentRPS = 8000000000/Tach_Read();
+		tachcurrentRPS = 8000000/Tach_Read();
 		int32_t dutycycle = Read_Duty();
 		PWM0A_Duty(dutycycle);
 		//Debug(pwmcurrentRPS,tachcurrentRPS);
