@@ -28,6 +28,7 @@ void WaitForInterrupt(void);  // low power mode
 #define INITIAL_PERIOD 40000
 
 volatile uint16_t PWMSPEED = 200;
+volatile int32_t Duty=0;
 
 
 void Timer3_Init(uint32_t period){
@@ -55,10 +56,20 @@ void Timer3_Init(uint32_t period){
 void Motor_Init(){
 	PWM0A_Init(INITIAL_PERIOD, 20000);          // initialize PWM0, 1000 Hz, 50% duty
 	Set_Motor_Speed(20000);
-	Timer3_Init(80000000);
+	Timer3_Init(80000);
 }
 
-
+//------------Adjust_Motor_Speed--------
+// Set the speed of the DC motor. Can be used to start the motor.
+// Input: Motor speed which corresponds to a PWM duty cycle.
+// Output: None.
+void Adjust_Motor_Speed(void){
+	//TODO: Move this to a timer handler to adjust speed
+		
+		//Duty = duty;
+		//PWMSPEED = speed;
+	  PWM0A_Duty(Duty);
+}
 	
 
 
@@ -101,8 +112,7 @@ void Debug2(pwmcurrentRPS,tachcurrentRPS,duty,measuredperiod)
 
 uint32_t MeasuredPeriod;
 uint32_t TACHSpeed;
-int32_t Error;
-int32_t Duty=0;
+volatile int32_t Error = 0;
 #define TACH_ARR_SIZE 64
 uint32_t tach_avg_arr[TACH_ARR_SIZE];
 int i =0;
@@ -122,12 +132,20 @@ Page 330 of Book
 */
 void Timer3A_Handler(void){
   TIMER3_ICR_R = TIMER_ICR_TATOCINT;// acknowledge TIMER3A timeout
-	MeasuredPeriod = Tach_Read();
-	TACHSpeed = 200000000/MeasuredPeriod; //0.1 RPS;
+	MeasuredPeriod = Period;
+	TACHSpeed = (800000000/MeasuredPeriod) / 4; //0.1 RPS;
 
 	Error =  PWMSPEED - TACHSpeed;
-  Duty = Duty + (3 * Error)/64; //discrete integral
-	Debug2(PWMSPEED,TACHSpeed,Duty,MeasuredPeriod);
+	int32_t absError;
+	if(Error < 0){
+		absError *= -1;
+	} else{
+		absError = Error;
+	}
+	if(absError < 1000){
+		Duty = Duty + (12 * Error)/64; //discrete integral
+	}
+	//Debug2(PWMSPEED,TACHSpeed,Duty,MeasuredPeriod);
 	if(Duty < 40){
 		Duty = 40;
 	}
@@ -135,6 +153,7 @@ void Timer3A_Handler(void){
 		Duty = 39960;
 	}
 	//TODO: Modify Duty cycle from here
+	Adjust_Motor_Speed();
 	
 }
 
@@ -151,7 +170,7 @@ int32_t Read_Duty(void)
 void Set_Motor_Speed(uint16_t speed){
 	//TODO: Move this to a timer handler to adjust speed
 		
-		Duty = speed*100*4;
+		Duty = speed*100;
 		PWMSPEED = speed;
 	  PWM0A_Duty(Duty);
 }

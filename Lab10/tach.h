@@ -12,6 +12,8 @@
 
 #include "stdint.h"
 
+extern volatile uint32_t Period;
+
 //------------Tach_Init------------
 // Initialize tachometer to read data in via ADC0 (PE4)
 // Input: none

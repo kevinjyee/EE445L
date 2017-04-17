@@ -92,10 +92,13 @@ void Init_All(void)
 Note to self: 50% duty cycle corressponds to 20 RPS 
 */
 
-uint16_t modify_Speed(void)
+uint32_t lastInput = 0x00;
+
+void modify_Speed(void)
 {
 	uint32_t input = 0x00;
-	if(Fifo_Get(&input))
+	Fifo_Get(&input);
+	if(input != lastInput)
 	{
 		if(input == SW1)
 		{
@@ -111,10 +114,11 @@ uint16_t modify_Speed(void)
 				pwmcurrentRPS -= offset;
 			}
 		}
-	Set_Motor_Speed(pwmcurrentRPS); 
+	Set_Motor_Speed(pwmcurrentRPS);
+	lastInput = input;
 	
 	}
-	return pwmcurrentRPS;
+	//return pwmcurrentRPS;
 }
 
 
@@ -132,14 +136,14 @@ void Debug(pwmcurrentRPS,tachcurrentRPS)
 int main(void){           
 	Init_All();
   while(1){
-		pwmcurrentRPS = modify_Speed();
-		tachcurrentRPS = 8000000/Tach_Read();
-		int32_t dutycycle = Read_Duty();
-		PWM0A_Duty(dutycycle);
+		modify_Speed();
+		tachcurrentRPS = 800000000/(Period * 4);
+		//int32_t dutycycle = Read_Duty();
+		//PWM0A_Duty(dutycycle);
 		//Debug(pwmcurrentRPS,tachcurrentRPS);
 		
 		//Black box of uncertainty
 		ST7735_plotData(pwmcurrentRPS,tachcurrentRPS);
-		ST7735_printData(pwmcurrentRPS, tachcurrentRPS);
+		ST7735_printDataErr(pwmcurrentRPS, tachcurrentRPS, Error);
 	}
 }

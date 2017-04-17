@@ -50,5 +50,7 @@ void ST7735_XYplotInit(int32_t minY, int32_t maxY);
 
 void ST7735_printData(uint16_t pwmdata,uint16_t tachdata);
 
+void ST7735_printDataErr(uint16_t pwmdata,uint16_t tachdata, int32_t Error);
+
 
 void ST7735_plotData(uint16_t pwmdata,uint16_t tachdata);

@@ -25,6 +25,7 @@
 #include <stdint.h>
 #include "../inc/tm4c123gh6pm.h"
 #include "PLL.h"
+#include "tach.h"
 
 #define NVIC_EN0_INT19          0x00080000  // Interrupt 19 enable
 #define PF2                     (*((volatile uint32_t *)0x40025010))
@@ -52,7 +53,7 @@ long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
 
-uint32_t Period;              // (1/clock) units
+volatile uint32_t Period = 0;              // (1/clock) units
 uint32_t First;               // Timer0A first edge
 int32_t Done;                 // set each rising
 // max period is (2^24-1)*12.5ns = 209.7151ms
@@ -112,6 +113,7 @@ void Timer0B_Handler(void){
 }
 
 uint32_t Last =0;
+
 uint16_t Tach_Read(void)
 {
 	//TODO: Check this, this might be wrong

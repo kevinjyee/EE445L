@@ -12,6 +12,9 @@
 
 #include "stdint.h"
 
+extern volatile int32_t Error;
+extern volatile int32_t Duty;
+
 //------------Motor_Init------------
 // Initialize motor by initializing PWM.
 // Input: none

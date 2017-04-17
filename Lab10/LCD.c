@@ -11,6 +11,7 @@
 #include "LCD.h"
 #include "fixed.h"
 #include "UART.h"
+#include "motor.h"
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -164,6 +165,35 @@ void ST7735_printData(uint16_t pwmdata,uint16_t tachdata)
 	ST7735_uDecOut1(tachdata);
 	ST7735_OutString("RPS");
 	
+}
+
+void ST7735_printDataErr(uint16_t pwmdata,uint16_t tachdata, int32_t Error)
+{
+
+	ST7735_SetCursor(0, 1);
+	ST7735_OutString("DesiredB:");
+	ST7735_uDecOut1(pwmdata);
+	ST7735_OutString("RPS");
+		ST7735_SetCursor(0, 2);
+	ST7735_OutString("ActualR:");
+	ST7735_uDecOut1(tachdata);
+	ST7735_OutString("RPS");
+	ST7735_SetCursor(0, 3);
+	ST7735_OutString("Error:");
+	int32_t testError;
+	if(Error < 0){
+		testError = Error * -1;
+		ST7735_OutString("-");
+	}
+	ST7735_uDecOut1((uint16_t) testError);
+	ST7735_SetCursor(0, 4);
+	ST7735_OutString("Duty:");
+	int32_t testDuty;
+	if(Duty < 0){
+		testDuty = Duty * -1;
+		ST7735_OutString("-");
+	}
+	ST7735_uDecOut1((uint16_t) testDuty/10);
 }
 
 
