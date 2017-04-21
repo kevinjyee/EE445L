@@ -1,0 +1,20 @@
+Design Consistency Status Report
+--------------------------------
+
+Report File:        E:\EE445L Labs\Lab7\Redo\Lab7_SoundTrackofMyLife (PCB - Design Consistency Status Report).txt
+Report Written:     Wednesday, March 29, 2017
+Design Path:        E:\EE445L Labs\Lab7\Redo\Lab7_SoundTrackofMyLife.pcb
+Design Title:       
+Created:            1/29/2013 12:01:41 AM
+Last Saved:         3/29/2017 5:34:41 PM
+Editing Time:       1325 min
+Units:              mil (precision 0)
+
+
+Checking integrity of Schematic "E:\EE445L Labs\Lab7\Redo\Lab7_SoundTrackofMyLife.sch" with PCB "E:\EE445L Labs\Lab7\Redo\Lab7_SoundTrackofMyLife.pcb"
+======================================================================================================================================================
+
+The designs are the same.
+
+
+End Of Report.
