@@ -97,25 +97,31 @@ uint32_t lastInput = 0x00;
 void modify_Speed(void)
 {
 	uint32_t input = 0x00;
-	Fifo_Get(&input);
-	if(input != lastInput)
+	if(Fifo_Get(&input))
 	{
 		if(input == SW1)
 		{
 			if(pwmcurrentRPS <= maxRPS)
 			{
-				pwmcurrentRPS += offset;
+				if(pwmcurrentRPS < 200){
+					pwmcurrentRPS += 10;
+				} else{
+					pwmcurrentRPS += offset;
+				}
 			}
 		}
 		else if(input == SW2)
 		{
 			if(pwmcurrentRPS >= minRPS)
 			{
-				pwmcurrentRPS -= offset;
+				if(pwmcurrentRPS <= 200){
+					pwmcurrentRPS -= 10;
+				} else{
+					pwmcurrentRPS -= offset;
+				}
 			}
 		}
 	Set_Motor_Speed(pwmcurrentRPS);
-	lastInput = input;
 	
 	}
 	//return pwmcurrentRPS;
@@ -144,6 +150,6 @@ int main(void){
 		
 		//Black box of uncertainty
 		ST7735_plotData(pwmcurrentRPS,tachcurrentRPS);
-		ST7735_printDataErr(pwmcurrentRPS, tachcurrentRPS, Error);
+		ST7735_printData(pwmcurrentRPS, tachcurrentRPS);
 	}
 }

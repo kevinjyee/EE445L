@@ -31,6 +31,7 @@ volatile uint16_t PWMSPEED = 200;
 volatile int32_t Duty=0;
 
 
+
 void Timer3_Init(uint32_t period){
 	DisableInterrupts();
   SYSCTL_RCGCTIMER_R |= 0x08;   // 0) activate TIMER3
@@ -56,7 +57,8 @@ void Timer3_Init(uint32_t period){
 void Motor_Init(){
 	PWM0A_Init(INITIAL_PERIOD, 20000);          // initialize PWM0, 1000 Hz, 50% duty
 	Set_Motor_Speed(20000);
-	Timer3_Init(80000);
+	PWMSPEED = 200;
+	Timer3_Init(800000);
 }
 
 //------------Adjust_Motor_Speed--------
@@ -113,19 +115,21 @@ void Debug2(pwmcurrentRPS,tachcurrentRPS,duty,measuredperiod)
 uint32_t MeasuredPeriod;
 uint32_t TACHSpeed;
 volatile int32_t Error = 0;
-#define TACH_ARR_SIZE 64
-uint32_t tach_avg_arr[TACH_ARR_SIZE];
 int i =0;
+/*
 void average_array(void)
 {
 	while(i < TACH_ARR_SIZE)
 	{
 		
-		
+		i++;
 	}
 	
 }
+*/
 
+
+uint8_t k = 16;
 
 /*
 Page 330 of Book
@@ -136,15 +140,12 @@ void Timer3A_Handler(void){
 	TACHSpeed = (800000000/MeasuredPeriod) / 4; //0.1 RPS;
 
 	Error =  PWMSPEED - TACHSpeed;
-	int32_t absError;
-	if(Error < 0){
-		absError *= -1;
+	if(PWMSPEED < 160){
+		k = 1;
 	} else{
-		absError = Error;
+		k = 16;
 	}
-	if(absError < 1000){
-		Duty = Duty + (12 * Error)/64; //discrete integral
-	}
+	Duty = Duty + (k * Error)/64; //discrete integral
 	//Debug2(PWMSPEED,TACHSpeed,Duty,MeasuredPeriod);
 	if(Duty < 40){
 		Duty = 40;

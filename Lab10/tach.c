@@ -53,9 +53,30 @@ long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
 
-volatile uint32_t Period = 0;              // (1/clock) units
-uint32_t First;               // Timer0A first edge
-int32_t Done;                 // set each rising
+volatile uint32_t Period = 0;   // (1/clock) units
+uint32_t First;               	// Timer0A first edge
+int32_t Done;                 	// Set each rising
+uint32_t Last =0;								// Set to TIMER0_TBR_R after every measured rising edge.
+
+#define TACH_ARR_SIZE 16
+uint8_t count = 0;
+uint32_t tach_avg_arr[TACH_ARR_SIZE];
+
+void zero_Tach_Array(){
+	for(int i = 0; i < TACH_ARR_SIZE; i++){
+		tach_avg_arr[i] = 0;
+	}
+}
+
+uint32_t average_Tach_Array(){
+	uint32_t sum = 0;
+	for(int i = 0; i < TACH_ARR_SIZE; i++){
+		sum += tach_avg_arr[i];
+	}
+	zero_Tach_Array();
+	return sum / TACH_ARR_SIZE;
+}
+
 // max period is (2^24-1)*12.5ns = 209.7151ms
 // min period determined by time to run ISR, which is about 1us
 void Tach_Init(void){
@@ -97,22 +118,26 @@ void Tach_Init(void){
  
  NVIC_PRI5_R = (NVIC_PRI5_R&0xFFFFFF00)|0x00000000; // bits 5-7
   NVIC_EN0_R |= NVIC_EN0_INT20;    // enable interrupt 20 in NVIC
+	zero_Tach_Array();
 	EnableInterrupts();
 }
 void Timer0B_Handler(void){
+	uint32_t per;
   PF2 = PF2^0x04;  // toggle PF2
   PF2 = PF2^0x04;  // toggle PF2
   TIMER0_ICR_R = TIMER_ICR_CBECINT;// acknowledge timer0B capture 
-
-  Period = (First - TIMER0_TBR_R)&0xFFFFFF;// 24 bits, 12.5ns resolution
-	
-
+  per = (First - TIMER0_TBR_R)&0xFFFFFF;// 24 bits, 12.5ns resolution
   First = TIMER0_TBR_R;            // setup for next
+	tach_avg_arr[count] = per;
+	count = (count + 1) % TACH_ARR_SIZE;
+	if(count == 0){
+		Period = average_Tach_Array();
+	} else if(Period == 0){
+		Period = per;
+	}
   Done = 1;
   PF2 = PF2^0x04;  // toggle PF2
 }
-
-uint32_t Last =0;
 
 uint16_t Tach_Read(void)
 {

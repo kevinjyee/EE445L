@@ -22,7 +22,7 @@ static int32_t MinX, MaxX, MinY, MaxY;
 // TODO: Plot init.
 void ST7735_XYplotInit(int32_t minY, int32_t maxY){
 
-  //MinY = getTemp(minY); MaxY = getTemp(maxY);
+  MinY = minY; MaxY = maxY;
 	
 	//clear screen and output title
 	
@@ -202,8 +202,8 @@ void ST7735_plotData(uint16_t pwmdata,uint16_t tachdata)
 
 	ST7735_SetTextColor(ST7735_BLUE);
 	ST7735_PlotPoint(pwmdata);
-	//ST7735_SetTextColor(ST7735_RED);
-	//ST7735_PlotPoint(tachdata);
+	ST7735_SetTextColor(ST7735_RED);
+	ST7735_PlotPointRed(tachdata);
 	ST7735_PlotNextErase();
 }
 

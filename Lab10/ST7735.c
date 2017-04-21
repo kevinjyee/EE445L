@@ -1321,6 +1321,28 @@ void ST7735_PlotPoint(int32_t y){int32_t j;
   ST7735_DrawPixel(X,   j+1, ST7735_BLUE);
   ST7735_DrawPixel(X+1, j+1, ST7735_BLUE);
 }
+
+// *************** ST7735_PlotPointRed ********************
+// Used in the voltage versus time plot, plot one point at y
+// It does output to display
+// Inputs: y is the y coordinate of the point plotted
+// Outputs: none
+void ST7735_PlotPointRed(int32_t y){int32_t j;
+  if(y<Ymin) y=Ymin;
+  if(y>Ymax) y=Ymax;
+  // X goes from 0 to 127
+  // j goes from 159 to 32
+  // y=Ymax maps to j=32
+  // y=Ymin maps to j=159
+  j = 32+(127*(Ymax-y))/Yrange;
+  if(j<32) j = 32;
+  if(j>159) j = 159;
+  ST7735_DrawPixel(X,   j,   ST7735_RED);
+  ST7735_DrawPixel(X+1, j,   ST7735_RED);
+  ST7735_DrawPixel(X,   j+1, ST7735_RED);
+  ST7735_DrawPixel(X+1, j+1, ST7735_RED);
+}
+
 // *************** ST7735_PlotLine ********************
 // Used in the voltage versus time plot, plot line to new point
 // It does output to display
