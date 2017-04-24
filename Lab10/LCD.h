@@ -24,33 +24,40 @@ void LCD_Init();
 *******************************************/
 void Clear_Screen();
 
-/**************Print_Data******************
-	Prints out the intended motor speed and the measured tachometer speed.
-	Inputs: intended_speed	The speed which at which the motor thinks it's spinning.
-													32-bit fixed-point data, resolution= 0.001
-					measured_speed	The speed which the tachometer thinks the motor is spinning.
-													32-bit fixed-point data, resolution= 0.01
-	Outputs: none
-*******************************************/
-//void Print_Data(uint32_t intended_speed, uint32_t measured_speed);
-
-/**************Plot_Data******************
-	Plots the latest motor speed and tachometer measurements.
-	Inputs: intended_speed	The speed which at which the motor thinks it's spinning.
-													32-bit fixed-point data, resolution= 0.01
-					measured_speed	The speed which the tachometer thinks the motor is spinning.
-													32-bit fixed-point data, resolution= 0.01
-	Outputs: none
-*******************************************/
-//void Plot_Data(uint32_t intended_speed, uint32_t measured_speed);
-
-
+/**************ST7735_XYplotInit************************************
+ Initialize plot area on ST7735 LCD.
+ Inputs:  minY   32-bit fixed point data, resolution = 0.1.
+          maxY   32-bit fixed point data, resolution = 0.1.
+ Outputs: none
+ Allows for fixed-point data to be mapped to LCD pixels based on the
+	full range of y data.
+********************************************************************/
 void ST7735_XYplotInit(int32_t minY, int32_t maxY);
 
-
+/**************ST7735_printData***************
+ Prints out RPS of motor approximated by duty cycle calculation
+	and prints out RPS as measured by tachometer.
+ Inputs:  pwmdata   16-bit fixed point data, resolution = 0.1.
+          tachdata   16-bit fixed point data, resolution = 0.1.
+ Outputs: none
+*****************************************************/
 void ST7735_printData(uint16_t pwmdata,uint16_t tachdata);
 
+/**************ST7735_printDataErr***************
+ Debug printsout of duty cycle-approximated motor RPS, tachomter-measured
+	RPS, and error between the two readings.
+ Inputs:  pwmdata   16-bit fixed point data, resolution = 0.1.
+          tachdata   16-bit fixed point data, resolution = 0.1.
+					Error			32-bit fixed point data, resolution = 0.1.
+ Outputs: none
+***************************************************/
 void ST7735_printDataErr(uint16_t pwmdata,uint16_t tachdata, int32_t Error);
 
-
+/**************ST7735_plotData***************
+ Plots RPS of motor approximated by duty cycle calculation
+	and plots RPS as measured by tachometer.
+ Inputs:  pwmdata   16-bit fixed point data, resolution = 0.1.
+          tachdata   16-bit fixed point data, resolution = 0.1.
+ Outputs: none
+***************************************************/
 void ST7735_plotData(uint16_t pwmdata,uint16_t tachdata);

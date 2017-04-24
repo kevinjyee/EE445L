@@ -1,3 +1,15 @@
+/* File Name:    switch.c
+ * Authors:      Kevin Yee (kjy252), Stefan Bordovsky (sb39782)
+ * Created:      April 11th, by Stefan Bordovsky
+ * Description:  This program contains initialization code and functions for
+ *								a switch-to-DC motor interface. Sets up debounced switches.
+ *               
+ * 
+ * Lab Number: MW 3:30-5:00
+ * TA: Mahesh
+ * Last Revised: 4/11/2017	
+ */
+
 #include <stdint.h>
 #include "inc//tm4c123gh6pm.h"
 #include "FIFO.h"
@@ -50,7 +62,7 @@ static void GPIOArm(void){
 
 
 
-// **************Switch_Init*********************
+// **************Switch_Input_Init*********************
 // Initialize switch key inputs, called once 
 // Input: none 
 // Output: none
@@ -79,7 +91,10 @@ uint32_t Switch_In(void){
   return inputs >> 2;
 }
 
-
+// **************GPIOPortE_Handler*********************
+// Read switch input and put in FIFO if any switches are depressed.
+// Input: none 
+// Output: none
 void GPIOPortE_Handler(void)
 {
 	GPIO_PORTE_IM_R &= ~0x0F; // disarm interrupt on PA so we dont get double clicks
@@ -94,7 +109,10 @@ void GPIOPortE_Handler(void)
 
 }
 
-
+// **************Timer2A_Handler*********************
+// Service Timer2A interrupts to provide 10ms switch debouncing.
+// Input: none 
+// Output: none
 void Timer2A_Handler(void){
   TIMER2_IMR_R = 0x00000000;    // disarm timeout interrupt
 	LastE = Switch_In();  // switch state

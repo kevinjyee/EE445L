@@ -15,12 +15,12 @@
 extern volatile uint32_t Period;
 
 //------------Tach_Init------------
-// Initialize tachometer to read data in via ADC0 (PE4)
+// Initialize tachometer to read data in via ADC0 (PB7)
 // Input: none
 // Output: none
 void Tach_Init(void);
 
-// ***************** Tach_In ****************
+// ***************** Tach_Read ****************
 // Reads input from the tachometer.
 // Inputs:  none
 // Outputs: uint16_t data value read via Input Capture

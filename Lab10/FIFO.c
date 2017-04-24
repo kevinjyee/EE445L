@@ -1,3 +1,10 @@
+// FIFO.c
+// Runs on LM4F120/TM4C123
+// Allow access to a FIFO queue for storing input history from switches.
+//	Supports Get, Put, and Length queries.
+// Stefan Bordovsky and Kevin Yee
+// February 16, 2016
+
 #include <stdint.h>
 #include "FIFO.h"
 
@@ -17,7 +24,6 @@ void Fifo_Init(void){
 
 
 //------------------FIFO PUT------------------
-
 /*FIFO_Put
 1)stores a single value on the FIFO queue
 2)operates with interrupts disabled
