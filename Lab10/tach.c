@@ -62,12 +62,21 @@ uint32_t Last =0;								// Set to TIMER0_TBR_R after every measured rising edge
 uint8_t count = 0;
 uint32_t tach_avg_arr[TACH_ARR_SIZE];
 
+//------------zero_Tach_Array------------
+// Zero all values in the Tach Array.
+// Input: none
+// Output: none
 void zero_Tach_Array(){
 	for(int i = 0; i < TACH_ARR_SIZE; i++){
 		tach_avg_arr[i] = 0;
 	}
 }
 
+//------------average_Tach_Array------------
+// Average the last TACH_ARR_SIZE values in the Tachometer
+//		period value array.
+// Input: none
+// Output: uint32_t average of the last TACH_ARR_SIZE period readings.
 uint32_t average_Tach_Array(){
 	uint32_t sum = 0;
 	for(int i = 0; i < TACH_ARR_SIZE; i++){
@@ -77,6 +86,10 @@ uint32_t average_Tach_Array(){
 	return sum / TACH_ARR_SIZE;
 }
 
+//------------Tach_Init------------
+// Initialize tachometer to read data in via ADC0 (PB7)
+// Input: none
+// Output: none
 // max period is (2^24-1)*12.5ns = 209.7151ms
 // min period determined by time to run ISR, which is about 1us
 void Tach_Init(void){
@@ -121,6 +134,11 @@ void Tach_Init(void){
 	zero_Tach_Array();
 	EnableInterrupts();
 }
+
+//------------Timer0B_Handler--------
+// Triple toggle to profile ISR and measure period values from Tachometer.
+// Input: None.
+// Output: None.
 void Timer0B_Handler(void){
 	uint32_t per;
   PF2 = PF2^0x04;  // toggle PF2
@@ -139,9 +157,12 @@ void Timer0B_Handler(void){
   PF2 = PF2^0x04;  // toggle PF2
 }
 
+//------------Tach_Read--------
+// Reads out the current duty cycle.
+// Input: None.
+// Output: uint16_t value equal to period of two most recent tachometer readings.
 uint16_t Tach_Read(void)
 {
-	//TODO: Check this, this might be wrong
 	if(Done == 1 && 0xFFFFFF > Period )
 	{
 		

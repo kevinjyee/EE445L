@@ -31,7 +31,11 @@ volatile uint16_t PWMSPEED = 200;
 volatile int32_t Duty=0;
 
 
-
+//------------Timer3_Init------------
+// Initialize Timer3 with period value that selects
+//  how often to adjust motor speed.
+// Input: uint32_t reload value with 1/(BUS frequency) resolution.
+// Output: none
 void Timer3_Init(uint32_t period){
 	DisableInterrupts();
   SYSCTL_RCGCTIMER_R |= 0x08;   // 0) activate TIMER3
@@ -89,7 +93,13 @@ void Stop_Motor(){
 // Outputs: none
 void Motor_Test(void);
 
-
+//------------Debug2-------------
+// Print out motor measurements for debugging purposes.
+// Input: pwmcurrentRPS, current PWM RPS estimate.
+// 				tachcurrentRPS, current tachometer RPS estimate.
+//				duty, current duty cycle value.
+//				measuredperiod, last period measurement.
+// Output: none
 void Debug2(pwmcurrentRPS,tachcurrentRPS,duty,measuredperiod)
 {
 	UART_OutString("PWM_Speed: ");
@@ -116,23 +126,12 @@ uint32_t MeasuredPeriod;
 uint32_t TACHSpeed;
 volatile int32_t Error = 0;
 int i =0;
-/*
-void average_array(void)
-{
-	while(i < TACH_ARR_SIZE)
-	{
-		
-		i++;
-	}
-	
-}
-*/
-
-
 uint8_t k = 16;
 
-/*
-Page 330 of Book
+/**************Timer3A_Handler***************
+ Interrupt handler that implements integral motor control.
+ Inputs:  none
+ Outputs: none
 */
 void Timer3A_Handler(void){
   TIMER3_ICR_R = TIMER_ICR_TATOCINT;// acknowledge TIMER3A timeout
@@ -140,13 +139,12 @@ void Timer3A_Handler(void){
 	TACHSpeed = (800000000/MeasuredPeriod) / 4; //0.1 RPS;
 
 	Error =  PWMSPEED - TACHSpeed;
-	if(PWMSPEED < 160){
+	if(PWMSPEED < 160){ // If PWM speed slower than 16RPS, adjust speed more slowly.
 		k = 1;
-	} else{
+	} else{ // Adjust speed quickly if motor speed greater than 16RPS.
 		k = 16;
 	}
 	Duty = Duty + (k * Error)/64; //discrete integral
-	//Debug2(PWMSPEED,TACHSpeed,Duty,MeasuredPeriod);
 	if(Duty < 40){
 		Duty = 40;
 	}
@@ -158,6 +156,10 @@ void Timer3A_Handler(void){
 	
 }
 
+//------------Read_Duty--------
+// Reads out the current duty cycle.
+// Input: None.
+// Output: int32_t value equal to current PWM duty cycle reload.
 int32_t Read_Duty(void)
 {
 	return Duty;
@@ -168,9 +170,7 @@ int32_t Read_Duty(void)
 // Set the speed of the DC motor. Can be used to start the motor.
 // Input: Motor speed which corresponds to a PWM duty cycle.
 // Output: None.
-void Set_Motor_Speed(uint16_t speed){
-	//TODO: Move this to a timer handler to adjust speed
-		
+void Set_Motor_Speed(uint16_t speed){		
 		Duty = speed*100;
 		PWMSPEED = speed;
 	  PWM0A_Duty(Duty);

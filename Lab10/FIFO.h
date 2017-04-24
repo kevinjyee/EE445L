@@ -1,6 +1,6 @@
 // FIFO.h
 // Runs on LM4F120/TM4C123
-// Allow access to a FIFOqueue for storing input history from switches.
+// Allow access to a FIFO queue for storing input history from switches.
 //	Supports Get, Put, and Length queries.
 // Stefan Bordovsky and Kevin Yee
 // February 16, 2016

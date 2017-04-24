@@ -39,5 +39,8 @@ void Stop_Motor(void);
 // Outputs: none
 void Motor_Test(void);
 
-
+//------------Read_Duty--------
+// Reads out the current duty cycle.
+// Input: None.
+// Output: int32_t value equal to current PWM duty cycle reload.
 int32_t Read_Duty(void);
