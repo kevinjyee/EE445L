@@ -19,14 +19,22 @@ import unicodedata
 import webapp2
 import random
 import json
+import jinja2
+import os
 from google.appengine.ext import ndb
 
 DEFAULT_LOGBOOK_NAME = 'logbook'
+template_dir = os.path.join(os.path.dirname(__file__), 'templates')
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape= True)
 
 # We set a parent key on the 'Greetings' to ensure that they are all
 # in the same entity group. Queries across the single entity group
 # will be consistent.  However, the write rate should be limited to
 # ~1/second.
+
+def render_str(template, **params):
+    t = jinja_env.get_template(template)
+    return t.render(params)
 
 def logbook_key(logbook_name=DEFAULT_LOGBOOK_NAME):
     """Constructs a Datastore key for a logbook entity.
@@ -58,6 +66,12 @@ MAIN_PAGE_HTML = """\
 
 
 class MainPage(webapp2.RequestHandler):
+    def render(self,template,**kw):
+        self.response.out.write(render_str(template,**kw))
+
+    def write(self,*a,**kw):
+        self.response.out.write(*a,**kw)
+'''
     def get(self):
         self.response.write('</body></html>')
         self.response.write('<h2>Kevin and Stefan ft. Methamphetamines</h2>')
@@ -68,7 +82,7 @@ class MainPage(webapp2.RequestHandler):
         greetings = greetings_query.fetch()
         # [END query]
 
-        '''
+
         for i in range (0, 4):
             try:
                 test = '4000'
@@ -81,7 +95,7 @@ class MainPage(webapp2.RequestHandler):
             self.response.write("<font size='%s'" % voltage)
             self.response.write('<b>TEST</b>: <i>RUN</i> (accessed from LOCALHOST)</font>')
             self.response.write('<hr>')
-        '''
+
 
         for greeting in greetings:
             voltage = int(random.randint(0, 4000))
@@ -95,6 +109,11 @@ class MainPage(webapp2.RequestHandler):
             self.response.write('<b>%s@%s</b>: <i>%s</i> (accessed from %s)</font>' %
                                         (greeting.author, greeting.city, greeting.greet, greeting.ipaddr))
             self.response.write('<hr>')
+'''
+
+class Home(MainPage):
+    def get(self):
+        self.render('index.html')
 
 class Auto(webapp2.RequestHandler):
     def get(self):
@@ -118,6 +137,6 @@ class Auto(webapp2.RequestHandler):
         self.response.write('</body></html>')
 
 application = webapp2.WSGIApplication([
-  ('/', MainPage),
+  ('/', Home),
 	('/query', Auto)
 ], debug=True)

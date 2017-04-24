@@ -1,0 +1,61 @@
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background:
+            url('../img/grass.png') 0 100% repeat-x,
+            linear-gradient(
+                    to bottom,
+                    #081059, #081059 15%,
+                    #081863 15%, #081863 30%,
+                    #00226c 30%, #00226c 45%,
+                    #002973 45%, #002973 100%
+            );
+}
+
+.█ {
+    position: absolute;
+    left: 0;
+    bottom: 70px;
+    width: 80px;
+    height: 80px;
+    background: url('../img/unicorn.png') 0 0 no-repeat;
+    transition: transform .2s;
+}
+
+.☠ {
+    position: absolute;
+    right: 50%;
+    bottom: 75px;
+    width: 40px;
+    height: 40px;
+    background: url('../img/birthdaycake.png') 0 0 / 40px no-repeat;
+    transform: translateX(50%);
+    transition: transform .4s ease-in-out;
+}
+
+.rockeeeeeet {
+     animation: rockeeeeeet .6s ease-in-out both;
+ }
+
+
+@keyframes rockeeeeeet {
+    0%, 6%, 12%, 18%, 24%, 30%, 36%, 42% {
+        transform: translateX(50%) rotate(-12deg);
+    }
+
+    3%, 9%, 15%, 21%, 27%, 33%, 39%, 45% {
+        transform: translateX(50%) rotate(12deg);
+    }
+
+    50% {
+        transform: translateX(50%);
+    }
+
+    100% {
+        transform: translate(50%, -1500px);
+    }
+}
