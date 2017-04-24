@@ -1,0 +1,150 @@
+#wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0px auto;
+  height: 400px;
+  width: 800px;
+  border: 1px solid black;
+  background: url('../img/Grunge-Parchment-Paper-Texture.jpg') no-repeat;
+  background-size: 100% 100%;
+}
+
+.name {
+  display: block;
+  height: 40px;
+  width: 150px;
+
+  text-align: center;
+  padding: 0px;
+  line-height: 5px;
+  position: absolute;
+  top: 90px;
+  right: 15%;
+
+}
+
+
+@import 'https://fonts.googleapis.com/css?family=Galdeano';
+.name h2 {
+  font-family: 'Galdeano';
+
+}
+
+.leftfoot1:nth-child(1) {
+  height: 20px;
+  position: absolute;
+  bottom: 10px;
+  -webkit-transform: rotateZ(180deg);
+  -moz-transform: rotateZ(180deg);
+  -ms-transform: rotateZ(180deg);
+  -o-transform: rotateZ(180deg);
+  transform: rotateZ(180deg);
+  -webkit-animation: one 22s infinite;
+  -moz-animation: one 22s infinite;
+  -ms-animation: one 22s infinite;
+  -o-animation: one 22s infinite;
+  animation: one 22s infinite;
+  opacity: 0;
+}
+
+.right:nth-child(2) {
+  position: absolute;
+  height: 20px;
+  -webkit-transform: rotateX(180deg) rotateZ(180deg);
+  -moz-transform: rotateX(180deg) rotateZ(180deg);
+  -ms-transform: rotateX(180deg) rotateZ(180deg);
+  -o-transform: rotateX(180deg) rotateZ(180deg);
+  transform: rotateX(180deg) rotateZ(180deg);
+  bottom: 40px;
+  left: 50px;
+  -webkit-animation: one 22s infinite;
+  -moz-animation: one 22s infinite;
+  -ms-animation: one 22s infinite;
+  -o-animation: one 22s infinite;
+  animation: one 22s infinite;
+  -webkit-animation-delay: .5s;
+  -moz-animation-delay: .5s;
+  -ms-animation-delay: .5s;
+  -o-animation-delay: .5s;
+  animation-delay: .5s;
+  opacity: 0;
+}
+
+
+
+
+@-webkit-keyframes one {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@-moz-keyframes one {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@-ms-keyframes one {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@-o-keyframes one {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@-keyframes one {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
