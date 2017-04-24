@@ -113,7 +113,14 @@ class MainPage(webapp2.RequestHandler):
 
 class Home(MainPage):
     def get(self):
-        self.render('index.html')
+
+        # [START query]
+        greetings_query = Greeting.query(
+            ancestor=logbook_key('logbook')).order(-Greeting.date)
+        greetings = greetings_query.fetch()
+        # [END query]
+        template = jinja_env.get_template('index.html')
+        self.response.out.write(template.render(entries=greetings))
 
 class Auto(webapp2.RequestHandler):
     def get(self):
