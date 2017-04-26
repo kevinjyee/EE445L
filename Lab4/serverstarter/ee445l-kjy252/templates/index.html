@@ -1,57 +1,35 @@
-<head>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>SoundTrack to My Life</title>
+        <ul class="list-group">
+        {% if message %}
+        <div id="message">
+             {{ message.greet }}
 
-    <link rel="stylesheet" type="text/css" href="src/css/footsteps.css">
-</head>
-<div id="wrap">
-
-
-  <img class="leftfoot1" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-  <img class="right" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-
-  <img class="leftfoot1" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-  <img class="right" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-  <img class="leftfoot1" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-  <img class="right" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-  <img class="leftfoot1" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-  <img class="right" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-  <img class="leftfoot1" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-  <img class="right" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-  <img class="leftfoot1" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-  <img class="right" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-  <img class="leftfoot1" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-  <img class="right" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-  <img class="leftfoot1" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-  <img class="right" src="http://www.clipartbest.com/cliparts/nTB/pK7/nTBpK7GTA.svg" alt="footprint" />
-
-
-
-
-  <div class="name">
-    <h2>Step Count: 0</h2></div>
-
-<ul class="list-group">
-        {% for entry in entries %}
-        <li class="list-group-item" class=entry>{{ entry.greet }}</li>
-        {% endfor %}
+         </div>
+        {% endif %}
       </ul>
+	</head>
+	<body>
+		<script src="src/js/canvas.js">
 
-    </script>
+        </script>
 
-<script src="src/js/movefoot.js"></script>
+    <script type="text/javascript">
+    function reload(){
+            var container = document.getElementById("message");
+            var content = container.innerHTML;
+            container.innerHTML= content;
+        }
+</script>
+<a href="javascript: reload()">Reload</a>
 
-</div>
+        <script>
+    setTimeout(function(){
+   window.location.reload(1);
+}, 5000);
+ </script>
+	</body>
+</html>

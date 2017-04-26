@@ -120,8 +120,8 @@ class Home(MainPage):
         greetings = greetings_query.fetch()
         # [END query]
         template = jinja_env.get_template('index.html')
-        self.response.out.write(template.render(entries=greetings))
-
+        #self.response.out.write(template.render(entries=greetings))
+        self.response.out.write(template.render({"message" : greetings[0]}))
 class Auto(webapp2.RequestHandler):
     def get(self):
         #comment these three lines for debugging; So we can access it through a browser
