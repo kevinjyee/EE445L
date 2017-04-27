@@ -48,8 +48,8 @@
 // SDO  – (NC) I2C alternate address for ADXL345 accelerometer
 // Backlight + - Light, backlight connected to +3.3 V
 
-#define SDC_CS_PB0 1
-#define SDC_CS_PD7 0
+#define SDC_CS_PB0 0
+#define SDC_CS_PD7 1
 #define TFT_CS                  (*((volatile unsigned long *)0x40004020))
 #define TFT_CS_LOW              0           // CS normally controlled by hardware
 #define TFT_CS_HIGH             0x08
