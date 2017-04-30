@@ -79,7 +79,7 @@ void DelayWait2ms(uint32_t n){uint32_t volatile time;
 }
 
 char Fetch[] = "GET /data/2.5/weather?q=Austin%20Texas&APPID=1bc54f645c5f1c75e681c102ed4bbca4&units=metric HTTP/1.1\r\nUser-Agent: Keil\r\nHost:api.openweathermap.org\r\nAccept: */*\r\n\r\n";
-char REQUESTT[] ="GET /query?city=Austin%2C%20Texas&id=Kevin%20and%20Stefan&greet=esptest3 HTTP/1.1\r\nUser-Agent: Keil\r\nHost: ee445l-kjy252.appspot.com\r\n\r\n";
+char REQUESTT[] ="GET /query?city=Austin%2C%20Texas&id=Kevin%20and%20Stefan&greet=esptest4 HTTP/1.1\r\nUser-Agent: Keil\r\nHost: ee445l-kjy252.appspot.com\r\n\r\n";
 // 1) go to http://openweathermap.org/appid#use 
 // 2) Register on the Sign up page
 // 3) get an API key (APPID) replace the 1234567890abcdef1234567890abcdef with your APPID
@@ -97,7 +97,7 @@ void init_All(){
       
       ESP8266_SendTCP(REQUESTT);
     }
-		ESP8266_CloseTCPConnection();
+		
 	Switch_Init();
 	Accel_Init();
 	
@@ -116,11 +116,11 @@ int main(void){
   uint32_t input,lastinput = 0x00;
 	
   while(1){
-		if(ESP8266_MakeTCPConnection("ee445l-kjy252.appspot.com")){ // open socket in server
+		
       
       ESP8266_SendTCP(REQUESTT);
-    }
-		ESP8266_CloseTCPConnection();
+    
+
 
     if(Fifo_Get(&input))
 		{
