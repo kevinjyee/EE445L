@@ -116,6 +116,11 @@ int main(void){
   uint32_t input,lastinput = 0x00;
 	
   while(1){
+		if(ESP8266_MakeTCPConnection("ee445l-kjy252.appspot.com")){ // open socket in server
+      
+      ESP8266_SendTCP(REQUESTT);
+    }
+		ESP8266_CloseTCPConnection();
 
     if(Fifo_Get(&input))
 		{
