@@ -1,142 +1,151 @@
-window.onresize = function() {
-  var width = window.innerWidth - 40,
-      height = window.innerHeight - 40;
-  
-  var canvas = document.getElementsByTagName('canvas')[0];
-  canvas.width = width;
-  canvas.height = height;
-  canvas.style.width = width + "px";
-  canvas.style.height = height + "px";
-};
 
-// Create the canvas
-var canvas = document.createElement("canvas");
-var ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-canvas.style.width = canvas.width + "px";
-canvas.style.height = canvas.height + "px";
-document.body.appendChild(canvas);
+var responsiveOptions = [
+  ['screen and (max-width: 640px)', {
+    height: 235,
+    width: 350,
+    showArea: false,
+    axisX: {
+    showLabel: false,
+    showGrid: false
+   }
+  }]
+];
 
-var message = {};
-// Background image
-var bgReady = false;
-var bgImage = new Image();
-bgImage.onload = function () {
-	bgReady = true;
-};
-bgImage.src = "https://raw.github.com/lostdecade/simple_canvas_game/master/images/background.png";
+var chart = new Chartist.Line('.ct-chart', {
+  labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+  series: [
+    [10, 6, 7, 8, 5, 4, 6, 2, 3, 3, 4, 6]
+  ]
+}, {
+  height: 235,
+  width: 850,
+  showArea: false,
+   axisX: {
+    showLabel: false,
+    showGrid: false
+  },
+   axisY: {
+    showLabel: false,
+    showGrid: false
+  },
+  low: 0
+},
 
-// Hero image
-var heroReady = false;
-var heroImage = new Image();
-heroImage.onload = function () {
-	heroReady = true;
-};
-heroImage.src = "https://raw.github.com/lostdecade/simple_canvas_game/master/images/hero.png";
+responsiveOptions);
 
-// Monster image
-var monsterReady = false;
-var monsterImage = new Image();
-monsterImage.onload = function () {
-	monsterReady = true;
-};
-monsterImage.src = "https://raw.github.com/lostdecade/simple_canvas_game/master/images/monster.png";
+// Let's put a sequence number aside so we can use it in the event callbacks
+var seq = 0,
+  delays = 80,
+  durations = 500;
 
-// Game objects
-var hero = {
-	speed: 256 // movement in pixels per second
-};
-var monster = {};
-var monstersCaught = 0;
+// Once the chart is fully created we reset the sequence
+chart.on('created', function() {
+  seq = 0;
+});
 
-// Handle keyboard controls
-var keysDown = {};
+// On each drawn element by Chartist we use the Chartist.Svg API to trigger SMIL animations
+chart.on('draw', function(data) {
+  seq++;
 
-addEventListener("keydown", function (e) {
-	keysDown[e.keyCode] = true;
-}, false);
+  if(data.type === 'line') {
+    // If the drawn element is a line we do a simple opacity fade in. This could also be achieved using CSS3 animations.
+    data.element.animate({
+      opacity: {
+        // The delay when we like to start the animation
+        begin: seq * delays + 1000,
+        // Duration of the animation
+        dur: durations,
+        // The value where the animation should start
+        from: 0,
+        // The value where it should end
+        to: 1
+      }
+    });
+  } else if(data.type === 'label' && data.axis === 'x') {
+    data.element.animate({
+      y: {
+        begin: seq * delays,
+        dur: durations,
+        from: data.y + 100,
+        to: data.y,
+        // We can specify an easing function from Chartist.Svg.Easing
+        easing: 'easeOutQuart'
+      }
+    });
+  } else if(data.type === 'label' && data.axis === 'y') {
+    data.element.animate({
+      x: {
+        begin: seq * delays,
+        dur: durations,
+        from: data.x - 100,
+        to: data.x,
+        easing: 'easeOutQuart'
+      }
+    });
+  } else if(data.type === 'point') {
+    data.element.animate({
+      x1: {
+        begin: seq * delays,
+        dur: durations,
+        from: data.x - 10,
+        to: data.x,
+        easing: 'easeOutQuart'
+      },
+      x2: {
+        begin: seq * delays,
+        dur: durations,
+        from: data.x - 10,
+        to: data.x,
+        easing: 'easeOutQuart'
+      },
+      opacity: {
+        begin: seq * delays,
+        dur: durations,
+        from: 0,
+        to: 1,
+        easing: 'easeOutQuart'
+      }
+    });
+  } else if(data.type === 'grid') {
+    // Using data.axis we get x or y which we can use to construct our animation definition objects
+    var pos1Animation = {
+      begin: seq * delays,
+      dur: durations,
+      from: data[data.axis.units.pos + '1'] - 30,
+      to: data[data.axis.units.pos + '1'],
+      easing: 'easeOutQuart'
+    };
 
-addEventListener("keyup", function (e) {
-	delete keysDown[e.keyCode];
-}, false);
+    var pos2Animation = {
+      begin: seq * delays,
+      dur: durations,
+      from: data[data.axis.units.pos + '2'] - 100,
+      to: data[data.axis.units.pos + '2'],
+      easing: 'easeOutQuart'
+    };
 
-// Reset the game when the player catches a monster
-var reset = function () {
-	hero.x = canvas.width / 2;
-	hero.y = canvas.height / 2;
+    var animations = {};
+    animations[data.axis.units.pos + '1'] = pos1Animation;
+    animations[data.axis.units.pos + '2'] = pos2Animation;
+    animations['opacity'] = {
+      begin: seq * delays,
+      dur: durations,
+      from: 0,
+      to: 1,
+      easing: 'easeOutQuart'
+    };
 
-	// Throw the monster somewhere on the screen randomly
-	monster.x = 32 + (Math.random() * (canvas.width - 64));
-	monster.y = 32 + (Math.random() * (canvas.height - 64));
-};
+    data.element.animate(animations);
+  }
+});
 
-// Update game objects
-var update = function (modifier) {
-	if (38 in keysDown) { // Player holding up
-		hero.y -= hero.speed * modifier;
-	}
-	if (40 in keysDown) { // Player holding down
-		hero.y += hero.speed * modifier;
-	}
-	if (37 in keysDown) { // Player holding left
-		hero.x -= hero.speed * modifier;
-	}
-	if (39 in keysDown) { // Player holding right
-		hero.x += hero.speed * modifier;
-	}
+// For the sake of the example we update the chart every time it's created with a delay of 10 seconds
+chart.on('created', function() {
+  if(window.__exampleAnimateTimeout) {
+    clearTimeout(window.__exampleAnimateTimeout);
+    window.__exampleAnimateTimeout = null;
+  }
+  window.__exampleAnimateTimeout = setTimeout(chart.update.bind(chart), 12000);
+});
 
-	// Are they touching?
-	if (
-		hero.x <= (monster.x + 32)
-		&& monster.x <= (hero.x + 32)
-		&& hero.y <= (monster.y + 32)
-		&& monster.y <= (hero.y + 32)
-	) {
-		++monstersCaught;
-		reset();
-	}
-};
 
-// Draw everything
-var render = function () {
-	if (bgReady) {
-		ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
-	}
-
-	if (heroReady) {
-		ctx.drawImage(heroImage, hero.x, hero.y);
-	}
-
-	if (monsterReady) {
-		ctx.drawImage(monsterImage, monster.x, monster.y);
-	}
-
-	// Score
-
-	ctx.fillStyle = "rgb(250, 250, 250)";
-	ctx.font = "24px Helvetica";
-	ctx.textAlign = "left";
-	ctx.textBaseline = "top";
-    var text = document.getElementById("message").textContent
-
-    var text = document.getElementById("message").textContent
-    console.log(text);
-	ctx.fillText("Goblins caught: " + text, 32, 32);
-};
-
-// The main game loop
-var main = function () {
-	var now = Date.now();
-	var delta = now - then;
-
-	update(delta / 1000);
-	render();
-
-	then = now;
-};
-
-// Let's play this game!
-reset();
-var then = Date.now();
-setInterval(main, 1); // Execute as fast as possible

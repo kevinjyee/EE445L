@@ -1,35 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>SoundTrack to My Life</title>
-        <ul class="list-group">
-        {% if message %}
-        <div id="message">
-             {{ message.greet }}
+<link rel="stylesheet" type="text/css" href="src/css/footsteps.css" />
+<div class="page page-home" style="display:block">
+  <div class="bg"></div>
+  <div class="overlay"></div>
+  <div class="panel panel-time" id = "firstpan">
+    <div class="span time" id ="TIME"><div class="t">8:00</div></div>
+    <div class="span date" id ="DATE"><div class="digit">1 May 2017</div></div>
+  </div>
+  <div class="panel panel-weather">
+    <div class="location">Austin, Texas</div>
+    <!--.icon.wi.wi-day-sunny-overcast--><img src="http://ultraimg.com/images/KlfpUAu.png"/>
+    <div class="span temp">76<span class="degree">&deg;F</span></div>
+    <div class="span text">Sunny</div>
+  </div>
+  <div class="panel panel-calendar">
+    <ul>
+      <li>
+        <div class="time">8:00 - 9:00</div>
+        <div class="title">Shopping</div>
+      </li>
+      <li>
+        <div class="time">10:00 - 12:00</div>
+        <div class="title">Meet Stefan</div>
+      </li>
+      <li>
+        <div class="time">18:00 - 20:00</div>
+        <div class="title">Go to cinema</div>
+      </li>
+    </ul>
+  </div>
+  <div class="panel panel-tasks">
+    <ul>
+      <li class="c">
+        <div class="check"></div>
+        <div class="title"> {% if message %}
+        <div id="message1">
+             Step Count: {{ message.greet }}
 
          </div>
-        {% endif %}
-      </ul>
-	</head>
-	<body>
-		<script src="src/js/canvas.js">
+        {% endif %}</div>
+      </li>
+      <li>
+        <div class="check"></div>
+        <div class="title">{% if message %}
+        <div id="message2">
+             Distance Traveled: {{ message.greet }}
 
-        </script>
+         </div>
+        {% endif %}</div>
+      </li>
+      <li>
+        <div class="check"></div>
+        <div class="title">{% if message %}
+        <div id="message3">
+             Calories Burned: {{ message.greet }}
 
-    <script type="text/javascript">
-    function reload(){
-            var container = document.getElementById("message");
-            var content = container.innerHTML;
-            container.innerHTML= content;
-        }
-</script>
-<a href="javascript: reload()">Reload</a>
+         </div>
+        {% endif %}</div>
+      </li>
 
-        <script>
-    setTimeout(function(){
-   window.location.reload(1);
-}, 5000);
+    </ul>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="src/js/animate.js">
  </script>
-	</body>
-</html>
+  </div>
+
+
+</div>

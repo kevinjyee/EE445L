@@ -1,42 +1,63 @@
-'use strict';
-var unicorn = document.querySelector('.█'),
-    cake = document.querySelector('.☠'),
-    cakePosition = cake.offsetLeft,
-    start = 0,
-    step = 20,
-    isFlipped = false,
-    unicornLength = unicorn.clientWidth;
+$(document).ready(function () {
+// Create two variables with names of months and days of the week in the array
+var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ]; 
+var dayNames= ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
 
-window.addEventListener('keydown', event => {
-    var code = event.keyCode;
-
-if (code === 39 || code === 37) {
-    isFlipped = code === 37;
-
-    start += code === 39 ? step : -step;
-
-    if (start < 0) {
-        start = 0;
-    } else if (start + unicornLength > window.innerWidth) {
-        start = window.innerWidth - unicornLength;
-    }
-
-    if (!cake.classList.contains('rockeeeeeet') && start + unicornLength / 2 >= cakePosition) {
-        cake.classList.add('rockeeeeeet');
-    }
-
-    unicorn.style.transform = `translateX(${start}px)${isFlipped ? ' rotateY(180deg)' : ''}`;
+function updateClock(id,newValue)
+{
+    $(id).toggleClass('halfRotation').text(newValue);
 }
 
-if (code === 32) {
-    unicorn.style.transform = `translateX(${start}px)${isFlipped ? ' rotateY(180deg)' : ''} rotateZ(-30deg)`;
-}
-});
 
-cake.addEventListener('animationend', function() {
-   // var music = document.createElement('iframe');
-    //music.setAttribute('hidden', true);
-    //music.setAttribute('src', 'https://www.youtube.com/embed/Qwscb3QIVSg?rel=0&amp;showinfo=0&amp;autoplay=1');
-    //document.body.appendChild(music);
-    //window.location.href = "birthdaycard.html"
+
+
+
+setInterval( function() {
+    // Create an object newDate () and extract the clock from the current time
+    var hours = new Date().getHours();
+    // Add a leading zero to the value of hours
+    hours = (hours < 10 ? "0" : "")  + hours;
+    console.log(hours);
+        var minutes = new Date().getMinutes();
+    // Add a leading zero to the minutes
+    minutes =( minutes < 10 ? "0" : "" ) + minutes;
+    console.log(minutes);
+    var finaltime = hours +":" +minutes;
+    updateClock('#firstpan .TIME .t',finaltime)
+    }, 1000);
+
+
+// Create an object newDate()
+var newDate = new Date();
+// Retrieve the current date from the Date object
+newDate.setDate(newDate.getDate());
+// At the output of the day, date, month and year
+var newVal = dayNames[newDate.getDay()] + " " + newDate.getDate() + ' ' + monthNames[newDate.getMonth()] + ' ' + newDate.getFullYear();
+
+updateClock('#firstpan .DATE .digit',newVal)
+//$('#DATE .digit:last-child').text(dayNames[newDate.getDay()] + " " + newDate.getDate() + ' ' + monthNames[newDate.getMonth()] + ' ' + newDate.getFullYear());
+//$('#Date').html(dayNames[newDate.getDay()] + " " + newDate.getDate() + ' ' + monthNames[newDate.getMonth()] + ' ' + newDate.getFullYear());
+
+/*
+setInterval( function() {
+    // Create an object newDate () and extract the second of the current time
+    var seconds = new Date().getSeconds();
+    // Add a leading zero to the value of seconds
+    $("#sec").html(( seconds < 10 ? "0" : "" ) + seconds);
+    },1000);
+    
+setInterval( function() {
+    // Create an object newDate () and extract the minutes of the current time
+    var minutes = new Date().getMinutes();
+    // Add a leading zero to the minutes
+    $("#min").html(( minutes < 10 ? "0" : "" ) + minutes);
+    },1000);
+    
+setInterval( function() {
+    // Create an object newDate () and extract the clock from the current time
+    var hours = new Date().getHours();
+    // Add a leading zero to the value of hours
+    $("#hours").html(( hours < 10 ? "0" : "" ) + hours);
+    }, 1000);
+    */
 });
