@@ -14,6 +14,7 @@
 #include "SongScreen.h"
 #include "SongMenu.h"
 #include "Graphics.h"
+#include "Music.h"
 
 #define XTITLE 5
 #define YTITLE 0

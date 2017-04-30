@@ -70,18 +70,18 @@ void unlock_PF0(){
 }
 
 
-/*
+
 // **************GPIOArm*********************
 // Initialize switch key inputs, called once 
 // Input: none 
 // Output: none
-static void GPIOArm_PortE(void){
-  GPIO_PORTE_ICR_R = 0x08;      // (e) clear flags
-  GPIO_PORTE_IM_R |= 0x08;      // (f) arm interrupt on PA3-0 *** No IME bit as mentioned in Book ***
+static void GPIOArm_PortA(void){
+  GPIO_PORTE_ICR_R = 0x02;      // (e) clear flags
+  GPIO_PORTE_IM_R |= 0x02;      // (f) arm interrupt on PA3-0 *** No IME bit as mentioned in Book ***
   NVIC_PRI1_R = (NVIC_PRI1_R&0xFFFFFFF1F)|0x000000A0; //priority 5
-	NVIC_EN0_R = SYSCTL_RCGC2_GPIOE;
+	NVIC_EN0_R = 0;
 }
-*/
+
 // **************Switch_Init*********************
 // Initialize switch key inputs, called once 
 // Input: none 
@@ -105,20 +105,20 @@ void PortF_Init(void){
 	
 }
 
-/*
+
 void PortA_Init(void){
 	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOA; // activate port A
 	while((SYSCTL_PRGPIO_R&0x01)==0){};
-  GPIO_PORTA_DIR_R &=~ 0x01;      // make PF4-0 in make the input pins
-  GPIO_PORTA_AFSEL_R &= ~0x01;   // disable alt funct on PA0
-	GPIO_PORTA_AMSEL_R &= ~0x01;      // no analog on PA0
-	GPIO_PORTA_PDR_R |= 0x01;				//Pull Down Resistor
-  GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R&0xFFF0FFFF)+0x00000000; //Port 0 Regulat function. Everything else LCD
-  GPIO_PORTA_DEN_R |= 0x01;      // enable digital I/O on PA0
-	GPIO_PORTA_IS_R &= ~0x01;         // 8) edge-sensitive
-  GPIO_PORTA_IBE_R |= 0x01;        // 9) both edges
+  GPIO_PORTA_DIR_R &=~ 0x02;      // make PF4-0 in make the input pins
+  GPIO_PORTA_AFSEL_R &= ~0x02;   // disable alt funct on PA0
+	GPIO_PORTA_AMSEL_R &= ~0x02;      // no analog on PA0
+	GPIO_PORTA_PDR_R |= 0x02;				//Pull Down Resistor
+  GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R&0xFFFFFFFF)+0x00000000; //Port 0 Regulat function. Everything else LCD
+  GPIO_PORTA_DEN_R |= 0x02;      // enable digital I/O on PA0
+	GPIO_PORTA_IS_R &= ~0x02;         // 8) edge-sensitive
+  GPIO_PORTA_IBE_R |= 0x02;        // 9) both edges
 }
-*/
+
 
 // **************Switch_In*********************
 // Input from Switch key inputs 
@@ -137,10 +137,10 @@ uint32_t Switch_In(void){
 // Input: none 
 // Output: 1 to 3 depending on keys
 // 0x01 is just Key0, 0x02 is just Key1, 0x04 is just Key2
-/*
+
 void GPIOPortA_Handler(void)
 {
-	GPIO_PORTA_IM_R &= ~0x01; // disarm interrupt on PA so we dont get double clicks
+	GPIO_PORTA_IM_R &= ~0x02; // disarm interrupt on PA so we dont get double clicks
 	long i_bit = StartCritical();
 	timeout_Count = 0;
 	EndCritical(i_bit);
@@ -150,7 +150,7 @@ void GPIOPortA_Handler(void)
   }
 	Timer2Arm(); //arm the timer again to be ready for countdown
 }
-*/
+
 
 /*
 // **************PortE_Handler********************
@@ -188,16 +188,16 @@ void GPIOPortF_Handler(void){
 
 void Timer2A_Handler(void){
   TIMER2_IMR_R = 0x00000000;    // disarm timeout interrupt
-	//LastA = (0x08 & GPIO_PORTE_DATA_R); //get inputs of switches from Port A (Port E in debugging mode)
+	LastA = (0x08 & GPIO_PORTE_DATA_R); //get inputs of switches from Port A (Port E in debugging mode)
 	LastF = (0x1F & GPIO_PORTF_DATA_R);		//get inputs of switches  // switch state
 	GPIOArm_PortF(); //Timer is done, so arm the handler to listen
 //	GPIOArm_PortE();
-	//GPIOArm_PortA();
+	GPIOArm_PortA();
 }
 
 void Switch_Init(void){
 	Fifo_Init(); 
 	PortF_Init();
-	//PortAInit(); only initilialize Port A on actual board
+	PortA_Init();// only initilialize Port A on actual board
 	Timer2Arm();
 }

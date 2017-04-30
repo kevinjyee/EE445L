@@ -713,6 +713,7 @@ void static commonInit(const uint8_t *cmdList) {
 
   // toggle RST low to reset; CS low so it'll listen to us
   // SSI0Fss is temporarily used as GPIO
+	
   GPIO_PORTA_DIR_R |= 0xC8;             // make PA3,6,7 out
   GPIO_PORTA_AFSEL_R &= ~0xC8;          // disable alt funct on PA3,6,7
   GPIO_PORTA_DEN_R |= 0xC8;             // enable digital I/O on PA3,6,7
