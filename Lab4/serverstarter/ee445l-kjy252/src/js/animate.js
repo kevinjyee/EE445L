@@ -22,7 +22,10 @@ setInterval( function() {
     // Add a leading zero to the minutes
     minutes =( minutes < 10 ? "0" : "" ) + minutes;
     console.log(minutes);
-    var finaltime = hours +":" +minutes;
+    var seconds = new Date().getSeconds();
+    // Add a leading zero to the value of seconds
+    seconds = (seconds < 10 ? "0" : "" ) + seconds;
+    var finaltime = hours +":" +minutes +":" +seconds;
     updateClock('#firstpan .TIME .t',finaltime)
     }, 1000);
 

@@ -121,7 +121,18 @@ class Home(MainPage):
         # [END query]
         template = jinja_env.get_template('index.html')
         #self.response.out.write(template.render(entries=greetings))
-        self.response.out.write(template.render({"message" : greetings[0]}))
+        stepcntarr = [None]*3;
+        stepcntarr[1] = "None";
+        stepcntarr[2] = "None";
+        if(greetings[0].greet.isdigit()):
+            stepcntarr[0] = str(float(greetings[0].greet));
+            stepcntarr[1] = str(float(stepcntarr[0]*2)/5280);
+            stepcntarr[2] -str(float(stepcntarr[1]/2*1.25));
+        else:
+            stepcntarr[0] = greetings[0].greet;
+            stepcntarr[1] = "None";
+            stepcntarr[2] = "None";
+        self.response.out.write(template.render({"message" : stepcntarr}))
 class Auto(webapp2.RequestHandler):
     def get(self):
         #comment these three lines for debugging; So we can access it through a browser
