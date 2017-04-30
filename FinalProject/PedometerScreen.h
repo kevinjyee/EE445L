@@ -1,0 +1,1 @@
+uint32_t PedometerScreen(uint32_t input);
