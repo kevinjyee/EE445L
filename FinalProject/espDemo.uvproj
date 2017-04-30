@@ -421,11 +421,6 @@
               <FilePath>.\pll.c</FilePath>
             </File>
             <File>
-              <FileName>ADCTestMain.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\ADCTestMain.c</FilePath>
-            </File>
-            <File>
               <FileName>FIFOqueue.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\FIFOqueue.c</FilePath>
@@ -449,11 +444,6 @@
               <FileName>LCD.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\LCD.c</FilePath>
-            </File>
-            <File>
-              <FileName>PWMSine.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\PWMSine.c</FilePath>
             </File>
             <File>
               <FileName>Song.c</FileName>

@@ -30,8 +30,6 @@
 #include <stdint.h>
 #include "../inc/tm4c123gh6pm.h"
 #include "Timer3.h"
-#include "PWMSine.h"
-#include "FSM.h"
 
 #define RELOAD_100Hz	0x7A120 // Reload value for an interrupt frequency of 10Hz.
 

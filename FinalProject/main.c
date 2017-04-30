@@ -43,6 +43,7 @@
 #include "TitleScreen.h"
 #include "Accelerometer.h"
 #include "SongMenu.h"
+#include "AccelAvgFIFO.h"
 
 #define SYSTICK_RELOAD	0x4C4B40 // Reload value for an interrupt frequency of 10Hz.
 
@@ -64,7 +65,9 @@ void WaitForInterrupt(void);  // low power mode
 //volatile uint32_t Switch1 = 0;
 volatile unsigned long LastE = 0; 
 char Play_Toggled;
-
+extern volatile uint32_t stepCount;
+extern volatile uint32_t XThresh, YThresh, ZThresh;
+extern volatile uint32_t XAvg, YAvg, ZAvg;
 /*Function: DelayWait2ms
 *
 */
@@ -129,16 +132,14 @@ void init_All(){
       
       ESP8266_SendTCP(REQUESTT);
     }
-		
 	Switch_Init();
 	Accel_Init();
-	
-
-	ST7735_InitR(INITR_REDTAB);
-	ST7735_FillScreen(ST7735_WHITE);
 	SongMenu_Init();
 	DAC_Init(0);
 	Heap_Init();
+	ST7735_InitR(INITR_REDTAB);
+	ST7735_FillScreen(ST7735_WHITE);
+
 	
 }
 int main(void){  
@@ -150,7 +151,7 @@ int main(void){
   while(1){
 		
       
-    sendSteps(0); //TODO: Maybe send every 5 steps? 
+    //sendSteps(0); //TODO: Maybe send every 5 steps? 
     
 
 

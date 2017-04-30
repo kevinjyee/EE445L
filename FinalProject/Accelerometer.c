@@ -1,24 +1,24 @@
+/* File Name:    Accelerometer.c
+ * Authors:      Kevin Yee (kjy252), Stefan Bordovsky (sb39782)
+ * Created:      01/19/2017
+ * Description:  Measures acceleromter data and does stuff with it.
+ * 
+ * Lab Number: MW 330-500
+ * TA: Mahesh
+ * Last Revised: 4/07/2017
+*/ 
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
 #include "../inc/tm4c123gh6pm.h"
 #include "PLL.h"
-#include "ST7735.h"
-#include "SysTick.h"
-#include "PWMSine.h"
-#include "Switch.h"
-#include "FIFOqueue.h"
-#include "FSM.h"
-#include "LCD.h"
-#include "Timer0A.h"
-#include "Timer1.h"
-#include "Timer3.h"
-#include "Music.h"
-#include "DAC.h"
 #include "Timer4.h"
 #include "Accelerometer.h"
 #include "Timer5.h"
-#include "fixed.h"
+#include "AccelAvgFIFO.h"
+#include "SysTick.h"
+#include "Music.h"
 
 /*
 PE0: X-Accel
@@ -26,7 +26,20 @@ PE1: Y-Accel
 PE2: Z-Accel
 */
 
-#define TIMER4_RELOAD	0x4C4B40 // Reload value for an interrupt frequency of 10Hz. 5000000
+#define TIMER4_RELOAD	0x186A00 // Reload value for an interrupt frequency of 50Hz. 1600000
+#define BOLUS_END 26 // Need to append 0 at end of bolus array.
+#define BOLUS_START 0
+#define UPPER_BOUND 200
+#define LOWER_BOUND 60
+#define MOVE_BOUND 10
+
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
+uint16_t bolus_index = BOLUS_END;
+int16_t current_tempo = 0;
+uint16_t upper_bound = UPPER_BOUND;
+//uint16_t lower_bound;
 
 uint32_t threshhold= 3524;
 uint32_t xval[100] = {0};
@@ -43,7 +56,7 @@ uint32_t zthreshold2 = 1900;
 uint32_t accel_buffer[3] = {0,0,0};
 
 extern volatile int prevsteps;
-extern volatile int steps;
+volatile int steps = 0;
 volatile int stepsper2sec =0;
 volatile int Timer5Time =0;
 volatile int Timer4Time =0;
@@ -67,10 +80,12 @@ void BPM_Calc()
 	}
 	if(total_time > 0)
 	{
+		/*
 		BPM = ((BPMsteps)*1000)/(total_time * 3);
 		if(Playing){
 			Change_Tempo(BPM);
 		}
+		*/
 		//BPM /= 1000;
 	}
 	if(total_time > 100){
@@ -98,6 +113,7 @@ void Calculate_Steps(){
 			xval[i] = accel_buffer[XACCEL];
 			yval[i] = accel_buffer[YACCEL];
 			zval[i] = accel_buffer[ZACCEL];
+			
 			totalvector[i] = sqrt(((xaccl[i]-xavg)* (xaccl[i]-xavg))+ ((yaccl[i] - yavg)*(yaccl[i] - yavg)) + ((zval[i] - zavg)*(zval[i] - zavg)));
 			if(i >= 1)
 			{
@@ -162,16 +178,6 @@ void ADCin_Init(){
 	
 }
 
-
-void Accel_Init(void) {
-	GPIO_Init();
-	ADCin_Init();
-	Timer4_Init(&Calculate_Steps,TIMER4_RELOAD);
-	Timer5_Init(320000000);//Every 2 seconds
-	//Reserve PA0 to debug init code in the final PCB
-	
-}
-
 //------------ADC_In321------------
 // Busy-wait Analog to digital conversion
 // Input: none
@@ -186,12 +192,70 @@ void Accel_Init(void) {
 void ADC_In321(uint32_t data[3]){ 
   ADC0_PSSI_R = 0x0004;            // 1) initiate SS2
   while((ADC0_RIS_R&0x04)==0){};   // 2) wait for conversion done
-	data[0] = ADC0_SSFIFO2_R&0xFFF;	
-  data[1] = ADC0_SSFIFO2_R&0xFFF;  // 3A) read first result
-  data[2] = ADC0_SSFIFO2_R&0xFFF;  // 3B) read second result
+	data[0] = ADC0_SSFIFO2_R&0xFFF;	 // 3A) read first result
+  data[1] = ADC0_SSFIFO2_R&0xFFF;  // 3B) read second result
+  data[2] = ADC0_SSFIFO2_R&0xFFF;  // 3C) read third result
   ADC0_ISC_R = 0x0004;             // 4) acknowledge completion
 }
 
+// ***************** manage_Bounds ****************
+// Dynamically change tempo bounds.
+// Inputs:  none
+// Outputs: none
+void manage_Bounds(){
+	if(current_tempo > ((upper_bound * 133) / 100)){
+		upper_bound = MIN(upper_bound + MOVE_BOUND, UPPER_BOUND);
+	} else if(current_tempo < ((upper_bound * 3) >> 2)){
+		upper_bound = MAX(upper_bound - MOVE_BOUND, LOWER_BOUND);
+	}
+}
+
+// ***************** control_Tempo ****************
+// Change tempo according to latest steps.
+// Inputs:  none
+// Outputs: none
+void control_Tempo(uint8_t stepCheck){
+	if(stepCheck){
+		bolus_index = BOLUS_START;
+	}
+	int16_t bolus_val;
+	if(bolus_index == BOLUS_END){
+		if(current_tempo > 0){
+			bolus_val = -1;
+		} else{
+			bolus_val = 0;
+		}
+	} else{
+		bolus_val = (-4 * bolus_index + 50) / 10;
+	}
+	current_tempo = MIN(current_tempo + bolus_val, upper_bound);
+	current_tempo = MAX(current_tempo, 0);
+	bolus_index = MIN(bolus_index + 1, BOLUS_END);
+	manage_Bounds();
+	Mess_With_Tempo(current_tempo);
+}
+
+void ADC_Read(){
+	uint32_t accelData[3];
+	ADC_In321(accelData);
+	uint8_t stepCheck = Acc_Fifo_Put(accelData[0], accelData[1], accelData[2]);
+	control_Tempo(stepCheck);
+}
+
+void Accel_Init(void) {
+	GPIO_Init();
+	Acc_Fifo_Init();
+	ADCin_Init();
+	Timer4_Init(&ADC_Read,TIMER4_RELOAD);
+	//Timer5_Init(320000000);//Every 2 seconds
+	//Reserve PA0 to debug init code in the final PCB
+	
+}
+
+void Accel_Test() {
+}
+
+/* Old
 void Accel_Test() {
 		uint32_t accel[3] = {0,0,0};
     ADC_In321(accel);
@@ -204,4 +268,5 @@ void Accel_Test() {
 		ST7735_DrawStringBG(0,9,"Beatpermin:     ",ST7735_BLACK,ST7735_WHITE); ST7735_SetCursor(12,9);  ST7735_OutUDec(BPM); ST7735_OutChar('\n');
   
 }
+*/
 

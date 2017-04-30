@@ -30,6 +30,8 @@
 #ifndef __TIMER3INTS_H__ // do not include more than once
 #define __TIMER3INTS_H__
 
+#include "stdint.h"
+
 // ***************** Disable_Timer3 ****************
 // Disables Timer3 to stop PMWSine calls.
 // Inputs:  none
@@ -42,6 +44,10 @@ void Disable_Timer3(void);
 // Outputs: none
 void Timer3_Init(void(*task)(void), uint32_t period);
 
+// ***************** Timer3A_Halt ****************
+// Stops Timer3A counting down.
+// Inputs:  none
+// Outputs: none
 void Timer3A_Halt(void);
 
 #endif // __TIMER2INTS_H__

@@ -1,3 +1,13 @@
+/* File Name:    Timer4.c
+ * Authors:      Kevin Yee (kjy252), Stefan Bordovsky (sb39782)
+ * Created:      01/19/2017
+ * Description:  Runs Timer4.
+ * 
+ * Lab Number: MW 330-500
+ * TA: Mahesh
+ * Last Revised: 4/07/2017
+*/ 
+
 #include <stdint.h>
 #include "../inc/tm4c123gh6pm.h"
 #include "Timer4.h"

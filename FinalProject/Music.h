@@ -6,7 +6,7 @@
  * 
  * Lab Number: MW 3:30-5:00
  * TA: Mahesh
- * Last Revised: 2/21/2017	
+ * Last Revised: 4/4/2017	
  */
  
 #include <stdint.h>
@@ -43,3 +43,9 @@ void Change_Song(void);
 // Inputs:  none
 // Outputs: none
 void Rewind(void);
+
+// ***************** Mess_With_Tempo ****************
+// Changes the tempo, initializing if music hasn't been.
+// Inputs:  none
+// Outputs: none
+void Mess_With_Tempo(uint16_t current_tempo);

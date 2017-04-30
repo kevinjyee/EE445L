@@ -53,12 +53,12 @@ volatile uint8_t enableEnv = 0; // Enable note enveloping.
 volatile uint8_t scalar1 =1; // Scalar used for soprano envelope calculation.
 volatile uint8_t scalar2 =1; // Scalar used for alto enveloping.
 
-extern volatile int currentSongPos; // Global for position in current song list.
-extern volatile int lastSongPos; // GLobal for last song playing.
-extern volatile int currentMode; // Global for waveform type.
+//extern volatile int currentSongPos; // Global for position in current song list.
+//extern volatile int lastSongPos; // GLobal for last song playing.
+//extern volatile int currentMode; // Global for waveform type.
 
 extern volatile int Playing;
-extern volatile int songVolume;
+//extern volatile int songVolume;
 
   
 
@@ -365,7 +365,7 @@ const uint16_t envelopes[128] = {
 //		Waveform type controlled by currentMode.
 void Output_Wave(){
 	if(EnvOnOFF){ // With enveloping.
-		switch(currentMode){
+		switch(SINE){
 			case SINE:
 					DAC_Out(((Sine_Wave[I]*envelopes[E]/128 + Sine_Wave[J])*envelopes[K]/128));
 				break;
@@ -378,15 +378,15 @@ void Output_Wave(){
 		}
 	}
 	else{
-		switch(currentMode){ // Without enveloping.
+		switch(SINE){ // Without enveloping.
 			case SINE:
-					DAC_Out((Sine_Wave_10_bit[I] + Sine_Wave_10_bit[J] + Sine_Wave_10_bit[M]) * songVolume / MAX_VOLUME);
+					DAC_Out((Sine_Wave_10_bit[I] + Sine_Wave_10_bit[J] + Sine_Wave_10_bit[M]));
 				break;
 			case FLUTE:
-					DAC_Out((Flute_Wave_10_bit[I] + Flute_Wave_10_bit[J] + Flute_Wave_10_bit[M] * songVolume / MAX_VOLUME));
+					DAC_Out((Flute_Wave_10_bit[I] + Flute_Wave_10_bit[J] + Flute_Wave_10_bit[M]));
 				break;
 			case BRASS:
-					DAC_Out((Trumpet_Wave_10_bit[I] + Trumpet_Wave_10_bit[J] + Trumpet_Wave_10_bit[M] * songVolume / MAX_VOLUME));
+					DAC_Out((Trumpet_Wave_10_bit[I] + Trumpet_Wave_10_bit[J] + Trumpet_Wave_10_bit[M]));
 				break;
 		}
 	}
@@ -427,7 +427,7 @@ Note* current_Third_Note;
 
 // ***************** Play_Song *****************
 void Play_Song(void){
-	Song* current_Song = &testSongs.songs[lastSongPos];
+	Song* current_Song = &testSongs.songs[2];
 	enableEnv = 0;
 	uint32_t sr;
 
@@ -536,7 +536,7 @@ void Play(void){
 		Music_Init();
 		uninitialized = 0;
 	}
-	SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[lastSongPos].my_tempo]); // Initialize tempo counter.
+	SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[2].my_tempo]); // Initialize tempo counter.
 	Playing = 1;
 	
 }
@@ -566,6 +566,20 @@ void Change_Song(){
 	Rewind();
 }
 
+// ***************** Mess_With_Tempo ****************
+// Changes the tempo, initializing if music hasn't been.
+// Inputs:  none
+// Outputs: none
+void Mess_With_Tempo(uint16_t current_tempo){
+	if(uninitialized){ // If uninitialized, initialize music.
+		
+		Music_Init();
+		uninitialized = 0;
+		SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[2].my_tempo]); // Initialize tempo counter.
+	}
+	Change_Tempo(current_tempo);
+}
+
 // ***************** Rewind ****************
 // Restart the current song.
 // Inputs:  none
@@ -573,10 +587,10 @@ void Change_Song(){
 void Rewind(){
 	//Pause();
 		current_Soprano_Beats = 0; current_Alto_Beats = 0; current_Third_Beats = 0; // Reset current note beats.
-		Song* currentSong = &testSongs.songs[lastSongPos];
+		Song* currentSong = &testSongs.songs[2];
 		currentSong->soprano_Notes = currentSong->first_Soprano_Note; // Reset notes to first note.
 		currentSong->alto_Notes = currentSong->first_Alto_Note;
 		currentSong->third_Notes = currentSong->first_Third_Note;
-		SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[lastSongPos].my_tempo]);
+		SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[2].my_tempo]);
 		Playing = 1;
 }
