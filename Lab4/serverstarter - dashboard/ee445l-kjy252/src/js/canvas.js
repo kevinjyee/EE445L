@@ -145,7 +145,7 @@ chart.on('created', function() {
     clearTimeout(window.__exampleAnimateTimeout);
     window.__exampleAnimateTimeout = null;
   }
-  window.__exampleAnimateTimeout = setTimeout(chart.update.bind(chart), 15000);
+  window.__exampleAnimateTimeout = setTimeout(chart.update.bind(chart), 12000);
 });
 
 

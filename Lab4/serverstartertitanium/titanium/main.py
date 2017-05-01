@@ -150,10 +150,13 @@ class Auto(webapp2.RequestHandler):
         greeting.city = cgi.escape(self.request.get('city'))
         greeting.greet = cgi.escape(self.request.get('greet'))
         greeting.put()
-        self.response.write('<html><body>')
-        self.response.write('<pre>{"%s":"%s", "%s":"%s"}</pre>' %
-                                  ("id", greeting.author, "greet", greeting.greet))
-        self.response.write('</body></html>')
+        greetings_query = Greeting.query(
+            ancestor=logbook_key('logbook')).order(-Greeting.date)
+        greetings = greetings_query.fetch()
+        
+        self.response.write('<pre>{"%s"}</pre>' %
+                                  (greetings[1].greet))
+        
 
 application = webapp2.WSGIApplication([
   ('/', Home),
