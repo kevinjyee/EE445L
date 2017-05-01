@@ -486,7 +486,7 @@ Note* current_Third_Note;
 
 // ***************** Play_Song *****************
 void Play_Song(void){
-	Song* current_Song = &testSongs.songs[2];
+	Song* current_Song = &testSongs.songs[currentSongPos];
 	enableEnv = 0;
 	uint32_t sr;
 
@@ -652,7 +652,7 @@ void Mess_With_Tempo(uint16_t current_tempo){
 void Rewind(){
 	//Pause();
 		current_Soprano_Beats = 0; current_Alto_Beats = 0; current_Third_Beats = 0; // Reset current note beats.
-		Song* currentSong = &testSongs.songs[2];
+		Song* currentSong = &testSongs.songs[currentSongPos];
 		currentSong->soprano_Notes = currentSong->first_Soprano_Note; // Reset notes to first note.
 		currentSong->alto_Notes = currentSong->first_Alto_Note;
 		currentSong->third_Notes = currentSong->first_Third_Note;
