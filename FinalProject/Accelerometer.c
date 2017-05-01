@@ -236,7 +236,9 @@ void control_Tempo(uint8_t stepCheck){
 	Current_Tempo = MAX(Current_Tempo, 0);
 	bolus_index = MIN(bolus_index + 1, BOLUS_END);
 	manage_Bounds();
-	Mess_With_Tempo(Current_Tempo);
+	if(Playing){
+		Mess_With_Tempo(Current_Tempo);
+	}
 }
 
 void ADC_Read(){
