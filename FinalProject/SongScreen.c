@@ -33,7 +33,7 @@ extern char Play_Toggled;
 volatile int lastSongPos = -1;
 bool firstEntrance = true;
 bool musicplaying = false;
-volatile int songVolume = 3;
+volatile int Volume = 3;
 
 
 ////  screen is actually 129 by 161 pixels, x 0 to 128, y goes from 0 to 160
@@ -47,7 +47,7 @@ void draw_Graphics(){
 	ST7735_DrawString(XTITLE+1,YITEMS+1,"-",ST7735_BLACK);
 	for(int i =1; i <= MAXVOLUME; i ++)
 	{
-		if(i<songVolume)
+		if(i<Volume)
 		{
 			ST7735_DrawString(XTITLE+1+i,YITEMS+1,"_",ST7735_BLACK);
 		}
@@ -75,21 +75,21 @@ uint32_t SongScreen(uint32_t input,char* SongName, const uint16_t* Graphic){
 	{
 		case DOWN:
 			//down switch Volume Up
-		if(songVolume <= 0)
+		if(Volume <= 0)
 		{
-			songVolume =0;
+			Volume =0;
 		}
-		songVolume -=1;
+		Volume -=1;
 			
 			break;
 		case UP:
 			//Up Switch
 			//Volume Down
-			if(songVolume >=7)
+			if(Volume >=7)
 			{
-				songVolume = 7;
+				Volume = 7;
 			}
-			songVolume +=1;
+			Volume +=1;
 			break;
 		case SELECT:
 			if(firstEntrance)

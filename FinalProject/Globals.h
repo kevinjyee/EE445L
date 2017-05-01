@@ -7,6 +7,9 @@
 
 #include "stdint.h"
 
+#define MAX_FADE 99
+#define MIN_FADE 0
+
 // **************MainMenuPos*********************
 // The current position of the main menu cursor.
 extern uint8_t MainMenuPos;
@@ -25,8 +28,12 @@ extern volatile int16_t Current_Tempo;
 extern volatile int Playing;
 
 // **************Volume*********************
-// A boolean indicating the status of music (playing/paused).
+// An int holding volume information (0 - 7).
 extern volatile int Volume;
+
+// **************Fade*********************
+// An int indicating the current level of fade.
+extern volatile uint16_t Fade;
 
 // **************Step_Count*********************
 // Current number of steps walked.

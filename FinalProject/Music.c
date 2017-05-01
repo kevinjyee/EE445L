@@ -382,13 +382,13 @@ void Output_Wave(){
 	else{
 		switch(SINE){ // Without enveloping.
 			case SINE:
-					DAC_Out((Sine_Wave_10_bit[I] + Sine_Wave_10_bit[J] + Sine_Wave_10_bit[M]));
+					DAC_Out((((Sine_Wave_10_bit[I] + Sine_Wave_10_bit[J] + Sine_Wave_10_bit[M]) * Volume) / MAX_VOLUME) * Fade / MAX_FADE);
 				break;
 			case FLUTE:
-					DAC_Out((Flute_Wave_10_bit[I] + Flute_Wave_10_bit[J] + Flute_Wave_10_bit[M]));
+					DAC_Out((((Flute_Wave_10_bit[I] + Flute_Wave_10_bit[J] + Flute_Wave_10_bit[M]) * Volume) / MAX_VOLUME) * Fade / MAX_FADE);
 				break;
 			case BRASS:
-					DAC_Out((Trumpet_Wave_10_bit[I] + Trumpet_Wave_10_bit[J] + Trumpet_Wave_10_bit[M]));
+					DAC_Out((((Trumpet_Wave_10_bit[I] + Trumpet_Wave_10_bit[J] + Trumpet_Wave_10_bit[M]) * Volume) / MAX_VOLUME) * Fade / MAX_FADE);
 				break;
 		}
 	}

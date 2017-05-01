@@ -33,8 +33,6 @@ PE2: Z-Accel
 #define UPPER_BOUND 200
 #define LOWER_BOUND 60
 #define MOVE_BOUND 10
-#define MAX_FADE 99
-#define MIN_FADE 0
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -232,8 +230,12 @@ void control_Tempo(uint8_t stepCheck){
 		} else{
 			bolus_val = 0;
 		}
+		if(Fade > MIN_FADE){ // Fade if tempo decaying.
+				Fade--;
+		}
 	} else{
 		bolus_val = (-4 * bolus_index + 50) / 10;
+		Fade = MAX_FADE;
 	}
 	Current_Tempo = MIN(Current_Tempo + bolus_val, upper_bound);
 	Current_Tempo = MAX(Current_Tempo, 0);
