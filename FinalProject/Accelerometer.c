@@ -33,11 +33,14 @@ PE2: Z-Accel
 #define UPPER_BOUND 200
 #define LOWER_BOUND 60
 #define MOVE_BOUND 10
+#define MAX_FADE 99
+#define MIN_FADE 0
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
 volatile int16_t Current_Tempo = 0;
+volatile uint16_t Fade = MIN_FADE;
 
 uint16_t bolus_index = BOLUS_END;
 uint16_t upper_bound = UPPER_BOUND;

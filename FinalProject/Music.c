@@ -59,7 +59,7 @@ volatile uint8_t scalar2 =1; // Scalar used for alto enveloping.
 //extern volatile int currentMode; // Global for waveform type.
 
 //extern volatile int Playing;
-volatile int Playing;
+volatile int Playing = 0;
 //extern volatile int songVolume;
 
   
@@ -577,7 +577,7 @@ void Mess_With_Tempo(uint16_t current_tempo){
 		
 		Music_Init();
 		uninitialized = 0;
-		SysTick_Init(&Play_Song, tempo_Reload[Current_Tempo]); // Initialize tempo counter.
+		SysTick_Init(&Play_Song, Current_Tempo); // Initialize tempo counter.
 	}
 	Change_Tempo(current_tempo);
 }
