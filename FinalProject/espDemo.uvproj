@@ -426,36 +426,6 @@
               <FilePath>.\FIFOqueue.c</FilePath>
             </File>
             <File>
-              <FileName>fixed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\fixed.c</FilePath>
-            </File>
-            <File>
-              <FileName>FSM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\FSM.c</FilePath>
-            </File>
-            <File>
-              <FileName>heap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\heap.c</FilePath>
-            </File>
-            <File>
-              <FileName>LCD.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\LCD.c</FilePath>
-            </File>
-            <File>
-              <FileName>Song.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Song.c</FilePath>
-            </File>
-            <File>
-              <FileName>ST7735.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\ST7735.c</FilePath>
-            </File>
-            <File>
               <FileName>Switch.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Switch.c</FilePath>
@@ -480,6 +450,11 @@
               <FileType>1</FileType>
               <FilePath>.\Timer3.c</FilePath>
             </File>
+            <File>
+              <FileName>Timer4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Timer4.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -489,6 +464,16 @@
               <FileName>MainMenu.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\MainMenu.c</FilePath>
+            </File>
+            <File>
+              <FileName>FSM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\FSM.c</FilePath>
+            </File>
+            <File>
+              <FileName>heap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\heap.c</FilePath>
             </File>
             <File>
               <FileName>Timer5.c</FileName>
@@ -549,10 +534,37 @@
         </Group>
         <Group>
           <GroupName>Utilities</GroupName>
+          <Files>
+            <File>
+              <FileName>LCD.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LCD.c</FilePath>
+            </File>
+            <File>
+              <FileName>fixed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\fixed.c</FilePath>
+            </File>
+            <File>
+              <FileName>ST7735.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\ST7735.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>Accelerometer</GroupName>
           <Files>
+            <File>
+              <FileName>Timer5.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Timer5.c</FilePath>
+            </File>
+            <File>
+              <FileName>AccelAvgFIFO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\AccelAvgFIFO.c</FilePath>
+            </File>
             <File>
               <FileName>Accelerometer.c</FileName>
               <FileType>1</FileType>
