@@ -19,6 +19,7 @@
 #include "AccelAvgFIFO.h"
 #include "SysTick.h"
 #include "Music.h"
+#include "Globals.h"
 
 /*
 PE0: X-Accel
@@ -36,8 +37,9 @@ PE2: Z-Accel
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
+volatile int16_t Current_Tempo = 0;
+
 uint16_t bolus_index = BOLUS_END;
-int16_t current_tempo = 0;
 uint16_t upper_bound = UPPER_BOUND;
 //uint16_t lower_bound;
 
@@ -65,10 +67,10 @@ volatile int total_time =0;
 volatile int BPMsteps =0;
 volatile int BPM =0;
 int flag =0;
-volatile int Playing = 0;
 
 void Calibrate(){};
 	
+/*
 void BPM_Calc()
 {
 	int current_time = Timer4Time;
@@ -80,12 +82,11 @@ void BPM_Calc()
 	}
 	if(total_time > 0)
 	{
-		/*
-		BPM = ((BPMsteps)*1000)/(total_time * 3);
-		if(Playing){
-			Change_Tempo(BPM);
-		}
-		*/
+
+		//BPM = ((BPMsteps)*1000)/(total_time * 3);
+		//if(Playing){
+		//	Change_Tempo(BPM);
+		//}
 		//BPM /= 1000;
 	}
 	if(total_time > 100){
@@ -95,7 +96,9 @@ void BPM_Calc()
 	last_time = current_time;
 	
 }
+*/
 
+/*
 void Calculate_Steps(){
 	//Calculate Steps Algorithm pulled from Instructables.com
 	uint32_t totalvector[100] = {0};
@@ -134,6 +137,7 @@ void Calculate_Steps(){
 		}
 	
 }
+*/
 
 
 
@@ -203,9 +207,9 @@ void ADC_In321(uint32_t data[3]){
 // Inputs:  none
 // Outputs: none
 void manage_Bounds(){
-	if(current_tempo > ((upper_bound * 133) / 100)){
+	if(Current_Tempo > ((upper_bound * 133) / 100)){
 		upper_bound = MIN(upper_bound + MOVE_BOUND, UPPER_BOUND);
-	} else if(current_tempo < ((upper_bound * 3) >> 2)){
+	} else if(Current_Tempo < ((upper_bound * 3) >> 2)){
 		upper_bound = MAX(upper_bound - MOVE_BOUND, LOWER_BOUND);
 	}
 }
@@ -220,7 +224,7 @@ void control_Tempo(uint8_t stepCheck){
 	}
 	int16_t bolus_val;
 	if(bolus_index == BOLUS_END){
-		if(current_tempo > 0){
+		if(Current_Tempo > 0){
 			bolus_val = -1;
 		} else{
 			bolus_val = 0;
@@ -228,11 +232,11 @@ void control_Tempo(uint8_t stepCheck){
 	} else{
 		bolus_val = (-4 * bolus_index + 50) / 10;
 	}
-	current_tempo = MIN(current_tempo + bolus_val, upper_bound);
-	current_tempo = MAX(current_tempo, 0);
+	Current_Tempo = MIN(Current_Tempo + bolus_val, upper_bound);
+	Current_Tempo = MAX(Current_Tempo, 0);
 	bolus_index = MIN(bolus_index + 1, BOLUS_END);
 	manage_Bounds();
-	Mess_With_Tempo(current_tempo);
+	Mess_With_Tempo(Current_Tempo);
 }
 
 void ADC_Read(){

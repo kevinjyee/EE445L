@@ -20,6 +20,7 @@
 #include "DAC.h"
 #include "Sound.h"
 #include "Heap.h"
+#include "Globals.h"
 #define WAVETABLE_LENGTH					64
 #define	NUM_TEMPOS								10
 #define EnvOnOFF									0
@@ -57,7 +58,8 @@ volatile uint8_t scalar2 =1; // Scalar used for alto enveloping.
 //extern volatile int lastSongPos; // GLobal for last song playing.
 //extern volatile int currentMode; // Global for waveform type.
 
-extern volatile int Playing;
+//extern volatile int Playing;
+volatile int Playing;
 //extern volatile int songVolume;
 
   
@@ -536,7 +538,7 @@ void Play(void){
 		Music_Init();
 		uninitialized = 0;
 	}
-	SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[2].my_tempo]); // Initialize tempo counter.
+	SysTick_Init(&Play_Song, Current_Tempo); // Initialize tempo counter.
 	Playing = 1;
 	
 }
@@ -575,7 +577,7 @@ void Mess_With_Tempo(uint16_t current_tempo){
 		
 		Music_Init();
 		uninitialized = 0;
-		SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[2].my_tempo]); // Initialize tempo counter.
+		SysTick_Init(&Play_Song, tempo_Reload[Current_Tempo]); // Initialize tempo counter.
 	}
 	Change_Tempo(current_tempo);
 }
@@ -591,6 +593,6 @@ void Rewind(){
 		currentSong->soprano_Notes = currentSong->first_Soprano_Note; // Reset notes to first note.
 		currentSong->alto_Notes = currentSong->first_Alto_Note;
 		currentSong->third_Notes = currentSong->first_Third_Note;
-		SysTick_Init(&Play_Song, tempo_Reload[testSongs.songs[2].my_tempo]);
+		SysTick_Init(&Play_Song, Current_Tempo);
 		Playing = 1;
 }

@@ -15,3 +15,19 @@ extern uint8_t MainMenuPos;
 // The position of the song screen selection. Can be moved up and down via
 //		switch input.
 extern volatile int currentSongPos;
+
+// **************Current_Tempo*********************
+// The tempo value of the current song.
+extern volatile int16_t Current_Tempo;
+
+// **************Playing*********************
+// A boolean indicating the status of music (playing/paused).
+extern volatile int Playing;
+
+// **************Volume*********************
+// A boolean indicating the status of music (playing/paused).
+extern volatile int Volume;
+
+// **************Step_Count*********************
+// Current number of steps walked.
+extern volatile uint32_t Step_Count;

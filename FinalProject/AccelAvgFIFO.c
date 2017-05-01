@@ -36,7 +36,7 @@ uint32_t volatile ZThresh = 0; // Dynamic Z threshold.
 uint8_t static numSamples = 0;
 uint32_t static count = 0;  // Keep track of num elements in FIFO.
 uint16_t precision = 150;
-volatile uint32_t stepCount = 0;
+volatile uint32_t Step_Count = 0;
 
 uint8_t volatile DetectionAxis = 0;
 
@@ -124,7 +124,7 @@ uint8_t linear_Shift(){
 	*/
 	if((xDiff >= yDiff) && (xDiff >= zDiff)){
 		if((XLinShiftR[OLD_FIXED] > XThresh) && (XLinShiftR[NEW_FIXED] < XThresh) && !NextStepTooSoon){
-			stepCount++;
+			Step_Count++;
 			DetectionAxis = 1;
 			NextStepTooSoon = TRUE;
 			Timer5_Init(THREE_PT_THREE_HZ_RELOAD);
@@ -132,7 +132,7 @@ uint8_t linear_Shift(){
 		}
 	} else if((yDiff >= xDiff) && (yDiff >= zDiff)){
 		if((YLinShiftR[OLD_FIXED] > YThresh) && (YLinShiftR[NEW_FIXED] < YThresh) && !NextStepTooSoon){
-			stepCount++;
+			Step_Count++;
 			DetectionAxis = 2;
 			NextStepTooSoon = TRUE;
 			Timer5_Init(THREE_PT_THREE_HZ_RELOAD);
@@ -140,7 +140,7 @@ uint8_t linear_Shift(){
 		}
 	} else{
 		if((ZLinShiftR[OLD_FIXED] > ZThresh) && (ZLinShiftR[NEW_FIXED] < ZThresh) && !NextStepTooSoon){
-			stepCount++;
+			Step_Count++;
 			DetectionAxis = 3;
 			NextStepTooSoon = TRUE;
 			Timer5_Init(THREE_PT_THREE_HZ_RELOAD);
