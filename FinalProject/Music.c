@@ -251,6 +251,32 @@ typedef struct
 	Note REST_4dot = {REST, QUARTER_DOT};
 	Note REST_16 = {REST, SIXTEENTH};
 	
+	Note BF3_4 = {BF3, QUARTER};
+	Note EF4_8 = {EF4, EIGHTH};
+	Note C4_4 = {C4, QUARTER};
+	Note G3_1 = {G3, WHOLE};
+	Note REST_2dot = {REST, HALF_DOT};
+	Note G3_2dot = {G3, HALF_DOT};
+	Note F3_2dot = {F3, HALF_DOT};
+	Note EF3_2dot = {EF3, HALF_DOT};
+	Note D3_2dot = {D3, HALF_DOT};
+	Note REST_2 = {REST, HALF};
+	Note EF3_8 = {EF3, EIGHTH};
+	Note GF2_2dot = {GF2, HALF_DOT};
+	Note E3_4 = {E3, QUARTER};
+	Note C3_2dot = {C3, HALF_DOT};
+	Note G2_2dot = {G2, HALF_DOT};
+	Note E3_2dot = {E3, HALF_DOT};
+	Note EF3_4 = {EF3, QUARTER};
+	Note D3_4 = {D3, QUARTER};
+	Note BF2_2dot = {BF2, HALF_DOT};
+	Note D2_2dot = {D2, HALF_DOT};
+	Note A2_2 = {A2, HALF};
+	Note F2_2dot = {F2, HALF_DOT};
+	Note EF2_2dot = {EF2, HALF_DOT};
+	Note C2_2dot = {C2, HALF_DOT};
+	Note G1_2dot = {G1, HALF_DOT};
+	
 	
 Note* LWSoprano[44] = { &F4_8, &A4_8, &B4_4, &F4_8, &A4_8, &B4_4, &F4_8, &A4_8, &B4_8, &E5_8, &D5_4, &B4_8, &C5_8, &B4_8, &G4_8,
 			&E4_2, &REST_8, &D3_8, &E4_8, &G4_8, &E4_2, &REST_4, &F4_8, &A4_8, &B4_4, &F4_8, &A4_8, &B4_4, &F4_8, &A4_8, &B4_8, &E5_8,
@@ -261,13 +287,15 @@ Note* LWAlto[64] = {&F2_8, &C3_8, &C3_8, &C3_8, &F2_8, &C3_8, &C3_8, &C3_8, &F2_
 			&F2_8, &C3_8, &C2_8, &C3_8, &F2_8, &C3_8, &C3_8, &C3_8, &F2_8, &C3_8, &C3_8, &C3_8, &F2_8, &C3_8, &C3_8, &C3_8, &E2_8,
 			&C3_8, &C3_8, &C3_8, &E2_8, &C3_8, &C3_8, &C2_8, &E2_8, &C3_8, &C3_8, &C3_8, &E2_8, &C3_8, &C3_8, &C2_8
 };
-Note* NBTSoprano[68] = {&D4_8, &E4_8, &GF4_4, &A4_4, &G4_8, &GF4_8, &E4_8, &G4_8, &GF4_4dot, &D4_8, &A3_4, &REST_8, &G3_16,
+Note* NBTSoprano[68] = {
+	&D4_8, &E4_8, &GF4_4, &A4_4, &G4_8, &GF4_8, &E4_8, &G4_8, &GF4_4dot, &D4_8, &A3_4, &REST_8, &G3_16,
 	&A3_16, &	B3_4, &D4_4, &E4_8, &D4_8, &DF4_8, &D4_8, &E4_4dot, &GF4_8, &E4_4, &REST_8, &D4_16, &E4_16, &GF4_4, &A4_4,
 	&BF4_8, &A4_8, &G4_8, &BF4_8, &	A4_4dot, &DF5_8, &D5_4, &REST_8, &E4_16, &GF4_16, &G4_4dot, &A4_8, &B4_2, &A4_4dot,
 	&G4_16, &GF4_16, &A2_16, &DF3_16, &E3_16, &G3_16, &A3_16, &	DF4_16, &E4_16, &A4_16, &B4_4dot, &A4_4dot, &G4_4, &E4_1,
 	&B4_4dot, &A4_4dot, &D5_4, &DF5_1, &B4_4dot, &A4_4dot, &G4_4, &E4_1, &B4_4dot, &A4_4dot, &D5_4, &E5_2dot
 };
-Note* NBTAlto[103] = {&REST_4, &D2_4, &REST_8, &D2_16, &D2_16, &D2_8, &D2_4, &BF3_8, &D2_4, &REST_8, &D2_16, &D2_16, &D2_8,
+Note* NBTAlto[103] = {
+	&REST_4, &D2_4, &REST_8, &D2_16, &D2_16, &D2_8, &D2_4, &BF3_8, &D2_4, &REST_8, &D2_16, &D2_16, &D2_8,
 	&D2_4, &C3_8, &G2_4, &REST_8, &G2_16, &G2_16, &AF2_8, &AF2_4, &D2_8, &A3_4, &REST_8, &A3_16, &A3_16, &A2_8, &A2_4, &DF2_8,
 	&D2_4, &REST_8, &D2_16, &D2_16, &D2_8, &D2_4, &BF3_8, &D2_4, &REST_8, &D2_16, &D2_16, &D2_8, &D2_4, &C3_8, &G2_4, &REST_8,
 	&G2_16, &G2_16, &AF1_8, &AF1_4, &D2_8, &A2_4, &REST_8, &A2_16, &A2_16, &A1_8, &A1_4dot, &G2_8, &B2_8, &D3_8, &GF3_4, &G3_4,
@@ -275,11 +303,40 @@ Note* NBTAlto[103] = {&REST_4, &D2_4, &REST_8, &D2_16, &D2_16, &D2_8, &D2_4, &BF
 	&A3_4, &E3_8, &G2_8, &B2_8, &D3_8, &GF3_4, &G3_4, &D3_8, &A3_8, &DF3_8, &E3_8, &G3_4, &A3_4, &E3_8, &G2_8, &B2_8, &D3_8,
   &GF3_4, &G3_4, &D3_8, &A3_8, &DF3_8, &E3_8, &G3_4, &A3_8
 };
-Note* NBTThird[77] = {&REST_4, &GF3_8, &D3_8, &A3_8, &D3_8, &GF3_8, &D3_8, &BF3_8, &D3_8, &GF3_8, &D3_8, &B3_8, &D3_8, &GF3_8, &D3_8, &C4_8, &G3_8, 
+Note* NBTThird[77] = {
+	&REST_4, &GF3_8, &D3_8, &A3_8, &D3_8, &GF3_8, &D3_8, &BF3_8, &D3_8, &GF3_8, &D3_8, &B3_8, &D3_8, &GF3_8, &D3_8, &C4_8, &G3_8, 
 	&B2_8, &G2_8, &G3_8, &B2_8, &B2_8, &AF2_8, &E3_8, &B2_8, &DF3_8, &A2_8, &G3_8, &GF3_8, &E3_16, &GF3_16, &E3_16, &D3_16, &DF3_16, &B2_16,
 	&A2_16, &G2_16, &GF3_8, &D3_8, &A3_8, &D3_8, &GF3_8, &D3_8, &BF3_8, &D3_8, &GF3_8, &D3_8, &B3_8, &D3_8, &GF3_8, &D3_8, &C4_8, &G3_8, 
 	&B2_8, &G2_8, &G3_8, &B2_8, &B2_8, &AF2_8, &E3_8, &B2_8, &DF3_8, &A2_8, &E3_8, &DF3_8, &A1_8, &A1_4, &DF2_8, &G1_1, &A1_1, &G1_1,
 	&A1_1, &G1_1, &A1_1, &G1_1, &A1_2, &REST_4
+};
+
+Note* CotBSoprano[135] = {
+	&BF3_4, &A3_8, &BF3_8, &G3_4, &BF3_4, &A3_8, &BF3_8, &G3_4, &BF3_4, &A3_8, &BF3_8, &G3_4, &BF3_4, &A3_8, &BF3_8, &G3_4,
+	&BF3_4, &A3_8, &BF3_8, &G3_4, &BF3_4, &A3_8, &BF3_8, &G3_4, &BF3_4, &A3_8, &BF3_8, &G3_4, &BF3_4, &A3_8, &BF3_8, &G3_4,
+	&BF3_4, &A3_8, &BF3_8, &G3_4, &BF3_4, &A3_8, &BF3_8, &G3_4, &BF3_4, &A3_8, &BF3_8, &G3_4, &BF3_4, &A3_8, &BF3_8, &G3_4,
+	&D4_4, &C4_8, &D4_8, &BF3_4, &D4_4, &C4_8, &D4_8, &BF3_4, &D4_4, &C4_8, &D4_8, &BF3_4, &D4_4, &C4_8, &D4_8, &BF3_4,
+	&G4_4, &G4_8, &G4_8, &F4_8, &EF4_8, &D4_4, &D4_8, &D4_8, &C4_8, &BF3_8, &C4_4, &C4_8, &C4_8, &D4_8, &C4_8, 
+	&BF3_4, &A3_8, &BF3_8, &G3_4, &D3_8, &E3_8, &GF3_8, &G3_8, &A3_8, &BF3_8, &C4_8, &D4_8, &C4_4, &BF3_4,
+	&D3_8, &E3_8, &GF3_8, &G3_8, &A3_8, &BF3_8, &C4_8, &D4_8, &C4_4, &BF3_4,
+	&BF3_4, &A3_8, &BF3_8, &G3_4, &BF3_4, &A3_8, &BF3_8, &G3_4, &BF3_4, &A3_8, &BF3_8, &G3_4, &BF3_4, &A3_8, &BF3_8, &G3_4,
+	&BF3_4, &A3_8, &BF3_8, &G3_4, &BF3_4, &A3_8, &BF3_8, &G3_4, &BF3_4, &A3_8, &BF3_8, &G3_4, &BF3_4, &A3_8, &BF3_8, &G3_1
+};
+
+Note* CotBAlto[53] = {
+	&REST_2dot, &REST_2dot, &REST_2dot, &REST_2dot, &G3_2dot, &F3_2dot, &EF3_2dot, &D3_2dot,
+	&G3_4, &REST_2, &G3_4, &REST_2, &G3_4, &REST_2, &G3_4, &REST_2,
+	&BF3_4, &REST_4, &G3_4, &BF3_4, &REST_4, &G3_4, &BF3_4, &REST_4, &G3_4, &BF3_4, &REST_4, &G3_4, 
+	&G3_4, &G3_8, &G3_8, &F3_8, &EF3_8, &D3_2dot, &EF3_2dot, &D3_2dot, &GF2_2dot,
+	&E3_4, &GF3_4, &G3_4, &GF2_2dot, &E3_4, &GF3_4, &G3_4, &D3_2dot, &C3_2dot, &F3_2dot, &EF3_2dot, 
+	&D3_2dot, &D3_2dot, &G2_2dot, &G2_2dot, &G2_2dot
+};
+
+Note* CotBThird[37] = {
+	&G3_2dot, &F3_2dot, &EF3_2dot, &D3_2dot, &EF3_2dot, &D3_2dot, &C3_2dot, &G2_2dot, &C3_2dot, &D3_2dot,
+	&C3_2dot, &D3_2dot, &D3_2dot, &E3_2dot, &F3_2dot, &E3_4, &EF3_4, &D3_4, &D3_2dot, &BF2_2dot, &BF2_2dot, &BF2_2dot,
+	&D2_2dot, &A2_2, &G2_4, &D2_2dot, &A2_2, &G2_4, &F2_2dot, &EF2_2dot, &D2_2dot, &C2_2dot, &G1_2dot, &G1_2dot,
+	&G1_2dot, &G1_2dot, &G1_2dot
 };
 	
 Song_Choices testSongs;
@@ -514,16 +571,22 @@ void Music_Init(void){
 	
 		NoteNode* Lost_Woods_Soprano_Notes = create_LinkedList_From_Array((Note**) LWSoprano, 44);
 		NoteNode* Lost_Woods_Alto_Notes = create_LinkedList_From_Array((Note**) LWAlto, 64);
-		Song Lost_Woods = {1, "Lost Woods", BPM60, Lost_Woods_Soprano_Notes, Lost_Woods_Soprano_Notes, Lost_Woods_Alto_Notes, Lost_Woods_Alto_Notes,Lost_Woods_Alto_Notes,Lost_Woods_Alto_Notes,NULL,NULL, 0};
+		Song Lost_Woods = {0, "Lost Woods", BPM60, Lost_Woods_Soprano_Notes, Lost_Woods_Soprano_Notes, Lost_Woods_Alto_Notes, Lost_Woods_Alto_Notes,Lost_Woods_Alto_Notes,Lost_Woods_Alto_Notes,NULL,NULL, 0};
 	
 		NoteNode* NBT_Soprano_Notes = create_LinkedList_From_Array((Note**) NBTSoprano, 68);
 		NoteNode* NBT_Alto_Notes = create_LinkedList_From_Array((Note**) NBTAlto, 103);
 		NoteNode* NBT_Third_Notes = create_LinkedList_From_Array((Note**) NBTThird, 77);
-		Song New_Bark_Town = {2, "New Bark Town", BPM60, NBT_Soprano_Notes, NBT_Soprano_Notes, NBT_Alto_Notes, NBT_Alto_Notes, NBT_Third_Notes, NBT_Third_Notes, NULL, NULL, 0};
+		Song New_Bark_Town = {1, "New Bark Town", BPM60, NBT_Soprano_Notes, NBT_Soprano_Notes, NBT_Alto_Notes, NBT_Alto_Notes, NBT_Third_Notes, NBT_Third_Notes, NULL, NULL, 0};
 				
+		NoteNode* CotB_Soprano_Notes = create_LinkedList_From_Array((Note**) CotBSoprano, 135);
+		NoteNode* CotB_Alto_Notes = create_LinkedList_From_Array((Note**) CotBAlto, 53);
+		NoteNode* CotB_Third_Notes = create_LinkedList_From_Array((Note**) CotBThird, 37);
+		Song Carol_of_the_Bells = {2, "Carol of the Bells", BPM60, CotB_Soprano_Notes, CotB_Soprano_Notes, CotB_Alto_Notes, CotB_Alto_Notes, CotB_Third_Notes, CotB_Third_Notes, NULL, NULL, 0};
+				
+		
 		testSongs.songs[0] = Lost_Woods;
-		testSongs.songs[1] = Lost_Woods;
-		testSongs.songs[2] = New_Bark_Town;
+		testSongs.songs[1] = New_Bark_Town;
+		testSongs.songs[2] = Carol_of_the_Bells;
 		
 		
 
