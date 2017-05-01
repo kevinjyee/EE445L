@@ -47,4 +47,4 @@ Parameter LCD display
 void ST7735_uBinOut8(uint32_t n); 
 
 
-
+void ST7735_sDecOutNorm(uint32_t n,int x, int y);

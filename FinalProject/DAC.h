@@ -37,3 +37,5 @@ void DAC_Out_0(uint16_t data);
 // Inputs:  none
 // Outputs: none
 void DAC_Out_1(uint16_t data);
+
+void DAC_InitB(uint16_t data);

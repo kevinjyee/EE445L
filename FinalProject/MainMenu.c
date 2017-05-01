@@ -11,19 +11,19 @@
 #include "Globals.h"
 #include "FSM.h"
 #include "Music.h"
+#include "SendSteps.h"
 
-
-static int8_t NUMMENUITEMS = 3;
+static int8_t NUMMENUITEMS = 4;
 static int8_t  MenuPos = 0;
 ////  screen is actually 129 by 161 pixels, x 0 to 128, y goes from 0 to 160
 
 
 char Songs[18] = {' ', ' ', 'S', 'o', 'n', 'g', 's', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ','>', 0};
 char Health[18] = {' ', ' ', 'H', 'e', 'a', 'l', 't', 'h', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ','>',0};
-char Settings[18] = {' ', ' ', 'S', 'e', 't', 't', 'i', 'n', 'g', 's', ' ', ' ', ' ', ' ', ' ', ' ', '>',0};
-
-char* menu_Choice[3] = {		
-	Songs, Health, Settings
+char Settings[18] = {' ', ' ', 'S', 'y', 'n', 'c', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '>',0};
+char Reset[18] = {' ', ' ', 'R', 'e', 's', 'e', 't', ' ', 'S', 't', 'e', 'p', ' ', ' ', ' ', ' ', '>',0};
+char* menu_Choice[4] = {		
+	Songs, Health, Settings, Reset
 };
 
 uint32_t processMenuItem(int menupos)
@@ -35,8 +35,14 @@ uint32_t processMenuItem(int menupos)
 		case 1:
 			return rtPedometer;
 		case 2:
+			ST7735_DrawStringBG(0,15,"Loading...",ST7735_BLACK,ST7735_WHITE);
+			sendSteps(Step_Count);
+		  ST7735_DrawStringBG(0,15,"Loading...",ST7735_WHITE,ST7735_WHITE);
 			break;
-			//Settings
+		case 3:
+			ST7735_DrawStringBG(0,15,"Loading...",ST7735_BLACK,ST7735_WHITE);
+			sendSteps(0);
+		  ST7735_DrawStringBG(0,15,"Loading...",ST7735_WHITE,ST7735_WHITE);
 	}
 	return 0x00;
 }

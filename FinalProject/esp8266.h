@@ -141,7 +141,8 @@ void ESP8266_DisableRXInterrupt(void);
 // Outputs: none
 // busy-wait synchronization
 void ESP8266_PrintChar(char input);
-
+void ESP8266FIFOtoBuffer(void);
+char* get_SearchString();
 // ----------ESP8266_QuitAccessPoint-------------
 // - disconnects from currently connected wifi access point
 // Inputs: none

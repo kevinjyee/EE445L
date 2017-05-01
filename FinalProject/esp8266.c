@@ -297,6 +297,11 @@ void ESP8266FIFOtoBuffer(void){
   }
 }
 
+
+char* get_SearchString()
+{
+	return ServerResponseBuffer;
+}
 //---------ESP8266SendCommand-----
 // - sends a string to the esp8266 module
 // uses busy-wait
@@ -354,10 +359,10 @@ void ESP8266_Init(uint32_t baud){
   ServerResponseSearchFinished = 0;
   EnableInterrupts();
 // step 1: AT+RST reset module
-  //printf("ESP8266 Initialization:\n\r");
+ // printf("ESP8266 Initialization:\n\r");
   ESP8266_EchoResponse = true; // debugging
   if(ESP8266_Reset()==0){ 
-    //printf("Reset failure, could not reset\n\r"); while(1){};
+    printf("Reset failure, could not reset\n\r"); while(1){};
   }
 //  ESP8266SendCommand("AT+UART_CUR=115200,8,1,0,0\r\n");
 //  UART_InChar();

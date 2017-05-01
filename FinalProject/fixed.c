@@ -69,14 +69,14 @@
 			n = n/10;
 				numDigits --;
 			}
-			else
-			{
-				buffer[i] = '.'; //places decimal point
-			}
-			if(i > numDigits && i < DECIMAL_POSITION -1  && buffer[i] == '0')
-			{
-				buffer[i] = ' '; //removes leading zeroes
-			}				
+			//else
+			//{
+				//buffer[i] = '.'; //places decimal point
+			//}
+			//if(i > numDigits && i < DECIMAL_POSITION -2  && buffer[i] == '0')
+			//{
+				//buffer[i] = ' '; //removes leading zeroes
+			//}				
 		}
 	 if(!signedInt && n != 0)
 	 {
@@ -189,6 +189,49 @@ void ST7735_uBinOut8(uint32_t n){
 	change_To_Output( roundedResult, MAX_DIGITS, DECIMAL_POSITION,  buffer,numDigit,FALSE);
 	
 ST7735_DrawStringBG(12,8,buffer,ST7735_BLACK,ST7735_WHITE);
+
+		
+	
+}
+
+/**************ST7735_uBinOut8***************
+ unsigned 32-bit binary fixed-point with a resolution of 1/256. 
+ The full-scale range is from 0 to 999.99. 
+ If the integer part is larger than 256000, it signifies an error. 
+ The ST7735_uBinOut8 function takes an unsigned 32-bit integer part 
+ of the binary fixed-point number and outputs the fixed-point value on the LCD
+ Inputs:  unsigned 32-bit integer part of binary fixed-point number
+ Outputs: none
+ send exactly 6 characters to the LCD 
+Parameter LCD display
+     0	  "  0.00"
+     2	  "  0.01"
+    64	  "  0.25"
+   100	  "  0.39"
+   500	  "  1.95"
+   512	  "  2.00"
+  5000	  " 19.53"
+ 30000	  "117.19"
+255997	  "999.99"
+256000	  "***.**"
+*/
+void ST7735_sDecOutNorm(uint32_t n,int x, int y){
+	
+	int MAX = 9999; //max upper bound
+		int MIN = -9999; //min upper bound
+	
+		int MAX_DIGITS = 6; //Maximum digit of fixed point number 
+		int DECIMAL_POSITION = 5; //Position of Decimal Point to be placed
+		char buffer [6] = {' '}; //Initialize array to empty string 
+		int numDigit;
+		
+	
+
+		
+		numDigit = num_Digits(n); //count number of digits
+		change_To_Output(n, MAX_DIGITS, DECIMAL_POSITION, buffer, numDigit,FALSE);
+		
+		ST7735_DrawStringBG(x,y,buffer,ST7735_BLACK,ST7735_WHITE);
 
 		
 	
