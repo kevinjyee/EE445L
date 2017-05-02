@@ -8,6 +8,4 @@ void SongMenu_Init(void);
 	const uint16_t* Graphic;
 } SongChoice;
 
-
-#define NUMSONGS 3
 	

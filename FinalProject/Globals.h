@@ -6,9 +6,11 @@
 // February 16, 2016
 
 #include "stdint.h"
+#include "Music.h"
 
 #define MAX_FADE 99
 #define MIN_FADE 0
+#define NUM_SONGS 4
 
 // **************MainMenuPos*********************
 // The current position of the main menu cursor.

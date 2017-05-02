@@ -122,6 +122,7 @@ struct _NoteNode
 	NoteNode* next;
 };
 
+
 // Song structure: has a unique id, a name, a tempo, soprano and alto notes, and an enable envelope boolean.
 typedef struct
 {
@@ -144,7 +145,7 @@ typedef struct
 
 typedef struct
 {
-	Song songs[3];
+	Song songs[4];
 } Song_Choices; /* Playlist for Lab 5! */
 
 // Below we declared notes which we use in our songs.
@@ -277,6 +278,19 @@ typedef struct
 	Note C2_2dot = {C2, HALF_DOT};
 	Note G1_2dot = {G1, HALF_DOT};
 	
+	Note G1_16 = {G1, SIXTEENTH};
+	Note E2_16 = {E2, SIXTEENTH};
+	Note C3_16 = {C3, SIXTEENTH};
+	Note GF2_16 = {GF2, SIXTEENTH};
+	Note DF2_16 = {DF2, SIXTEENTH};
+	Note B1_16 = {B1, SIXTEENTH};
+	Note E1_16 = {E1, SIXTEENTH};
+	Note A1_16 = {A1, SIXTEENTH};
+	Note F2_16 = {F2, SIXTEENTH};
+	Note C2_16 = {C2, SIXTEENTH};
+	Note EF2_16 = {EF2, SIXTEENTH};
+	Note GF1_16 = {GF1, SIXTEENTH};
+	
 	
 Note* LWSoprano[44] = { &F4_8, &A4_8, &B4_4, &F4_8, &A4_8, &B4_4, &F4_8, &A4_8, &B4_8, &E5_8, &D5_4, &B4_8, &C5_8, &B4_8, &G4_8,
 			&E4_2, &REST_8, &D3_8, &E4_8, &G4_8, &E4_2, &REST_4, &F4_8, &A4_8, &B4_4, &F4_8, &A4_8, &B4_4, &F4_8, &A4_8, &B4_8, &E5_8,
@@ -337,6 +351,27 @@ Note* CotBThird[37] = {
 	&C3_2dot, &D3_2dot, &D3_2dot, &E3_2dot, &F3_2dot, &E3_4, &EF3_4, &D3_4, &D3_2dot, &BF2_2dot, &BF2_2dot, &BF2_2dot,
 	&D2_2dot, &A2_2, &G2_4, &D2_2dot, &A2_2, &G2_4, &F2_2dot, &EF2_2dot, &D2_2dot, &C2_2dot, &G1_2dot, &G1_2dot,
 	&G1_2dot, &G1_2dot, &G1_2dot
+};
+
+Note* BachAlto[] = {
+	&G1_16, &D2_16, &B2_16, &A2_16, &B2_16, &D2_16, &B2_16, &D2_16, &G1_16, &D2_16, &B2_16, &A2_16, &B2_16, &D2_16, &B2_16, &D2_16,
+	&G1_16, &E2_16, &C3_16, &B2_16, &C3_16, &E2_16, &C3_16, &E2_16, &G1_16, &E2_16, &C3_16, &B2_16, &C3_16, &E2_16, &C3_16, &E2_16, 
+	&G1_16, &GF2_16, &C3_16, &B2_16, &C3_16, &GF2_16, &C3_16, &GF2_16, &G1_16, &GF2_16, &C3_16, &B2_16, &C3_16, &GF2_16, &C3_16, &GF2_16, 
+	&G1_16, &G2_16, &B2_16, &A2_16, &B2_16, &G2_16, &B2_16, &G2_16, &G1_16, &G2_16, &B2_16, &A2_16, &B2_16, &G2_16, &B2_16, &GF2_16, 
+	&G1_16, &E2_16, &B2_16, &A2_16, &B2_16, &G2_16, &GF2_16, &G2_16, &E2_16, &G2_16, &GF2_16, &G2_16, &B1_16, &D2_16, &DF2_16, &B1_16,
+	&DF2_16, &G2_16, &A2_16, &G2_16, &A2_16, &G2_16, &A2_16, &G2_16, &DF2_16, &G2_16, &A2_16, &G2_16, &A2_16, &G2_16, &A2_16, &G2_16, 
+	&GF2_16, &A2_16, &D3_16, &DF3_16, &D3_16, &A2_16, &G2_16, &A2_16, &GF2_16, &A2_16, &G2_16, &A2_16, &D2_16, &GF2_16, &E2_16, &D2_16,
+	&E1_16, &B1_16, &G2_16, &GF2_16, &G2_16, &B1_16, &G2_16, &B1_16, &E1_16, &B1_16, &G2_16, &GF2_16, &G2_16, &B1_16, &G2_16, &B1_16,
+	&E1_16, &DF2_16, &D2_16, &E2_16, &D2_16, &DF2_16, &B1_16, &A1_16, &G2_16, &GF2_16, &E2_16, &D3_16, &DF3_16, &B2_16, &A2_16, &G2_16,
+	&GF2_16, &E2_16, &D2_16, &D3_16, &A2_16, &D3_16, &GF2_16, &A2_16, &D2_16, &E2_16, &GF2_16, &A2_16, &G2_16, &GF2_16, &E2_16, &D2_16, 
+	&AF2_16, &D2_16, &F2_16, &E2_16, &F2_16, &D2_16, &G2_16, &D2_16, &B2_16, &D2_16, &F2_16, &E2_16, &F2_16, &D2_16, &G2_16, &D2_16,
+	&C2_16, &E2_16, &A2_16, &B2_16, &C3_16, &A2_16, &E2_16, &D2_16, &C2_16, &E2_16, &A2_16, &B2_16, &C3_16, &A2_16, &GF2_16, &E2_16,
+	&EF2_16, &GF2_16, &EF2_16, &GF2_16, &A2_16, &GF2_16, &A2_16, &GF2_16, &EF2_16, &GF2_16, &EF2_16, &GF2_16, &A2_16, &GF2_16, &A2_16, &GF2_16,
+	&G2_16, &GF2_16, &E2_16, &G2_16, &GF2_16, &G2_16, &A2_16, &GF2_16, &G2_16, &GF2_16, &E2_16, &D2_16, &C2_16, &B1_16, &A1_16, &G1_16,
+	&GF1_16, &C2_16, &D2_16, &C2_16, &D2_16, &C2_16, &D2_16, &C2_16, &GF1_16, &C2_16, &D2_16, &C2_16, &D2_16, &C2_16, &D2_16, &C2_16, 
+	&G1_16, &B1_16, &F2_16, &E2_16, &F2_16, &B1_16, &F2_16, &B1_16, &G1_16, &B1_16, &F2_16, &E2_16, &F2_16, &B1_16, &F2_16, &B1_16,
+	&G1_16, &C2_16, &E2_16, &D2_16, &E2_16, &C2_16, &E2_16, &C2_16, &G1_16, &C2_16, &E2_16, &D2_16, &E2_16, &C2_16, &E2_16, &C2_16, 
+	&G1_16, &F2_16, &C3_16, &B2_16, &C3_16, &F2_16, &C3_16, &F2_16, &G1_16, &F2_16, &C3_16, &B2_16, &C3_16, &F2_16, &C3_16, &F2_16
 };
 	
 Song_Choices testSongs;
@@ -583,10 +618,16 @@ void Music_Init(void){
 		NoteNode* CotB_Third_Notes = create_LinkedList_From_Array((Note**) CotBThird, 37);
 		Song Carol_of_the_Bells = {2, "Carol of the Bells", BPM60, CotB_Soprano_Notes, CotB_Soprano_Notes, CotB_Alto_Notes, CotB_Alto_Notes, CotB_Third_Notes, CotB_Third_Notes, NULL, NULL, 0};
 				
+		//NoteNode* Bach_Soprano_Notes = create_LinkedList_From_Array((Note**) BachAlto, 135);
+		NoteNode* Bach_Alto_Notes = create_LinkedList_From_Array((Note**) BachAlto, 53);
+		//NoteNode* Bach_Third_Notes = create_LinkedList_From_Array((Note**) BachThird, 37);
+		Song Bach_Cello_Suite = {3, "Bach Suite No. 1", BPM60, Bach_Alto_Notes, Bach_Alto_Notes, Bach_Alto_Notes, Bach_Alto_Notes, Bach_Alto_Notes, Bach_Alto_Notes, NULL, NULL, 0};
+
 		
 		testSongs.songs[0] = Lost_Woods;
 		testSongs.songs[1] = New_Bark_Town;
 		testSongs.songs[2] = Carol_of_the_Bells;
+		testSongs.songs[3] = Bach_Cello_Suite;
 		
 		
 

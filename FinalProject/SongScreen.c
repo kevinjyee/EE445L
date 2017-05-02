@@ -130,7 +130,7 @@ uint32_t SongScreen(uint32_t input,char* SongName, const uint16_t* Graphic){
 			break;
 		case RIGHT:
 			ST7735_FillScreen(ST7735_WHITE);
-			currentSongPos = (currentSongPos + 1)%NUMSONGS;
+			currentSongPos = (currentSongPos + 1)%NUM_SONGS;
 			Play_Toggled ^= PLAY;
 			return rtSongScreen;
 	}

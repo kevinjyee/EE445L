@@ -22,6 +22,7 @@
 #include "SongScreen.h"
 #include "PedometerScreen.h"
 #include "Music.h"
+#include "Globals.h"
 
 #define PA3						(*((volatile uint32_t *)0x40004020)) // Menu switch
 #define PA2           (*((volatile uint32_t *)0x40004010)) // Select switch
@@ -38,7 +39,6 @@
 #define PLAY 				1
 #define PAUSE 			0
 
-#define NUMSONGS    3
 #define NUM_MODES		3
 
 void DisableInterrupts(void); // Disable interrupts
@@ -53,7 +53,7 @@ volatile int currentMode = 0;
 volatile int currentSongPos = 0;
 
 
-SongChoice SongsList[NUMSONGS];
+SongChoice SongsList[NUM_SONGS];
 
 static const uint16_t* dummy = {0x00};
 uint32_t Next_State(uint32_t current_state, uint32_t keyInputs)
