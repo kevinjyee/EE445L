@@ -29,7 +29,7 @@
 
 
 #define SENDSTRING1 "GET /query?city=Austin%2C%20Texas&id=Kevin%20and%20Stefan&greet=" 
-#define SENDSTRING2 " HTTP/1.1\r\nUser-Agent: Keil\r\nHost: titanium-link-166323.appspot.com\r\n\r\n"
+#define SENDSTRING2 " HTTP/1.1\r\nUser-Agent: Keil\r\nHost: ee445l-kjy252.appspot.com\r\n\r\n"
 char Fetch[] = "GET /data/2.5/weather?q=Austin%20Texas&APPID=1bc54f645c5f1c75e681c102ed4bbca4&units=metric HTTP/1.1\r\nUser-Agent: Keil\r\nHost:api.openweathermap.org\r\nAccept: */*\r\n\r\n";
 
 void DisableInterrupts(void); // Disable interrupts

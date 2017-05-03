@@ -10,16 +10,22 @@
 
 #define MAX_FADE 99
 #define MIN_FADE 0
+#define FADE_OFFSET 4
 #define NUM_SONGS 4
+#define SONG_TITLE_LENGTH 28
 
 // **************MainMenuPos*********************
 // The current position of the main menu cursor.
 extern uint8_t MainMenuPos;
 
-// **************currentSongPos*********************
+// **************Song_Menu_Pos*********************
 // The position of the song screen selection. Can be moved up and down via
 //		switch input.
-extern volatile int currentSongPos;
+extern volatile int Song_Menu_Pos;
+
+// **************Current_Song*********************
+// The song which is currently playing.
+extern volatile int Current_Song;
 
 // **************Current_Tempo*********************
 // The tempo value of the current song.
@@ -40,3 +46,7 @@ extern volatile uint16_t Fade;
 // **************Step_Count*********************
 // Current number of steps walked.
 extern volatile uint32_t Step_Count;
+
+// **************Title_Display_Index*********************
+// Index for displaying rolling title.
+extern volatile uint8_t Title_Display_Index;

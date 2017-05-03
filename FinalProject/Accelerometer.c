@@ -235,7 +235,7 @@ void control_Tempo(uint8_t stepCheck){
 		}
 	} else{
 		bolus_val = (-4 * bolus_index + 50) / 10;
-		Fade = MAX_FADE;
+		Fade = MIN(MAX_FADE, Fade + FADE_OFFSET);
 	}
 	Current_Tempo = MIN(Current_Tempo + bolus_val, upper_bound);
 	Current_Tempo = MAX(Current_Tempo, 0);

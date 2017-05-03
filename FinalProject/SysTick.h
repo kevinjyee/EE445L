@@ -49,3 +49,10 @@ void Change_Tempo(uint8_t tempo);
 // Inputs:  None
 // Outputs: None
 void Orchestrate_Steps();
+
+// ***************** DelayWait2ms ****************
+// Creates latency when called.
+// Inputs:  None
+// Outputs: None
+void DelayWait2ms(uint32_t n);
+	

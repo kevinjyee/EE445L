@@ -353,6 +353,7 @@ Note* CotBThird[37] = {
 	&G1_2dot, &G1_2dot, &G1_2dot
 };
 
+/*
 Note* BachAlto[] = {
 	&G1_16, &D2_16, &B2_16, &A2_16, &B2_16, &D2_16, &B2_16, &D2_16, &G1_16, &D2_16, &B2_16, &A2_16, &B2_16, &D2_16, &B2_16, &D2_16,
 	&G1_16, &E2_16, &C3_16, &B2_16, &C3_16, &E2_16, &C3_16, &E2_16, &G1_16, &E2_16, &C3_16, &B2_16, &C3_16, &E2_16, &C3_16, &E2_16, 
@@ -373,6 +374,34 @@ Note* BachAlto[] = {
 	&G1_16, &C2_16, &E2_16, &D2_16, &E2_16, &C2_16, &E2_16, &C2_16, &G1_16, &C2_16, &E2_16, &D2_16, &E2_16, &C2_16, &E2_16, &C2_16, 
 	&G1_16, &F2_16, &C3_16, &B2_16, &C3_16, &F2_16, &C3_16, &F2_16, &G1_16, &F2_16, &C3_16, &B2_16, &C3_16, &F2_16, &C3_16, &F2_16
 };
+*/
+
+Note G1_8 = {G1, EIGHTH};
+Note GF2_8 = {GF2, EIGHTH};
+Note B1_8 = {B1, EIGHTH};
+Note E1_8 = {E1, EIGHTH};
+Note EF2_8 = {EF2, EIGHTH};
+Note GF1_8 = {GF1, EIGHTH};
+
+Note* BachAlto[288] = {
+	&G1_8, &D2_8, &B2_8, &A2_8, &B2_8, &D2_8, &B2_8, &D2_8, &G1_8, &D2_8, &B2_8, &A2_8, &B2_8, &D2_8, &B2_8, &D2_8,
+	&G1_8, &E2_8, &C3_8, &B2_8, &C3_8, &E2_8, &C3_8, &E2_8, &G1_8, &E2_8, &C3_8, &B2_8, &C3_8, &E2_8, &C3_8, &E2_8, &G1_8, &GF2_8,
+	&C3_8, &B2_8, &C3_8, &GF2_8, &C3_8, &GF2_8, &G1_8, &GF2_8, &C3_8, &B2_8, &C3_8, &GF2_8, &C3_8, &GF2_8, &G1_8, &G2_8, &B2_8, &A2_8,
+	&B2_8, &G2_8, &B2_8, &G2_8, &G1_8, &G2_8, &B2_8, &A2_8, &B2_8, &G2_8, &B2_8, &GF2_8, &G1_8, &E2_8, &B2_8, &A2_8, &B2_8, &G2_8, &GF2_8,
+	&G2_8, &E2_8, &G2_8, &GF2_8, &G2_8, &B1_8, &D2_8, &DF2_8, &B1_8, &DF2_8, &G2_8, &A2_8, &G2_8, &A2_8, &G2_8, &A2_8, &G2_8, &DF2_8, &G2_8,
+	&A2_8, &G2_8, &A2_8, &G2_8, &A2_8, &G2_8, &GF2_8, &A2_8, &D3_8, &DF3_8, &D3_8, &A2_8, &G2_8, &A2_8, &GF2_8, &A2_8, &G2_8, &A2_8, &D2_8,
+	&GF2_8, &E2_8, &D2_8, &E1_8, &B1_8, &G2_8, &GF2_8, &G2_8, &B1_8, &G2_8, &B1_8, &E1_8, &B1_8, &G2_8, &GF2_8, &G2_8, &B1_8, &G2_8, &B1_8,
+	&E1_8, &DF2_8, &D2_8, &E2_8, &D2_8, &DF2_8, &B1_8, &A1_8, &G2_8, &GF2_8, &E2_8, &D3_8, &DF3_8, &B2_8, &A2_8, &G2_8, &GF2_8, &E2_8, &D2_8,
+	&D3_8, &A2_8, &D3_8, &GF2_8, &A2_8, &D2_8, &E2_8, &GF2_8, &A2_8, &G2_8, &GF2_8, &E2_8, &D2_8, &AF2_8, &D2_8, &F2_8, &E2_8, &F2_8, &D2_8,
+	&G2_8, &D2_8, &B2_8, &D2_8, &F2_8, &E2_8, &F2_8, &D2_8, &G2_8, &D2_8, &C2_8, &E2_8, &A2_8, &B2_8, &C3_8, &A2_8, &E2_8, &D2_8, &C2_8,
+	&E2_8, &A2_8, &B2_8, &C3_8, &A2_8, &GF2_8, &E2_8, &EF2_8, &GF2_8, &EF2_8, &GF2_8, &A2_8, &GF2_8, &A2_8, &GF2_8, &EF2_8, &GF2_8, &EF2_8,
+	&GF2_8, &A2_8, &GF2_8, &A2_8, &GF2_8, &G2_8, &GF2_8, &E2_8, &G2_8, &GF2_8, &G2_8, &A2_8, &GF2_8, &G2_8, &GF2_8, &E2_8, &D2_8, &C2_8,
+	&B1_8, &A1_8, &G1_8, &GF1_8, &C2_8, &D2_8, &C2_8, &D2_8, &C2_8, &D2_8, &C2_8, &GF1_8, &C2_8, &D2_8, &C2_8, &D2_8, &C2_8, &D2_8, &C2_8,
+	&G1_8, &B1_8, &F2_8, &E2_8, &F2_8, &B1_8, &F2_8, &B1_8, &G1_8, &B1_8, &F2_8, &E2_8, &F2_8, &B1_8, &F2_8, &B1_8, &G1_8, &C2_8, &E2_8,
+	&D2_8, &E2_8, &C2_8, &E2_8, &C2_8, &G1_8, &C2_8, &E2_8, &D2_8, &E2_8, &C2_8, &E2_8, &C2_8, &G1_8, &F2_8, &C3_8, &B2_8, &C3_8, &F2_8,
+	&C3_8, &F2_8, &G1_8, &F2_8, &C3_8, &B2_8, &C3_8, &F2_8, &C3_8, &F2_8
+};
+
 	
 Song_Choices testSongs;
 
@@ -521,7 +550,7 @@ Note* current_Third_Note;
 
 // ***************** Play_Song *****************
 void Play_Song(void){
-	Song* current_Song = &testSongs.songs[currentSongPos];
+	Song* current_Song = &testSongs.songs[Current_Song];
 	enableEnv = 0;
 	uint32_t sr;
 
@@ -619,7 +648,7 @@ void Music_Init(void){
 		Song Carol_of_the_Bells = {2, "Carol of the Bells", BPM60, CotB_Soprano_Notes, CotB_Soprano_Notes, CotB_Alto_Notes, CotB_Alto_Notes, CotB_Third_Notes, CotB_Third_Notes, NULL, NULL, 0};
 				
 		//NoteNode* Bach_Soprano_Notes = create_LinkedList_From_Array((Note**) BachAlto, 135);
-		NoteNode* Bach_Alto_Notes = create_LinkedList_From_Array((Note**) BachAlto, 53);
+		NoteNode* Bach_Alto_Notes = create_LinkedList_From_Array((Note**) BachAlto, 288);
 		//NoteNode* Bach_Third_Notes = create_LinkedList_From_Array((Note**) BachThird, 37);
 		Song Bach_Cello_Suite = {3, "Bach Suite No. 1", BPM60, Bach_Alto_Notes, Bach_Alto_Notes, Bach_Alto_Notes, Bach_Alto_Notes, Bach_Alto_Notes, Bach_Alto_Notes, NULL, NULL, 0};
 
@@ -692,11 +721,14 @@ void Mess_With_Tempo(uint16_t current_tempo){
 // Outputs: none
 void Rewind(){
 	//Pause();
+		DisableInterrupts();
+		Current_Song = Song_Menu_Pos;
 		current_Soprano_Beats = 0; current_Alto_Beats = 0; current_Third_Beats = 0; // Reset current note beats.
-		Song* currentSong = &testSongs.songs[currentSongPos];
+		Song* currentSong = &testSongs.songs[Current_Song];
 		currentSong->soprano_Notes = currentSong->first_Soprano_Note; // Reset notes to first note.
 		currentSong->alto_Notes = currentSong->first_Alto_Note;
 		currentSong->third_Notes = currentSong->first_Third_Note;
+		EnableInterrupts();
 		SysTick_Init(&Play_Song, Current_Tempo);
 		Playing = 1;
 }

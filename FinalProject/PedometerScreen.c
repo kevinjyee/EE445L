@@ -19,7 +19,7 @@ extern volatile uint32_t XAvg, YAvg, ZAvg;
 
 void Draw_Steps()
 {
-	ST7735_DrawStringBG(0,4,"Step Count:     ",ST7735_BLACK,ST7735_WHITE); 
+	ST7735_DrawStringBG(0,4,"  Step Count:     ",ST7735_BLACK,ST7735_WHITE); 
 	
 	ST7735_sDecOutNorm(Step_Count,12,4); 
 /*

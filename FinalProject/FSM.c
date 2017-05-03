@@ -50,7 +50,8 @@ void WaitForInterrupt(void);  // low power mode
 int selectSwitchToggled = FALSE;
 extern char Play_Toggled;
 volatile int currentMode = 0;
-volatile int currentSongPos = 0;
+volatile int Song_Menu_Pos = 0;
+volatile int Current_Song = 0;
 
 
 SongChoice SongsList[NUM_SONGS];
@@ -66,7 +67,7 @@ uint32_t Next_State(uint32_t current_state, uint32_t keyInputs)
 		case 0x02:
 			return PedometerScreen(keyInputs);
 		case 0x03:
-			return SongScreen(keyInputs, SongsList[currentSongPos].SongName,dummy);
+			return SongScreen(keyInputs, SongsList[Song_Menu_Pos].SongName,dummy);
 		case 0x04:
 			//return SetAlarms(keyInputs);
 		default:
@@ -94,7 +95,5 @@ void Draw_Options(uint8_t menupos,char* menu_Choice[],uint8_t NUMOPTIONS,int YBE
 		}
 	}
 }
-
-
 
 

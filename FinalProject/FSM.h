@@ -18,11 +18,12 @@
 #define YTITLE 0
 #define TITLEBORDER 11
 #define YITEMS 2
+#define XITEMS 2
 
 #define DOWN 0x01
 #define UP 0x02
-#define LEFT 0x04
-#define RIGHT 0x08
+#define LEFT 0x08
+#define RIGHT 0x04
 #define SELECT 0x10
 #define MENU 0x20
 

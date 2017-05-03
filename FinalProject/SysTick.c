@@ -119,3 +119,17 @@ void Orchestrate_Steps(){
 	beats_Passed = 1;
 	NVIC_ST_CTRL_R = 0x00000007; 					// ENABLE WITH CORE CLOCK AND INTERRUPTS
 }
+
+// ***************** DelayWait2ms ****************
+// Creates latency when called.
+// Inputs:  None
+// Outputs: None
+void DelayWait2ms(uint32_t n){uint32_t volatile time;
+  while(n){
+    time = 7272400*4/91;  // 10msec
+    while(time){
+	  	time--;
+    }
+    n--;
+  }
+}

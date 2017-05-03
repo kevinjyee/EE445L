@@ -68,20 +68,7 @@ void WaitForInterrupt(void);  // low power mode
 volatile unsigned long LastE = 0; 
 char Play_Toggled;
 
-/*Function: DelayWait2ms
-*
-*/
-void DelayWait2ms(uint32_t n){uint32_t volatile time;
-  while(n){
-    time = 7272400*4/91;  // 10msec
-    while(time){
-	  	time--;
-    }
-    n--;
-  }
-}
-
-char REQUESTT[] ="GET /query?city=Austin%2C%20Texas&id=Kevin%20and%20Stefan&greet=esptest4 HTTP/1.1\r\nUser-Agent: Keil\r\nHost: titanium-link-166323.appspot.com\r\n\r\n";
+char REQUESTT[] ="GET /query?city=Austin%2C%20Texas&id=Kevin%20and%20Stefan&greet=esptest4 HTTP/1.1\r\nUser-Agent: Keil\r\nHost: ee445l-kjy252.appspot.com\r\n\r\n";
 // 1) go to http://openweathermap.org/appid#use 
 // 2) Register on the Sign up page
 // 3) get an API key (APPID) replace the 1234567890abcdef1234567890abcdef with your APPID
@@ -110,29 +97,30 @@ void init_All(){
   ST7735_InitR(INITR_REDTAB);
   ST7735_DrawBitmap(0,159,TitleScreen2,128,160);
 	
+	
 	Output_InitESP();
   ESP8266_Init(115200);      // connect to access point, set up as client
   ESP8266_GetVersionNumber();
   ESP8266_GetStatus();
-			if(ESP8266_MakeTCPConnection("titanium-link-166323.appspot.com")){ // open socket in server
+			if(ESP8266_MakeTCPConnection("ee445l-kjy252.appspot.com")){ // open socket in server
       
       ESP8266_SendTCP(REQUESTT);
 				
     }
-		ESP8266FIFOtoBuffer();
-		char* buffer;
-		buffer = get_SearchString();
+		//ESP8266FIFOtoBuffer();
+		//char* buffer;
+		//buffer = get_SearchString();
    
-		char tempbuffer[50] = " ";
-		extractStep(buffer, tempbuffer);
-	if(tempbuffer[0] >= '0' && tempbuffer[0] <= '9')
-	{
-		Step_Count = atoi(tempbuffer);
-	}
-	else
-	{
-		Step_Count = 0;
-	}
+		//char tempbuffer[50] = " ";
+		//extractStep(buffer, tempbuffer);
+	//if(tempbuffer[0] >= '0' && tempbuffer[0] <= '9')
+	//{
+		//Step_Count = atoi(tempbuffer);
+	//}
+	//else
+	//{
+		//Step_Count = 0;
+	//}
 	
 	Switch_Init();
 	Accel_Init();
@@ -153,8 +141,8 @@ int main(void){
 	
   while(1){
 		
-    
-
+   
+		
 
     if(Fifo_Get(&input))
 		{
